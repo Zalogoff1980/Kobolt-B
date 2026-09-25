@@ -14,7 +14,7 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
  * (шрифты, поля, шапка, PullQuote, гравюра-заглушка) не меняется.
  */
 export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 }) {
-  const { title, subtitle, paragraphs, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
@@ -39,6 +39,14 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
           </div>
         )}
       </div>
+
+      {/* Основной текст/лид — отдельное семантическое поле, крупнее и
+          жирнее тела статьи, полной шириной над многоколоночным телом. */}
+      {lead && (
+        <p className="mt-[5mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
+          {lead.text}
+        </p>
+      )}
 
       {paragraphs.length > 0 && (
         <div

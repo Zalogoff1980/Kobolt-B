@@ -25,7 +25,7 @@ function railPhotoHeight(count: number): number {
  * узкой вертикальной "плёнкой"-рубрикой справа, максимум три кадра.
  */
 export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumber: 3 }) {
-  const { title, subtitle, paragraphs, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const railPhotos = photos.slice(0, 3);
@@ -38,6 +38,13 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
 
       <div className="mt-[5mm] grid grid-cols-[1fr_58mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
+          {/* Основной текст/лид — отдельное семантическое поле,
+              крупнее и жирнее обычных абзацев. */}
+          {lead && (
+            <p className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
+              {lead.text}
+            </p>
+          )}
           {paragraphs.map((p) => (
             <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">
               {p.text}

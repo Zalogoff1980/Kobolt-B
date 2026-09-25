@@ -30,7 +30,7 @@ export function TemplatePicker({
           onClick={() => onChange(opt.id)}
           data-testid={`template-option-${opt.id}`}
           data-selected={currentTemplateId === opt.id}
-          className={`flex-1 border px-2 py-2 text-left font-display text-[11px] font-bold uppercase tracking-wide ${
+          className={`flex-1 appearance-none rounded-hairline border px-2 py-2 text-left font-display text-[11px] font-bold uppercase tracking-wide ${
             currentTemplateId === opt.id
               ? "border-accent bg-accent/10 text-ink"
               : "border-ink/20 text-olive-dim hover:border-ink/40"

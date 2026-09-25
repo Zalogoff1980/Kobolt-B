@@ -16,7 +16,7 @@ import { PullQuote } from "@/components/shared/PullQuote";
  * текст занимает всю ширину.
  */
 export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }) {
-  const { title, subtitle, paragraphs, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
@@ -32,6 +32,11 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
   const textColumn = (
     <div className={photo ? "" : "max-w-[130mm]"}>
       <div className="space-y-[3mm]">
+        {/* Основной текст/лид — отдельное семантическое поле, крупнее
+            и жирнее обычных абзацев. */}
+        {lead && (
+          <p className="font-body text-[9.5px] font-bold leading-relaxed text-ink">{lead.text}</p>
+        )}
         {paragraphs.map((p) => (
           <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">
             {p.text}

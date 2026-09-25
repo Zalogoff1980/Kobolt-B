@@ -43,7 +43,7 @@ export function PageList({
               onClick={() => onSelect(n)}
               data-testid={`page-item-${n}`}
               data-active={isActive}
-              className={`flex w-full items-center gap-3 border px-2 py-2 text-left ${
+              className={`flex w-full items-center gap-3 rounded-card border px-2 py-2 text-left ${
                 isActive ? "border-accent bg-accent/5" : "border-transparent hover:border-ink/15"
               }`}
             >

@@ -47,7 +47,7 @@ export default function NewIssuePage() {
               value={number}
               onChange={(e) => setNumber(e.target.value)}
               placeholder="12"
-              className="mt-1 w-full border border-ink/30 bg-white/60 px-3 py-2 outline-none focus:border-accent"
+              className="mt-1 w-full appearance-none rounded-hairline border border-ink/30 bg-white/60 px-3 py-2 outline-none focus:border-accent"
             />
           </div>
 
@@ -60,7 +60,7 @@ export default function NewIssuePage() {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="mt-1 w-full border border-ink/30 bg-white/60 px-3 py-2 outline-none focus:border-accent"
+              className="mt-1 w-full appearance-none rounded-hairline border border-ink/30 bg-white/60 px-3 py-2 outline-none focus:border-accent"
             />
           </div>
 

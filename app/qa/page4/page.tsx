@@ -15,7 +15,7 @@ export default function Page4QaPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#4a4a42] p-8">
+    <main className="min-h-screen bg-stage p-8">
       <div className="mx-auto max-w-6xl space-y-14">
         <p className="text-xs uppercase tracking-wide text-paper/60">
           QA: страница 4 "Лица батальона" — Template A (person-feature-v1) и

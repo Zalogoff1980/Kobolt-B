@@ -28,7 +28,7 @@ export function PageThumbnail({
   return (
     <div
       style={{ width: widthPx, height: heightPx }}
-      className="flex-shrink-0 overflow-hidden border border-ink/15 bg-paper"
+      className="flex-shrink-0 overflow-hidden rounded-card border border-ink/15 bg-paper"
     >
       <div
         style={{

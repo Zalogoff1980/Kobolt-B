@@ -2,7 +2,7 @@
 
 import { PageSections } from "@/lib/content/sections";
 import { photoConfigFor } from "@/lib/content/templateOptions";
-import { TextInput, Field, SectionHeading } from "./fields";
+import { TextInput, TextArea, Field, SectionHeading } from "./fields";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { AchievementsEditor } from "./AchievementsEditor";
@@ -42,6 +42,19 @@ export function InnerPageForm({
             data-testid="field-subtitle"
             value={sections.subtitle}
             onChange={(e) => onChange({ ...sections, subtitle: e.target.value })}
+          />
+        </Field>
+      </div>
+
+      <div className="space-y-2">
+        <SectionHeading>Основной текст</SectionHeading>
+        <Field label="Вводный абзац (лид)">
+          <TextArea
+            data-testid="field-lead"
+            rows={3}
+            value={sections.lead}
+            onChange={(e) => onChange({ ...sections, lead: e.target.value })}
+            placeholder="Короткий вводный абзац сразу после заголовка…"
           />
         </Field>
       </div>

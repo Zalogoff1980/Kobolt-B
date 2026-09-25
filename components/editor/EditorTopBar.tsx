@@ -13,7 +13,7 @@ export function EditorTopBar({
   saveStatus: "idle" | "saving" | "saved";
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-ink/15 bg-paper px-4 py-3">
+    <div className="flex items-center justify-between border-b border-ink/15 bg-chrome px-4 py-3">
       <div className="flex items-center gap-3">
         <Link href="/" className="text-sm text-olive-dim underline">
           ← Выпуски

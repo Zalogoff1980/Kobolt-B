@@ -36,7 +36,7 @@ function gridLayout(count: number): { cols: number; heightMm: number } {
  * ритма, отличного от Template A.
  */
 export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
-  const { title, subtitle, paragraphs, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const quote = quotes[0];
@@ -72,6 +72,17 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
           <div className="flex h-[70mm] items-center justify-center bg-olive/10">
             <EngravingTank className="h-[50%] w-[60%] text-olive/30" />
           </div>
+        )}
+
+        {/* Основной текст/лид — отдельное семантическое поле (не
+            "первый абзац"), крупнее и жирнее тела статьи, полной
+            шириной над многоколоночным телом. */}
+        {lead && (
+          <p
+            className="mt-[5mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink"
+          >
+            {lead.text}
+          </p>
         )}
 
         {paragraphs.length > 0 && (

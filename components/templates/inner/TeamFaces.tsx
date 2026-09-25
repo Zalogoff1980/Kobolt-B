@@ -22,7 +22,7 @@ function photoHeightMm(count: number): number {
  * заглушка здесь неуместна (это страница о конкретных людях).
  */
 export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }) {
-  const { title, subtitle, paragraphs, achievements, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, achievements, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const faces = photos.slice(0, 3);
@@ -61,6 +61,15 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
             </div>
           ))}
         </div>
+      )}
+
+      {/* Основной текст/лид — отдельное семантическое поле, крупнее и
+          жирнее обычных абзацев, полной шириной над многоколоночным
+          телом. */}
+      {lead && (
+        <p className="mt-[5mm] max-w-[140mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
+          {lead.text}
+        </p>
       )}
 
       {paragraphs.length > 0 && (

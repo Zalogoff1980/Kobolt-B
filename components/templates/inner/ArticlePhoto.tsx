@@ -13,11 +13,12 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
  * нет — колонка остаётся пустой, ничего не подставляем.
  */
 export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
-  const { title, subtitle, paragraphs, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
   const quote = quotes[0];
+  const hasBodyText = Boolean(lead) || paragraphs.length > 0;
 
   return (
     <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
@@ -25,12 +26,20 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
 
       <div className="mt-[5mm] grid grid-cols-[1fr_76mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
+          {/* Основной текст/лид — типографически крупнее и жирнее
+              обычных абзацев, отдельное семантическое поле, а не
+              "первый абзац по счёту" (найденная проблема иерархии). */}
+          {lead && (
+            <p className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
+              {lead.text}
+            </p>
+          )}
           {paragraphs.map((p) => (
             <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">
               {p.text}
             </p>
           ))}
-          {quote && paragraphs.length === 0 && <PullQuote text={quote.text} author={quote.author} />}
+          {quote && !hasBodyText && <PullQuote text={quote.text} author={quote.author} />}
         </div>
 
         <div>
@@ -52,7 +61,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
         </div>
       </div>
 
-      {quote && paragraphs.length > 0 && (
+      {quote && hasBodyText && (
         <div className="mt-[4mm] max-w-[100mm]">
           <PullQuote text={quote.text} author={quote.author} />
         </div>

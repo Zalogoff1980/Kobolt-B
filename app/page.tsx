@@ -87,14 +87,14 @@ export default function HomePage() {
                   <Link
                     href={`/issues/${issue.id}`}
                     data-testid="open-issue-link"
-                    className="border border-ink/20 px-3 py-1.5 text-xs uppercase text-ink hover:border-ink/40"
+                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs uppercase text-ink hover:border-ink/40"
                   >
                     Открыть
                   </Link>
                   <button
                     onClick={() => setPendingDelete(issue)}
                     data-testid="delete-issue-button"
-                    className="border border-ink/20 px-3 py-1.5 text-xs uppercase text-olive-dim hover:border-accent hover:text-accent"
+                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs uppercase text-olive-dim hover:border-accent hover:text-accent"
                   >
                     Удалить
                   </button>
@@ -110,7 +110,7 @@ export default function HomePage() {
           data-testid="delete-confirm-dialog"
           className="fixed inset-0 flex items-center justify-center bg-ink/40 p-4"
         >
-          <div className="max-w-sm bg-paper p-5">
+          <div className="max-w-sm rounded-card bg-paper p-5">
             <p className="font-display font-bold uppercase">Удалить выпуск?</p>
             <p className="mt-2 text-sm text-olive-dim">
               Выпуск № {pendingDelete.number} от {formatIssueDate(pendingDelete.date)} будет удалён
@@ -120,7 +120,7 @@ export default function HomePage() {
               <button
                 onClick={() => setPendingDelete(null)}
                 data-testid="cancel-delete-button"
-                className="border border-ink/20 px-3 py-1.5 text-xs uppercase"
+                className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs uppercase"
               >
                 Отмена
               </button>

@@ -99,7 +99,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
       */}
       <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto lg:flex-row lg:overflow-hidden">
         {/* EDITOR SIDEBAR */}
-        <aside className="w-full flex-shrink-0 border-ink/15 bg-paper p-4 lg:w-80 lg:overflow-y-auto lg:border-r">
+        <aside className="w-full flex-shrink-0 border-ink/15 bg-chrome p-4 lg:w-80 lg:overflow-y-auto lg:border-r">
           <PageList issue={issue} activePage={activePage} onSelect={setActivePage} />
 
           <div className="mt-4 border-t border-ink/10 pt-4">
@@ -130,7 +130,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
         </aside>
 
         {/* A4 PREVIEW — целиком масштабируется, пропорция страницы не меняется */}
-        <div className="flex-1 bg-[#4a4a42] p-6 lg:overflow-auto">
+        <div className="flex-1 bg-stage p-6 lg:overflow-auto">
           <PagePreviewScaler>
             <A4Page issue={issue} pageNumber={activePage} />
           </PagePreviewScaler>

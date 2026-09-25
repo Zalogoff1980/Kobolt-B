@@ -29,7 +29,7 @@ export default function IssuePreviewPage({ params }: { params: { issueId: string
   }
 
   return (
-    <main className="min-h-screen bg-[#4a4a42] p-8">
+    <main className="min-h-screen bg-stage p-8">
       <div className="mx-auto max-w-3xl">
         <Link href={`/issues/${issue.id}`} className="text-sm text-paper/80 underline">
           ← Назад к выпуску

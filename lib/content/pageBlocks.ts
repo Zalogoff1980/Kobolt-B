@@ -16,9 +16,27 @@ type QuoteBlock = Extract<ContentBlock, { type: "quote" }>;
  * heading-блоки (если появятся) уходят в тело статьи как текстовые
  * акценты — шаблон сам решает, показывать ли их отдельно.
  */
+/**
+ * Целевая иерархия контента внутренней страницы (зафиксирована как
+ * системное правило, не локальная особенность одной страницы):
+ *
+ *   H1 (title) → H2 (subtitle) → основной текст/лид (lead) →
+ *   абзац, абзац… (paragraphs) → H3/спецэлементы, если предусмотрены
+ *   шаблоном (achievements) → цитата (quotes)
+ *
+ * Каждая роль — отдельное явное поле, а не позиция в массиве: lead
+ * определяется через ContentBlock.variant==="lead", а не "первый
+ * текстовый блок по счёту". Благодаря этому смысл текста не зависит
+ * от того, в каком порядке блоки физически лежат в blocks[], и не
+ * меняется при смене шаблона страницы (оба шаблона одной страницы
+ * читают одну и ту же группировку).
+ */
 export function groupPageBlocks(blocks: ContentBlock[]) {
   let title: HeadingBlock | undefined;
   let subtitle: HeadingBlock | undefined;
+  /** Единственный вводный абзац/лид — поле "Основной текст" в
+   *  редакторе, идёт в модели сразу после подзаголовка. */
+  let lead: TextBlock | undefined;
   const paragraphs: TextBlock[] = [];
   /** Текстовые блоки с variant "achievement" (страница "Лица
    *  батальона") — отделены от paragraphs, чтобы шаблон мог вывести
@@ -39,11 +57,17 @@ export function groupPageBlocks(blocks: ContentBlock[]) {
       }
     }
     if (block.type === "text") {
-      (block.variant === "achievement" ? achievements : paragraphs).push(block);
+      if (block.variant === "achievement") {
+        achievements.push(block);
+      } else if (block.variant === "lead" && !lead) {
+        lead = block;
+      } else {
+        paragraphs.push(block);
+      }
     }
     if (block.type === "photo") photos.push(block);
     if (block.type === "quote") quotes.push(block);
   }
 
-  return { title, subtitle, paragraphs, achievements, photos, quotes };
+  return { title, subtitle, lead, paragraphs, achievements, photos, quotes };
 }

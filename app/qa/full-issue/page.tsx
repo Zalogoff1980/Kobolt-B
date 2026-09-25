@@ -28,7 +28,7 @@ function IssueRow({ label, issue }: { label: string; issue: Issue }) {
 
 export default function FullIssueQaPage() {
   return (
-    <main className="min-h-screen bg-[#4a4a42] p-8">
+    <main className="min-h-screen bg-stage p-8">
       <div className="mx-auto max-w-7xl space-y-14">
         <p className="text-xs uppercase tracking-wide text-paper/60">
           QA: полный выпуск целиком (4 страницы) — единство дизайна, "В номере",

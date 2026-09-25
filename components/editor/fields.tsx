@@ -17,8 +17,15 @@ export function Field({ label, children }: { label: string; children: ReactNode 
   );
 }
 
+// appearance-none сбрасывает нативный UA-стиль мобильных браузеров
+// (Android Chrome иначе рисует свои скругления/тени поверх инпутов,
+// textarea, <input type="date/file"> и кнопок — источник "топорных"
+// скруглений, о которых шла речь: не CSS-скругление приложения, а
+// платформенный chrome, который никогда явно не сбрасывался).
+// rounded-hairline — системный радиус для тонко обведённых элементов
+// (design token, tailwind.config.ts), а не hardcoded px и не 0.
 const inputClass =
-  "w-full border border-ink/20 bg-white/60 px-2 py-1.5 font-body text-sm text-ink outline-none focus:border-accent";
+  "w-full appearance-none rounded-hairline border border-ink/20 bg-white/60 px-2 py-1.5 font-body text-sm text-ink outline-none focus:border-accent";
 
 export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputClass} ${props.className ?? ""}`} />;
@@ -35,7 +42,7 @@ export function SmallButton({
   return (
     <button
       {...props}
-      className={`border border-ink/20 px-2 py-1 text-xs uppercase text-olive-dim hover:border-ink/40 disabled:opacity-30 ${
+      className={`appearance-none rounded-hairline border border-ink/20 px-2 py-1 text-xs uppercase text-olive-dim hover:border-ink/40 disabled:opacity-30 ${
         props.className ?? ""
       }`}
     >

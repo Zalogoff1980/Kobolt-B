@@ -10,23 +10,47 @@ import { groupPageBlocks } from "./pageBlocks";
  * порядок блоков РАЗНЫХ типов (где заголовок, где фото, где абзац)
  * не влияет на итоговую вёрстку — все шаблоны группируют блоки через
  * groupPageBlocks() по типу, а не по позиции в массиве. Значит editor
- * может держать заголовок/подзаголовок/абзацы/фото/цитату как
- * отдельные независимые списки и всегда пересобирать blocks[] заново
+ * может держать заголовок/подзаголовок/лид/абзацы/фото/цитату как
+ * отдельные независимые поля и всегда пересобирать blocks[] заново
  * в каноническом порядке — это проще и надёжнее, чем вручную искать
  * и подменять элементы посреди смешанного массива.
  *
- * Стабильность id (шаг 8, п.13–14): title/subtitle/quote — это ровно
- * один блок каждый, но у них тоже есть свой ContentBlock.id, и он
- * должен переживать редактирование текста, а не пересоздаваться на
- * каждое нажатие клавиши. Поэтому секция хранит titleId/subtitleId/
- * quoteId — id существующего блока, если он был, иначе undefined до
- * первого sectionsToBlocks (там для него генерируется id один раз).
+ * Иерархия контента внутренних страниц (2–4) зафиксирована как
+ * системное правило, не локальная особенность одной страницы:
+ *
+ *   H1 (title) → H2 (subtitle) → основной текст/лид (lead) →
+ *   абзац, абзац… (paragraphs) → H3/спецэлементы, если предусмотрены
+ *   шаблоном (achievements) → цитата (quote)
+ *
+ * lead — ЕДИНСТВЕННЫЙ вводный абзац, явно отделённый от paragraphs
+ * (variant "lead" на ContentBlock, см. types.ts), а не "первый абзац
+ * в списке": так его семантика не зависит ни от порядка блоков в
+ * массиве, ни от того, какой из двух шаблонов страницы выбран.
+ *
+ * Обложка (страница 1) — ИСКЛЮЧЕНИЕ и не участвует в этой иерархии:
+ * у неё нет H1/лида/абзацев вообще, только hero-заголовок (level 2),
+ * подзаголовок (level 3), фото и цитата — своя, полностью отдельная
+ * структура (ветка titleLevel===2 ниже). lead для обложки всегда
+ * пустой и не сохраняется.
+ *
+ * Стабильность id (шаг 8, п.13–14): title/subtitle/lead/quote — это
+ * ровно один блок каждый, но у них тоже есть свой ContentBlock.id, и
+ * он должен переживать редактирование текста, а не пересоздаваться
+ * на каждое нажатие клавиши. Поэтому секция хранит titleId/subtitleId/
+ * leadId/quoteId — id существующего блока, если он был, иначе
+ * undefined до первого sectionsToBlocks (там для него генерируется id
+ * один раз).
  */
 export type PageSections = {
   title: string;
   titleId?: string;
   subtitle: string;
   subtitleId?: string;
+  /** Основной текст / лид — один вводный абзац сразу после
+   *  подзаголовка, типографически выделяемый шаблоном. Отсутствует
+   *  по смыслу для обложки (там всегда ""). */
+  lead: string;
+  leadId?: string;
   paragraphs: { id: string; text: string }[];
   achievements: { id: string; text: string }[];
   photos: {
@@ -45,6 +69,7 @@ export function emptySections(): PageSections {
   return {
     title: "",
     subtitle: "",
+    lead: "",
     paragraphs: [],
     achievements: [],
     photos: [],
@@ -71,6 +96,8 @@ export function blocksToSections(
       titleId: g.title?.id,
       subtitle: g.subtitle?.text ?? "",
       subtitleId: g.subtitle?.id,
+      lead: g.lead?.text ?? "",
+      leadId: g.lead?.id,
       paragraphs: g.paragraphs.map((p) => ({ id: p.id, text: p.text })),
       achievements: g.achievements.map((a) => ({ id: a.id, text: a.text })),
       photos: g.photos.map((p) => ({
@@ -86,11 +113,11 @@ export function blocksToSections(
     };
   }
 
+  // Обложка: отдельная структура, без H1/лида/абзацев по смыслу.
   let title = "";
   let titleId: string | undefined;
   let subtitle = "";
   let subtitleId: string | undefined;
-  const paragraphs: PageSections["paragraphs"] = [];
   const photos: PageSections["photos"] = [];
   let quoteText = "";
   let quoteAuthor = "";
@@ -111,7 +138,6 @@ export function blocksToSections(
       subtitleFound = true;
       continue;
     }
-    if (b.type === "text") paragraphs.push({ id: b.id, text: b.text });
     if (b.type === "photo")
       photos.push({
         id: b.id,
@@ -132,7 +158,8 @@ export function blocksToSections(
     titleId,
     subtitle,
     subtitleId,
-    paragraphs,
+    lead: "",
+    paragraphs: [],
     achievements: [],
     photos,
     quoteText,
@@ -172,6 +199,18 @@ export function sectionsToBlocks(
       caption: p.caption.trim() || undefined,
       personName: p.personName.trim() || undefined,
       personRole: p.personRole.trim() || undefined,
+    });
+  }
+  // lead — только для внутренних страниц (titleLevel===1); обложка
+  // (titleLevel===2) никогда не эмитит lead-блок, даже если поле по
+  // какой-то причине оказалось непустым — у неё просто нет такого
+  // понятия в модели.
+  if (levels.titleLevel === 1 && sections.lead.trim()) {
+    blocks.push({
+      id: sections.leadId ?? createBlockId(),
+      type: "text",
+      text: sections.lead,
+      variant: "lead",
     });
   }
   // ВАЖНО: пустые абзацы/достижения НЕ фильтруются здесь, в отличие от
