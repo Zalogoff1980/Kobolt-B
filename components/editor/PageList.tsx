@@ -50,7 +50,7 @@ export function PageList({
               <PageThumbnail issue={issue} pageNumber={n} />
               <div className="min-w-0">
                 <p
-                  data-testid={`page-item-title-${n}`}
+                  data-testid={`page-title-${n}`}
                   className="font-display text-xs font-bold uppercase tracking-wide text-ink"
                 >
                   {String(n).padStart(2, "0")} — {pageTitle(issue, n)}
