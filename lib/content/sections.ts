@@ -174,12 +174,23 @@ export function sectionsToBlocks(
       personRole: p.personRole.trim() || undefined,
     });
   }
+  // ВАЖНО: пустые абзацы/достижения НЕ фильтруются здесь, в отличие от
+  // фото (где src структурно обязателен). Раньше пустые элементы
+  // отбрасывались прямо тут — но "+ Добавить абзац" сначала добавляет
+  // именно пустой элемент, а любое изменение (включая сам клик "+")
+  // сразу проходит через этот round-trip в реальный Issue. Итог:
+  // только что добавленное пустое поле немедленно пропадало из
+  // sections при следующем blocksToSections, ещё до того, как
+  // пользователь успевал в него что-то напечатать — кнопка "+
+  // Добавить" выглядела нерабочей. Найдено реальным runtime QA
+  // (шаг 12): поле физически не появлялось в браузере. Пустой текст
+  // просто сохраняется как есть; читающие шаблоны (ArticlePhoto и
+  // т.д.) при пустом тексте рендерят пустой <p> — не идеально, но не
+  // ломает вёрстку, и остаётся видимым/редактируемым полем в форме.
   for (const p of sections.paragraphs) {
-    if (!p.text.trim()) continue;
     blocks.push({ id: p.id, type: "text", text: p.text });
   }
   for (const a of sections.achievements) {
-    if (!a.text.trim()) continue;
     blocks.push({ id: a.id, type: "text", text: a.text, variant: "achievement" });
   }
   if (sections.quoteText.trim()) {
