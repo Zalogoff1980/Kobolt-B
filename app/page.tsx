@@ -47,7 +47,7 @@ export default function HomePage() {
         <img
           src="/brand/kobolt-b-logo.png"
           alt="КОБОЛЬТ-Б — конструктор боевого листка танкового батальона"
-          className="h-16 w-auto sm:h-20"
+          className="h-24 w-auto sm:h-32"
         />
 
         <Link
