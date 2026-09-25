@@ -85,9 +85,21 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     <div className="flex h-screen flex-col">
       <EditorTopBar number={issue.number} date={issue.date} saveStatus={saveStatus} />
 
-      <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
+      {/*
+        Mobile (< lg): sidebar и preview складываются друг под другом
+        (flex-col) — их суммарная высота обычно больше экрана, поэтому
+        скроллится ЭТА строка-обёртка целиком (overflow-y-auto), а не
+        обрезается (было overflow-hidden безусловно — на mobile это
+        прятало нижнюю часть формы без возможности докрутить,
+        найдено реальным runtime QA).
+        Desktop (lg:): sidebar и preview стоят бок о бок и делят одну
+        высоту (flex-row) — обёртка снова overflow-hidden, а скролл
+        уходит во внутренние overflow-y-auto/overflow-auto каждого
+        блока по отдельности, как и было раньше.
+      */}
+      <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto lg:flex-row lg:overflow-hidden">
         {/* EDITOR SIDEBAR */}
-        <aside className="w-full flex-shrink-0 overflow-y-auto border-ink/15 bg-paper p-4 lg:w-80 lg:border-r">
+        <aside className="w-full flex-shrink-0 border-ink/15 bg-paper p-4 lg:w-80 lg:overflow-y-auto lg:border-r">
           <PageList issue={issue} activePage={activePage} onSelect={setActivePage} />
 
           <div className="mt-4 border-t border-ink/10 pt-4">
@@ -118,7 +130,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
         </aside>
 
         {/* A4 PREVIEW — целиком масштабируется, пропорция страницы не меняется */}
-        <div className="flex-1 overflow-auto bg-[#4a4a42] p-6">
+        <div className="flex-1 bg-[#4a4a42] p-6 lg:overflow-auto">
           <PagePreviewScaler>
             <A4Page issue={issue} pageNumber={activePage} />
           </PagePreviewScaler>
