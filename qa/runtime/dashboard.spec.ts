@@ -10,7 +10,10 @@ test.describe("dashboard", () => {
     const errors = attachConsoleGuard(page);
     const response = await page.goto("/");
     expect(response?.status(), "Next.js должен ответить 200 на /").toBeLessThan(400);
-    await expect(page.getByText("КОБОЛЬТ-Б")).toBeVisible();
+    // Заголовок теперь — логотип-картинка (временная примерка бренда),
+    // текст "КОБОЛЬТ-Б" сам по себе больше не видимый текстовый узел —
+    // проверяем через alt логотипа, а не через getByText.
+    await expect(page.getByAltText(/КОБОЛЬТ-Б/i)).toBeVisible();
     assertNoConsoleErrors(errors);
   });
 

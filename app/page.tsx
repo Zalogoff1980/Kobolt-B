@@ -35,10 +35,20 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-paper p-8 font-body text-ink">
       <div className="mx-auto max-w-2xl">
-        <h1 className="font-display text-3xl font-bold uppercase tracking-wide">КОБОЛЬТ-Б</h1>
-        <p className="mt-1 text-olive-dim">
-          Конструктор внутреннего боевого листка танкового батальона
-        </p>
+        {/* Временная примерка фирменного логотипа (asset без альфа-канала,
+            фон почти идентичен токену paper — контейнер намеренно не
+            перекрашивается отдельно, дашборд и так на bg-paper, поэтому
+            шов не виден без обработки пикселей самого логотипа).
+            h1 оставлен как sr-only — тот же видимый текст "КОБОЛЬТ-Б",
+            что и раньше, просто не глазами: доступность для скринридеров
+            и не ломает существующую проверку dashboard.spec.ts. */}
+        <h1 className="sr-only">КОБОЛЬТ-Б</h1>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/kobolt-b-logo.png"
+          alt="КОБОЛЬТ-Б — конструктор боевого листка танкового батальона"
+          className="h-16 w-auto sm:h-20"
+        />
 
         <Link
           href="/issues/new"
