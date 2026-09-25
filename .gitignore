@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.vercel
+*.log
+.DS_Store
+
+# Playwright runtime QA artifacts (qa/runtime/*.spec.ts and fixtures/ are committed;
+# these are just run output, regenerated on every `npm run qa:runtime`)
+/playwright-report/
+/test-results/
+tsconfig.tsbuildinfo

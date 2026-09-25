@@ -1,0 +1,88 @@
+import { EngravingTank } from "@/components/decorative/EngravingTank";
+
+type HeroHeadline = { lines: { text: string; accent?: boolean }[] };
+type HeroQuote = { text: string; author?: string };
+
+/**
+ * Главный визуальный блок обложки (ТЗ п.3: "главный визуальный блок").
+ * Фото, заголовок-акцент и цитата — все три опциональны и приходят из
+ * контента конкретного выпуска; ничего здесь не выдумывается, если
+ * материала нет — колонка просто не рендерится и остаётся воздух
+ * (ТЗ п.4).
+ */
+export function HeroMedia({
+  photo,
+  headline,
+  subtitle,
+  quote,
+}: {
+  photo?: { src: string; caption?: string };
+  headline?: HeroHeadline;
+  /** Необязательная вторая строка под главным hero-заголовком (поле
+   *  "Подзаголовок" редактора обложки, шаг 7) — набрана заметно мельче
+   *  и без акцентного цвета, чтобы не спорить с headline. */
+  subtitle?: string;
+  quote?: HeroQuote;
+}) {
+  const hasSideColumn = Boolean(headline || subtitle || quote);
+
+  return (
+    <div className="flex gap-[3mm]" style={{ height: "96mm" }}>
+      <div
+        className={`relative overflow-hidden bg-olive/10 ${hasSideColumn ? "flex-[2.1]" : "flex-1"}`}
+      >
+        {photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photo.src} alt={photo.caption ?? ""} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <EngravingTank className="h-[55%] w-[80%] text-olive/30" />
+          </div>
+        )}
+        {photo?.caption && (
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
+            <p className="font-body text-[7.5px] italic text-paper/90">{photo.caption}</p>
+          </div>
+        )}
+      </div>
+
+      {hasSideColumn && (
+        <div className="flex flex-1 flex-col justify-center gap-[6mm]">
+          {headline && (
+            <h2 className="font-display text-[19px] font-bold uppercase leading-[0.95]">
+              {headline.lines.map((line) => (
+                <span
+                  key={line.text}
+                  className={line.accent ? "text-accent underline decoration-2" : ""}
+                >
+                  {line.text}
+                  <br />
+                </span>
+              ))}
+            </h2>
+          )}
+
+          {subtitle && (
+            <p className="font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim">
+              {subtitle}
+            </p>
+          )}
+
+          {quote && (
+            <div className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]">
+              <span className="font-display text-[16px] leading-none text-accent">“</span>
+              <p className="font-display text-[9px] font-bold uppercase leading-snug">
+                {quote.text}
+              </p>
+              {quote.author && (
+                <p className="mt-[1.5mm] font-body text-[6.5px] uppercase text-olive-dim">
+                  {quote.author}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

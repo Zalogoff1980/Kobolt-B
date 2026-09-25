@@ -1,0 +1,65 @@
+import { Issue } from "@/lib/content/issue";
+import { PageFrame } from "./PageFrame";
+import { CoverV1 } from "@/components/templates/cover/CoverV1";
+import { ArticlePhoto } from "@/components/templates/inner/ArticlePhoto";
+import { PhotoGridText } from "@/components/templates/inner/PhotoGridText";
+import { ThemePhoto } from "@/components/templates/inner/ThemePhoto";
+import { ThemeTextPhotos } from "@/components/templates/inner/ThemeTextPhotos";
+import { PersonFeature } from "@/components/templates/inner/PersonFeature";
+import { TeamFaces } from "@/components/templates/inner/TeamFaces";
+
+/**
+ * Единый источник истины для отображения страницы выпуска (ТЗ п.2).
+ * И Preview (app/issues/[id]/preview), и /api/pdf на шаге 5 рендерят
+ * ИМЕННО этот компонент — никакой отдельной вёрстки для печати не
+ * заводим. Сам компонент не знает про масштабирование экрана или про
+ * Puppeteer: он просто выдаёт физическую страницу 210×297mm.
+ *
+ * Здесь только диспетчеризация по templateId; сама раскладка живёт в
+ * components/templates/<page>/*.
+ */
+export function A4Page({
+  issue,
+  pageNumber,
+}: {
+  issue: Issue;
+  pageNumber: 1 | 2 | 3 | 4;
+}) {
+  const page = issue.pages[pageNumber];
+
+  if (pageNumber === 1 && page.templateId === "cover-v1") {
+    return <CoverV1 issue={issue} />;
+  }
+
+  if (pageNumber === 2 && page.templateId === "article-photo-v1") {
+    return <ArticlePhoto issue={issue} pageNumber={2} />;
+  }
+
+  if (pageNumber === 2 && page.templateId === "photo-grid-v1") {
+    return <PhotoGridText issue={issue} pageNumber={2} />;
+  }
+
+  if (pageNumber === 3 && page.templateId === "theme-photo-v1") {
+    return <ThemePhoto issue={issue} pageNumber={3} />;
+  }
+
+  if (pageNumber === 3 && page.templateId === "theme-text-photos-v1") {
+    return <ThemeTextPhotos issue={issue} pageNumber={3} />;
+  }
+
+  if (pageNumber === 4 && page.templateId === "person-feature-v1") {
+    return <PersonFeature issue={issue} pageNumber={4} />;
+  }
+
+  if (pageNumber === 4 && page.templateId === "team-faces-v1") {
+    return <TeamFaces issue={issue} pageNumber={4} />;
+  }
+  return (
+    <PageFrame>
+      <div className="flex h-full items-center justify-center font-body text-olive-dim">
+        Страница {pageNumber}: шаблон ещё не реализован
+        {page.templateId ? ` (${page.templateId})` : " (не выбран)"}
+      </div>
+    </PageFrame>
+  );
+}

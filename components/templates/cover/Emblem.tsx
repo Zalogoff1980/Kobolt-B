@@ -1,0 +1,43 @@
+type EmblemProps = {
+  /** Реальное изображение эмблемы/герба (загружается в настройках части —
+   *  появится вместе с формой редактирования Issue). Пока не подключено,
+   *  показываем нейтральную рамку-заглушку, а не чужую символику. */
+  imageSrc?: string;
+  label: string;
+  sublabel?: string;
+  shape?: "circle" | "shield";
+};
+
+/**
+ * Слот постоянной символики (ТЗ п.1, п.3: "эмблема/герб... предусмотренную
+ * дизайном"). Реальные знаки различия — не то, что можно достоверно
+ * воспроизвести без официального файла части, поэтому компонент явно
+ * рассчитан на подстановку изображения; без него — опрятная заглушка,
+ * а не попытка нарисовать чужую геральдику "на глаз".
+ */
+export function Emblem({ imageSrc, label, sublabel, shape = "circle" }: EmblemProps) {
+  const frame =
+    shape === "circle" ? "rounded-full" : "rounded-t-full rounded-b-md";
+
+  return (
+    <div className="flex flex-col items-center text-center" style={{ width: "26mm" }}>
+      <div
+        className={`flex h-[20mm] w-[20mm] items-center justify-center border-2 border-ink/70 ${frame} bg-white/40`}
+      >
+        {imageSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageSrc} alt={label} className="h-full w-full object-contain p-1" />
+        ) : (
+          <span className="font-display text-[7px] font-bold uppercase leading-tight text-olive-dim">
+            {label}
+          </span>
+        )}
+      </div>
+      {sublabel && (
+        <p className="mt-[2mm] font-display text-[7.5px] font-bold uppercase leading-tight tracking-wide text-olive">
+          {sublabel}
+        </p>
+      )}
+    </div>
+  );
+}

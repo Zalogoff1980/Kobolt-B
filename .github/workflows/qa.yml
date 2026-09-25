@@ -1,0 +1,45 @@
+name: Runtime QA
+
+# ВАЖНО: этот workflow использует `npm ci`, которому нужен закоммиченный
+# package-lock.json. Сейчас в репозитории его нет (см. README → Runtime QA:
+# lockfile должен быть сгенерирован на машине/CI с доступом к npm registry).
+# До первого `npm install` в сетевом окружении и коммита получившегося
+# package-lock.json шаг "Install dependencies" ниже будет падать —
+# это ожидаемо, а не баг workflow. Как только lockfile появится в
+# репозитории, этот файл рабочий "как есть", без правок.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  runtime-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies (requires committed package-lock.json)
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run runtime QA
+        run: npm run qa:runtime
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

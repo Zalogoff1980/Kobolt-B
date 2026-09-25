@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --font-display / --font-body заданы next/font (Oswald + PT Sans,
+   self-hosted, кириллица) как классы на <html> в app/layout.tsx —
+   здесь их переопределять не нужно. */
+
+body {
+  background-color: #ECE7DA;
+  color: theme("colors.ink");
+}
+
+/* Тёплая бумажная фактура (ТЗ п.1, п.11) — лёгкая диагональная
+   штриховка + затемнение к краям. Значения нарочно едва заметны:
+   фактура не должна мешать читаемости текста и фото. Применяется
+   ко всем PageFrame сразу, а не к каждому шаблону отдельно. */
+.kobolt-page {
+  background-color: theme("colors.paper");
+  background-image:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(22, 21, 17, 0.05) 100%),
+    repeating-linear-gradient(
+      115deg,
+      rgba(22, 21, 17, 0.02) 0px,
+      rgba(22, 21, 17, 0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
