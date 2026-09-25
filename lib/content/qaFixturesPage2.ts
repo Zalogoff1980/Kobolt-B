@@ -35,11 +35,20 @@ function photoSrc(seed: number) {
   );
 }
 
-/** Omit<ContentBlock, "id"> схлопывает union до общих полей (id, type) —
- *  не распределяется по вариантам, поэтому TS не видит text/level/src/etc.
- *  Дженерик T, выводимый из формы аргумента, распределяет Omit правильно. */
-function block<T extends ContentBlock>(b: Omit<T, "id">): T {
-  return { ...b, id: createBlockId() } as T;
+/** Первая попытка (generic T extends ContentBlock c Omit<T,"id"> как типом
+ *  параметра) не работала: TS не всегда выводит конкретный член union из
+ *  объектного литерала, когда Omit стоит прямо в позиции параметра —
+ *  инференс падал обратно на весь ContentBlock, и снова схлопывался до
+ *  общих полей. Рабочий паттерн — перегрузки: каждая заранее сужает
+ *  ContentBlock до одного варианта через Extract ДО применения Omit,
+ *  так что Omit в каждой перегрузке уже не над union, а над обычным
+ *  объектным типом, и работает как обычно. */
+function block(b: Omit<Extract<ContentBlock, { type: "heading" }>, "id">): Extract<ContentBlock, { type: "heading" }>;
+function block(b: Omit<Extract<ContentBlock, { type: "text" }>, "id">): Extract<ContentBlock, { type: "text" }>;
+function block(b: Omit<Extract<ContentBlock, { type: "photo" }>, "id">): Extract<ContentBlock, { type: "photo" }>;
+function block(b: Omit<Extract<ContentBlock, { type: "quote" }>, "id">): Extract<ContentBlock, { type: "quote" }>;
+function block(b: any): ContentBlock {
+  return { ...b, id: createBlockId() };
 }
 
 function buildBlocks(opts: {

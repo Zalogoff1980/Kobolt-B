@@ -21,23 +21,16 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
   );
   const photo = photos[0];
   const quote = quotes[0];
+  // personName/personRole — поля самого фото-блока; без фото им просто
+  // неоткуда взяться, поэтому "кредит" осмыслен только в ветке с фото
+  // ниже (строка ~55). Раньше здесь был ещё и вариант "нет фото, но
+  // есть имя" — компилятор (noUncheckedIndexedAccess + строгая
+  // narrowing) верно доказал, что при !photo это недостижимый код:
+  // personName/personRole взять неоткуда, если photo вообще нет.
   const hasCredit = Boolean(photo?.personName || photo?.personRole);
 
   const textColumn = (
     <div className={photo ? "" : "max-w-[130mm]"}>
-      {!photo && hasCredit && (
-        <div className="mb-[3mm]">
-          {photo?.personName && (
-            <p className="font-display text-[11px] font-bold uppercase">{photo.personName}</p>
-          )}
-          {photo?.personRole && (
-            <p className="mt-[0.5mm] font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
-              {photo.personRole}
-            </p>
-          )}
-        </div>
-      )}
-
       <div className="space-y-[3mm]">
         {paragraphs.map((p) => (
           <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">

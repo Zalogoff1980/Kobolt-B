@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -21,18 +21,18 @@ export function PagePreviewScaler({ children }: { children: React.ReactNode }) {
   const pageHeightPx = A4_HEIGHT_MM * MM_TO_PX;
 
   useEffect(() => {
+    const el = outerRef.current;
     if (!el) return;
-
     const observer = new ResizeObserver((entries) => {
+      // noUncheckedIndexedAccess: entries[0] (и деструктуризация [entry] из
+      // него) типизируется как ResizeObserverEntry | undefined, даже though
+      // ResizeObserver гарантированно вызывает колбэк с непустым массивом.
       const entry = entries[0];
       if (!entry) return;
-
       const available = entry.contentRect.width;
       setScale(Math.min(1, available / pageWidthPx));
     });
-
     observer.observe(el);
-
     return () => observer.disconnect();
   }, [pageWidthPx]);
 
