@@ -12,6 +12,11 @@ export const FIXTURE_PHOTO_B = path.join(__dirname, "fixtures", "tiny-olive.png"
  * только Page API настоящего Playwright-браузера.
  */
 
+/** Отдельный лог ожидаемых network-событий (см. requestfailed ниже) —
+ *  ТЗ шага 10, п.10 просит логировать их отдельно, а не молчать и не
+ *  ронять тест. Тесты этот массив не обязаны проверять. */
+export const benignNetworkNotes: string[] = [];
+
 /** Подключает жёсткий контроль консоли (ТЗ шага 10, п.10): падать на
  *  console.error, pageerror, unhandled rejection и React key/hydration
  *  warnings. Обычные console.warn не считаем ошибкой — это не входит
@@ -39,7 +44,21 @@ export function attachConsoleGuard(page: Page) {
   });
 
   page.on("requestfailed", (req) => {
-    errors.push(`[network-failed] ${req.method()} ${req.url()} — ${req.failure()?.errorText}`);
+    const errorText = req.failure()?.errorText ?? "";
+    // net::ERR_ABORTED на запросах Next.js App Router RSC-префетча
+    // (?_rsc=... от <Link>) — ожидаемое поведение, а не сбой: браузер
+    // сам обрывает фоновый prefetch, если реальная навигация или
+    // перерисовка происходит раньше, чем он успел завершиться. Это
+    // ровно тот "обычный ожидаемый network warning", о котором прямо
+    // говорится в ТЗ шага 10, п.10 — здесь он только логируется
+    // отдельно (реальный network-failed.log ниже никто не проверяет
+    // как жёсткий провал теста), а не роняет assertNoConsoleErrors.
+    const isBenignRscAbort = errorText === "net::ERR_ABORTED" && req.url().includes("_rsc=");
+    if (isBenignRscAbort) {
+      benignNetworkNotes.push(`[rsc-prefetch-aborted] ${req.method()} ${req.url()}`);
+      return;
+    }
+    errors.push(`[network-failed] ${req.method()} ${req.url()} — ${errorText}`);
   });
 
   return errors;
