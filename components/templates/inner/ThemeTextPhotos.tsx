@@ -39,12 +39,14 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
     >
-      <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
-
-      {/* Заголовок → фото/текст уплотнён (единая "плотность как на
-          обложке" для всех внутренних шаблонов) — было 5мм. */}
-      <div className="mt-[4mm] grid grid-cols-[1fr_58mm] items-start gap-[6mm]">
+      {/* Заголовок теперь внутри строки с фото, не отдельным блоком
+          над ней — верх заголовка и верх фото-плёнки совпадают вровень,
+          как на утверждённом макете обложки (QA: "как в утверждённом
+          макете, так и на всех остальных"). Без своего mt- сверху:
+          отступ от шапки уже даёт InnerPageShell. */}
+      <div className="grid grid-cols-[1fr_58mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
+          <ArticleTitle title={title?.text} subtitle={subtitle?.text} showIcon={false} />
           {/* Основной текст/лид — отдельное семантическое поле,
               крупнее и жирнее обычных абзацев. */}
           {lead && (

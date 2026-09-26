@@ -27,15 +27,23 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
     >
-      <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
-
-      {/* Заголовок → фото/текст уплотнён (единая "плотность как на
-          обложке" для всех внутренних шаблонов) — было 5мм. */}
-      <div className="mt-[4mm] grid grid-cols-[1fr_76mm] items-start gap-[6mm]">
+      {/* Заголовок теперь ВНУТРИ строки с фото (не отдельным полноширинным
+          блоком над ней), чтобы верх заголовка и верх фото совпадали
+          вровень — так же, как на утверждённом макете обложки, где
+          hero-заголовок и фото стоят в одной строке (QA: "заголовок
+          начинается хрен пойми как относительно верхнего края
+          изображения... как в утверждённом макете, так и на всех
+          остальных"). showIcon отключена — гравюрная иконка рассчитана
+          на полноширинный заголовок, в узкой колонке она тесна.
+          Без своего mt- сверху: отступ от шапки уже даёт InnerPageShell. */}
+      <div className="grid grid-cols-[1fr_76mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
+          <ArticleTitle title={title?.text} subtitle={subtitle?.text} showIcon={false} />
           {/* Основной текст/лид — типографически крупнее и жирнее
               обычных абзацев, отдельное семантическое поле, а не
-              "первый абзац по счёту" (найденная проблема иерархии). */}
+              "первый абзац по счёту" (найденная проблема иерархии).
+              Отступ от заголовка — тот же space-y-[3mm], что и между
+              остальными элементами колонки. */}
           {lead && (
             <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
               {lead.text}

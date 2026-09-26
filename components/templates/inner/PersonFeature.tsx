@@ -29,9 +29,17 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
   // personName/personRole взять неоткуда, если photo вообще нет.
   const hasCredit = Boolean(photo?.personName || photo?.personRole);
 
+  // Заголовок встроен В текстовую колонку только когда есть фото — так
+  // верх заголовка и верх портрета совпадают вровень, как на
+  // утверждённом макете обложки (QA: "заголовок начинается хрен пойми
+  // как относительно верхнего края изображения... как в утверждённом
+  // макете, так и на всех остальных"). Без фото сравнивать не с чем,
+  // и заголовок остаётся отдельным полноширинным блоком выше (со своей
+  // гравюрной иконкой).
   const textColumn = (
     <div className={photo ? "" : "max-w-[130mm]"}>
       <div className="space-y-[3mm]">
+        {photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} showIcon={false} />}
         {/* Основной текст/лид — отдельное семантическое поле, крупнее
             и жирнее обычных абзацев. */}
         {lead && (
@@ -59,12 +67,10 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
     >
-      <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
+      {!photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} />}
 
-      {/* Заголовок → фото/текст уплотнён (единая "плотность как на
-          обложке" для всех внутренних шаблонов) — было 5мм. */}
       {photo ? (
-        <div className="mt-[4mm] grid grid-cols-[68mm_1fr] items-start gap-[6mm]">
+        <div className="grid grid-cols-[68mm_1fr] items-start gap-[6mm]">
           <div>
             <div data-zone="photo" className="h-[130mm] overflow-hidden bg-olive/10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
