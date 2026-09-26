@@ -8,6 +8,14 @@ export type ContentsEntry = {
    *  как состояние интерфейса, а не как редакционный контент. */
   title?: string;
   thumbnailSrc?: string;
+  /** Первые строки текста материала (лид или первый абзац статьи) —
+   *  превью под заголовком в "В номере" (QA: "после заголовков выводить
+   *  первые три-четыре строчки текста, типа текст превью"). Урезается
+   *  по строкам через line-clamp, а не по числу символов — так длина
+   *  превью не зависит от того, насколько длинные слова попались в
+   *  начале конкретного текста. Необязательно: если у страницы ещё нет
+   *  ни лида, ни абзацев, превью просто не показывается. */
+  previewText?: string;
 };
 
 /** Блок "В НОМЕРЕ" — оглавление, полностью производное от текущего
@@ -44,6 +52,11 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
                 <p className="mt-[1mm] font-display text-[7px] font-bold uppercase text-olive-dim">
                   Стр. {entry.pageNumber}
                 </p>
+                {entry.previewText && (
+                  <p className="mt-[1.5mm] line-clamp-4 font-body text-[7.5px] leading-snug text-ink/80">
+                    {entry.previewText}
+                  </p>
+                )}
               </div>
               {entry.thumbnailSrc && (
                 // Ширина миниатюры подтянута к правому краю hero-фото

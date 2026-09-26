@@ -46,10 +46,16 @@ export function CoverV1({ issue }: { issue: Issue }) {
     .map(([num, page]) => {
       const heading = firstOfType(page.content.blocks, "heading");
       const photo = firstOfType(page.content.blocks, "photo");
+      // Превью-текст под заголовком (QA: "выводить первые три-четыре
+      // строчки текста") — лид статьи, если он есть, иначе первый
+      // обычный абзац; строки уже режутся визуально через line-clamp
+      // в ContentsBlock, а не здесь.
+      const { lead, paragraphs } = groupPageBlocks(page.content.blocks);
       return {
         pageNumber: Number(num),
         title: heading?.text,
         thumbnailSrc: photo?.src,
+        previewText: lead?.text ?? paragraphs[0]?.text,
       };
     });
 
