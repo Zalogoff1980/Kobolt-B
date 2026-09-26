@@ -50,12 +50,12 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
           {/* Основной текст/лид — отдельное семантическое поле,
               крупнее и жирнее обычных абзацев. */}
           {lead && (
-            <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
+            <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
+            <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-[1.6] text-ink/90">
               {p.text}
             </p>
           ))}

@@ -86,7 +86,7 @@ export function HeroMedia({
           {paragraphs && paragraphs.length > 0 && (
             <div className={`space-y-[2mm] ${headline || subtitle ? "mt-[4mm]" : ""}`}>
               {paragraphs.map((p) => (
-                <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
+                <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-[1.6] text-ink/90">
                   {p.text}
                 </p>
               ))}
