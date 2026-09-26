@@ -69,8 +69,9 @@ export function CoverV2({ issue }: { issue: Issue }) {
             почти во всю ширину центральной колонки (QA: "таких же
             размеров хотелось бы добиться"), №/дата — на одной строке
             с подзаголовком, справа (QA: "нравится расположение и
-            размер номер и дата выпуска" в референсе). */}
-        <div className="mt-[5mm] grid grid-cols-[28mm_1fr_28mm] items-start gap-[4mm]">
+            размер номер и дата выпуска" в референсе). Отступы вокруг
+            гербов увеличены (QA: "отступ увеличить"). */}
+        <div className="mt-[7mm] grid grid-cols-[32mm_1fr_32mm] items-start gap-[7mm]">
           <Emblem
             imageSrc="/emblems/emblem-tank-corps.jpg"
             label="Танковые войска"
@@ -81,7 +82,13 @@ export function CoverV2({ issue }: { issue: Issue }) {
           <div className="text-center">
             <h1 className="font-display text-[90px] font-bold uppercase leading-[0.8] tracking-tight">
               <span className="block text-ink">Танковый</span>
-              <span className="block text-olive">Батальон</span>
+              {/* Белый текст на тёмной подложке — как в референсе
+                  (QA: "цвет текста белый, подложка и цвет её как в
+                  образце"); inline-block, а не block на всю ширину,
+                  чтобы подложка облегала именно текст, а не колонку. */}
+              <span className="mt-[1.5mm] inline-block bg-olive px-[4mm] py-[1mm] text-paper">
+                Батальон
+              </span>
             </h1>
 
             <div className="mx-auto mt-[2.5mm] inline-block -rotate-1 bg-accent px-[5mm] py-[1.5mm]">

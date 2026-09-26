@@ -20,19 +20,24 @@ export function Emblem({ imageSrc, label, sublabel, shape = "circle" }: EmblemPr
     shape === "circle" ? "rounded-full" : "rounded-t-full rounded-b-md";
 
   return (
-    <div className="flex flex-col items-center text-center" style={{ width: "26mm" }}>
-      <div
-        className={`flex h-[20mm] w-[20mm] items-center justify-center border-2 border-ink/70 ${frame} bg-white/40`}
-      >
-        {imageSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageSrc} alt={label} className="h-full w-full object-contain p-1" />
-        ) : (
+    <div className="flex flex-col items-center text-center" style={{ width: "32mm" }}>
+      {imageSrc ? (
+        // Реальное изображение герба уже несёт собственную рамку/форму
+        // (нарисована художником) — оборачивать его ещё и в рамку-
+        // заглушку (rounded-full/shield-заглушку) не нужно, получалось
+        // два визуально спорящих контура (найдено QA). Просто крупнее,
+        // ближе к пропорциям референса.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={imageSrc} alt={label} className="h-[30mm] w-[30mm] object-contain" />
+      ) : (
+        <div
+          className={`flex h-[20mm] w-[20mm] items-center justify-center border-2 border-ink/70 ${frame} bg-white/40`}
+        >
           <span className="font-display text-[7px] font-bold uppercase leading-tight text-olive-dim">
             {label}
           </span>
-        )}
-      </div>
+        </div>
+      )}
       {sublabel && (
         <p className="mt-[2mm] font-display text-[7.5px] font-bold uppercase leading-tight tracking-wide text-olive">
           {sublabel}
