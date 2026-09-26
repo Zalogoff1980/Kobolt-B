@@ -46,11 +46,18 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
                 </p>
               </div>
               {entry.thumbnailSrc && (
+                // Ширина миниатюры подтянута к правому краю hero-фото
+                // выше (QA, с размеченными на скриншоте прямоугольниками):
+                // в HeroMedia фото занимает flex-[2.1] из 3.1 суммарных
+                // долей строки — то есть ~66.6% ширины полосы контента,
+                // и заканчивается там же, где должна начинаться миниатюра
+                // здесь. При ширине контента 186мм это ~62мм (было 18мм —
+                // заметно мельче, чем в референсе).
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={entry.thumbnailSrc}
                   alt=""
-                  className="h-[14mm] w-[18mm] flex-shrink-0 object-cover"
+                  className="h-[14mm] w-[62mm] flex-shrink-0 object-cover"
                 />
               )}
             </div>
