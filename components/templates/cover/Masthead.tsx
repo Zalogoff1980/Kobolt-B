@@ -1,5 +1,6 @@
 import { Emblem } from "./Emblem";
 import { IssueMeta } from "./IssueMeta";
+import { EditorialRule } from "@/components/shared/EditorialRule";
 
 const DEFAULT_TAGLINE = ["СИЛА", "В ДВИЖЕНИИ", "ЧЕСТЬ", "БРАТСТВО", "ПОБЕДА"];
 
@@ -29,7 +30,14 @@ export function Masthead({
         ))}
       </div>
 
-      <div className="mt-[3mm] grid grid-cols-[26mm_1fr_26mm] items-start gap-[4mm]">
+      {/* Дивайдер над шапкой — симметрия с тем, что уже есть в макете
+          cover-v2 (найдено QA: "дивайдер, который есть в макете
+          титульный лист, исчез" — здесь, в cover-v1, его не было
+          вовсе). Тот же variant="double", что и обычная тонкая линия
+          на фоновой гравюре практически не видна. */}
+      <EditorialRule variant="double" className="mt-[3mm]" />
+
+      <div className="mt-[5mm] grid grid-cols-[26mm_1fr_26mm] items-start gap-[4mm]">
         <Emblem
           imageSrc="/emblems/emblem-tank-corps.png"
           label="Танковые войска"
@@ -38,9 +46,15 @@ export function Masthead({
         />
 
         <div className="text-center">
-          <h1 className="font-display text-[34px] font-bold uppercase leading-[0.88] tracking-tight">
-            <span className="block text-ink">Танковый</span>
-            <span className="block text-olive">Батальон</span>
+          {/* Заголовок в одну строку, крупнее (QA: "танковый батальон
+              в одну строку... смотрится куцо, увеличить шрифт, чтобы
+              гармонично смотрелось с гербами") — раньше два слова были
+              раздельными блочными строками на 34px, из-за чего заметная
+              часть ширины центральной колонки оставалась пустой рядом
+              с гербами. */}
+          <h1 className="whitespace-nowrap font-display text-[42px] font-bold uppercase leading-none tracking-tight">
+            <span className="text-ink">Танковый</span>{" "}
+            <span className="text-olive">Батальон</span>
           </h1>
 
           <div className="mx-auto mt-[2mm] inline-block -rotate-1 bg-accent px-[4mm] py-[1mm]">
