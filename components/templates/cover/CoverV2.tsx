@@ -135,14 +135,18 @@ export function CoverV2({ issue }: { issue: Issue }) {
 
         {/* №/дата выпуска — по правому краю ВСЕЙ страницы (QA:
             "сориентироваться по правому краю макета"), а не только
-            правого края центральной колонки шапки, как было раньше. */}
-        <div className="mt-[2mm] flex justify-end">
+            правого края центральной колонки шапки, как было раньше.
+            Отступы до сюда и дальше до hero-блока подтянуты (QA:
+            "весь блок нужно подтянуть повыше... снизу освободится
+            воздуха больше") — раньше между шапкой и фото было заметно
+            больше воздуха, чем между остальными блоками страницы. */}
+        <div className="mt-[1mm] flex justify-end">
           <IssueMeta number={issue.number} date={issue.date} />
         </div>
 
-        <EditorialRule variant="double" className="mt-[3mm]" />
+        <EditorialRule variant="double" className="mt-[2mm]" />
 
-        <div className="mt-[4mm]">
+        <div className="mt-[2mm]">
           <HeroMedia
             photo={heroPhoto ? { src: heroPhoto.src, caption: heroPhoto.caption } : undefined}
             headline={
