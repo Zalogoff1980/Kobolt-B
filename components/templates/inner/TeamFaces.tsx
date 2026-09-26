@@ -81,14 +81,23 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
 
         {hasBelowPhotos && (
           <div className="mt-[4mm] flex flex-1 flex-col justify-center">
+            {/* Ширина текста — во всю ширину строки портретов выше, а не
+                уже её (QA: "можно ли текст выровнять по ширине
+                изображения" — портрет(ы) занимают всю ширину контентной
+                колонки через grid выше, а текст был искусственно сужен
+                до 140мм, оставляя лишний воздух справа). Цитата
+                (PullQuote) намеренно остаётся у́же — тот же приём
+                акцентной узкой колонки для цитаты используется во всех
+                внутренних шаблонах (ArticlePhoto/ThemePhoto/
+                PhotoGridText), это не текст статьи. */}
             {lead && (
-              <p data-zone="lead" className="max-w-[140mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
+              <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
                 {lead.text}
               </p>
             )}
 
             {paragraphs.length > 0 && (
-              <div className={`max-w-[140mm] space-y-[3mm] text-[8.5px] leading-relaxed text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+              <div className={`space-y-[3mm] text-[8.5px] leading-relaxed text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
                 {paragraphs.map((p) => (
                   <p key={p.id} data-zone="paragraph" className="font-body">
                     {p.text}
@@ -100,7 +109,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
             {achievements.length > 0 && (
               <div
                 data-zone="achievement"
-                className={`max-w-[140mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}
+                className={lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}
               >
                 <ul className="space-y-[1.5mm]">
                   {achievements.map((a) => (
