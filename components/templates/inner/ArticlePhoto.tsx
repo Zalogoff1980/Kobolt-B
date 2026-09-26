@@ -73,14 +73,23 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               </div>
             )}
           </div>
+
+          {/* Текстовый блок под фото (QA, скриншот: "в таком лэйауте
+              неуместное пустое место" — фото фиксированной высоты
+              150мм, а строка грида растягивается по более высокой
+              текстовой колонке слева, из-за чего под фото справа
+              оставалось пустое поле до конца страницы). Цитата теперь
+              размещается прямо здесь, а не отдельным полноширинным
+              блоком под всей раскладкой — так место под фото занято
+              содержанием, а не пустотой. Если цитаты нет, колонка
+              просто заканчивается на фото — ничего не выдумываем. */}
+          {quote && hasBodyText && (
+            <div className="mt-[4mm]">
+              <PullQuote text={quote.text} author={quote.author} />
+            </div>
+          )}
         </div>
       </div>
-
-      {quote && hasBodyText && (
-        <div className="mt-[4mm] max-w-[100mm]">
-          <PullQuote text={quote.text} author={quote.author} />
-        </div>
-      )}
     </InnerPageShell>
   );
 }
