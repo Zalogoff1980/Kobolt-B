@@ -58,8 +58,8 @@ export async function launchPdfBrowser(): Promise<Browser> {
       "Не найден исполняемый файл Chromium для локального PDF-рендера. " +
         "Установите переменную окружения PUPPETEER_EXECUTABLE_PATH, указав на " +
         "уже установленный Chromium (например, путь Playwright из " +
-        "`~/.cache/ms-playwright/chromium-*/chrome-linux/chrome` после " +
-        "`npx playwright install chromium`), либо системный google-chrome/chromium."
+        "'~/.cache/ms-playwright/chromium-*/chrome-linux/chrome' после " +
+        "'npx playwright install chromium'), либо системный google-chrome/chromium."
     );
   }
 
