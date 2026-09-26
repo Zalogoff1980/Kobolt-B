@@ -19,7 +19,11 @@ export function NewsBlock({ rawText }: { rawText?: string | null }) {
 
   return (
     <div data-zone="news">
-      <div className="bg-olive px-[3mm] py-[1.5mm]">
+      {/* Фирменный красный (bg-accent) — тот же акцентный цвет, что и
+          плашка "Боевой листок" в шапке (Masthead.tsx), а не оливковый,
+          как у соседнего "В номере" (QA: "подложку блока новостей
+          выполнить фирменным красным, как под Боевой листок"). */}
+      <div className="bg-accent px-[3mm] py-[1.5mm]">
         <span className="font-display text-[10px] font-bold uppercase tracking-wide text-paper">
           Новости
         </span>
