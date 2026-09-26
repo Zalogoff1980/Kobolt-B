@@ -84,10 +84,10 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
         </ul>
       </div>
 
-      <div className="grid grid-cols-2 content-center gap-[5mm]">
+      <div className="grid grid-cols-2 content-center gap-[4mm]">
         {entries.map((entry, i) => (
           <div key={entry.pageNumber} className={isLastOdd(i) ? "col-span-2" : ""}>
-            <div className="h-[36mm] overflow-hidden bg-olive/10">
+            <div className="h-[28mm] overflow-hidden bg-olive/10">
               {entry.thumbnailSrc && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

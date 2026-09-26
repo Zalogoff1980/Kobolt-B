@@ -53,15 +53,19 @@ export function CoverV2({ issue }: { issue: Issue }) {
 
   return (
     <PageFrame backgroundEngravingId={issue.pages[1].backgroundEngravingId}>
-      <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[8mm]">
+      <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[6mm]">
         {/* Верхний дивайдер — симметрия с двойной линейкой ПОСЛЕ шапки
             (QA: "сверху разместить дивайдер... получается небольшой
             разброд"); без него блок тег-лайн+шапка висел у самого
-            верха страницы ничем не отделённый. */}
-        <EditorialRule />
+            верха страницы ничем не отделённый. Тот же variant="double",
+            что и внизу шапки — обычная тонкая линия (variant по
+            умолчанию, 1px 25%-непрозрачности) на фоновой гравюре и
+            текстуре бумаги оказалась практически незаметна (QA: "не
+            вижу дивайдер"). */}
+        <EditorialRule variant="double" />
 
         {/* Тег-лайн */}
-        <div className="mt-[4mm] flex items-center justify-center gap-[2mm] font-display text-[7px] font-bold uppercase tracking-[0.2em] text-olive-dim">
+        <div className="mt-[3mm] flex items-center justify-center gap-[2mm] font-display text-[7px] font-bold uppercase tracking-[0.2em] text-olive-dim">
           {TAGLINE.map((word, i) => (
             <span key={word} className="flex items-center gap-[2mm]">
               {i > 0 && <span className="text-accent">•</span>}
@@ -82,7 +86,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             больше не "проседает" вниз с воздухом сверху. Отступ перед
             блоком увеличен (QA: "спустить ниже") — раньше шапка шла
             почти вплотную за тег-лайном. */}
-        <div className="mt-[10mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
+        <div className="mt-[8mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
           <Emblem
             imageSrc="/emblems/emblem-tank-corps.png"
             label="Танковые войска"
@@ -129,13 +133,13 @@ export function CoverV2({ issue }: { issue: Issue }) {
         {/* №/дата выпуска — по правому краю ВСЕЙ страницы (QA:
             "сориентироваться по правому краю макета"), а не только
             правого края центральной колонки шапки, как было раньше. */}
-        <div className="mt-[3mm] flex justify-end">
+        <div className="mt-[2mm] flex justify-end">
           <IssueMeta number={issue.number} date={issue.date} />
         </div>
 
-        <EditorialRule variant="double" className="mt-[4mm]" />
+        <EditorialRule variant="double" className="mt-[3mm]" />
 
-        <div className="mt-[5mm]">
+        <div className="mt-[4mm]">
           <HeroMedia
             photo={heroPhoto ? { src: heroPhoto.src, caption: heroPhoto.caption } : undefined}
             headline={
@@ -149,13 +153,13 @@ export function CoverV2({ issue }: { issue: Issue }) {
           />
         </div>
 
-        <EditorialRule className="mt-[5mm]" />
+        <EditorialRule className="mt-[4mm]" />
 
-        <div className="mt-[5mm] flex-1">
+        <div className="mt-[4mm] flex-1">
           <ContentsGrid issue={issue} />
         </div>
 
-        <p className="mt-[3mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
+        <p className="mt-[2mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
           {CLOSING_LINE}
         </p>
       </div>
