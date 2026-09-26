@@ -1,6 +1,7 @@
 import { Issue } from "@/lib/content/issue";
 import { PageFrame } from "./PageFrame";
 import { CoverV1 } from "@/components/templates/cover/CoverV1";
+import { CoverV2 } from "@/components/templates/cover/CoverV2";
 import { ArticlePhoto } from "@/components/templates/inner/ArticlePhoto";
 import { PhotoGridText } from "@/components/templates/inner/PhotoGridText";
 import { ThemePhoto } from "@/components/templates/inner/ThemePhoto";
@@ -29,6 +30,10 @@ export function A4Page({
 
   if (pageNumber === 1 && page.templateId === "cover-v1") {
     return <CoverV1 issue={issue} />;
+  }
+
+  if (pageNumber === 1 && page.templateId === "cover-v2") {
+    return <CoverV2 issue={issue} />;
   }
 
   if (pageNumber === 2 && page.templateId === "article-photo-v1") {

@@ -1,7 +1,10 @@
 /** Доступные шаблоны по номеру страницы (ТЗ шага 7, п.4) — источник
  *  истины для TemplatePicker и для проверки "шаблон существует". */
 export const TEMPLATE_OPTIONS: Record<1 | 2 | 3 | 4, { id: string; label: string }[]> = {
-  1: [{ id: "cover-v1", label: "Обложка" }],
+  1: [
+    { id: "cover-v1", label: "Обложка" },
+    { id: "cover-v2", label: "Боевой листок" },
+  ],
   2: [
     { id: "article-photo-v1", label: "Статья + большое фото" },
     { id: "photo-grid-v1", label: "Несколько фото + текст" },
