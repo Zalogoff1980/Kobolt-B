@@ -1,5 +1,6 @@
 import { Issue } from "@/lib/content/issue";
 import { ContentBlock } from "@/lib/content/types";
+import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { PageFrame } from "@/components/canvas/PageFrame";
 import { EngravingTank } from "@/components/decorative/EngravingTank";
 import { Masthead } from "./Masthead";
@@ -32,6 +33,12 @@ export function CoverV1({ issue }: { issue: Issue }) {
   const heroSubtitle = coverBlocks.find((b) => b.type === "heading" && b.level === 3) as
     | Extract<ContentBlock, { type: "heading" }>
     | undefined;
+  // Текстовый блок hero-колонки (тот же источник данных, что и у
+  // cover-v2) — раньше не передавался сюда вовсе, из-за чего при
+  // переключении шаблона страницы 1 с cover-v2 на cover-v1 введённый
+  // оператором текст визуально "исчезал", хотя данные не терялись
+  // (баг найден QA: "переключил макет... текстовый блок исчез").
+  const { paragraphs } = groupPageBlocks(coverBlocks);
 
   const contentsEntries: ContentsEntry[] = Object.entries(issue.pages)
     .filter(([num]) => num !== "1")
@@ -72,6 +79,7 @@ export function CoverV1({ issue }: { issue: Issue }) {
                 : undefined
             }
             subtitle={heroSubtitle?.text}
+            paragraphs={paragraphs}
             quote={heroQuote ? { text: heroQuote.text, author: heroQuote.author } : undefined}
           />
         </div>

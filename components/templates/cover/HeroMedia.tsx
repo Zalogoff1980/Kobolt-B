@@ -56,14 +56,11 @@ export function HeroMedia({
       </div>
 
       {hasSideColumn && (
-        <div className="flex flex-1 flex-col justify-center gap-[6mm]">
+        <div className="flex flex-1 flex-col justify-center gap-0">
           {headline && (
             <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[1.15]">
               {headline.lines.map((line) => (
-                <span
-                  key={line.text}
-                  className={line.accent ? "text-accent underline decoration-2" : ""}
-                >
+                <span key={line.text} className={line.accent ? "text-accent" : ""}>
                   {line.text}
                   <br />
                 </span>
@@ -71,14 +68,23 @@ export function HeroMedia({
             </h2>
           )}
 
+          {/* Подзаголовок подтянут к заголовку (QA: "под заголовок
+              поднять вверх на 6-8 пикселей... чтобы соблюдалась
+              единство блока") — было плоское gap-[6mm] на всей
+              колонке, теперь у каждого элемента свой отступ сверху. */}
           {subtitle && (
-            <p data-zone="h2" className="font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim">
+            <p
+              data-zone="h2"
+              className={`font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim ${
+                headline ? "mt-[4mm]" : ""
+              }`}
+            >
               {subtitle}
             </p>
           )}
 
           {paragraphs && paragraphs.length > 0 && (
-            <div className="space-y-[2mm]">
+            <div className={`space-y-[2mm] ${headline || subtitle ? "mt-[4mm]" : ""}`}>
               {paragraphs.map((p) => (
                 <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
                   {p.text}
@@ -88,7 +94,12 @@ export function HeroMedia({
           )}
 
           {quote && (
-            <div data-zone="quote" className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]">
+            <div
+              data-zone="quote"
+              className={`border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm] ${
+                headline || subtitle || (paragraphs && paragraphs.length > 0) ? "mt-[6mm]" : ""
+              }`}
+            >
               <span className="font-display text-[16px] leading-none text-accent">“</span>
               <p className="font-display text-[9px] font-bold uppercase leading-snug">
                 {quote.text}
