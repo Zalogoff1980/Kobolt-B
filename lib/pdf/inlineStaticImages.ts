@@ -44,7 +44,13 @@ export async function inlineEngravingImages(html: string): Promise<string> {
   const matches = Array.from(html.matchAll(/src="(\/engravings\/[^"]+)"/g));
   if (matches.length === 0) return html;
 
-  const uniquePaths = Array.from(new Set(matches.map((m) => m[1])));
+  // m[1] is the regex's own capture group — always present whenever the
+  // overall match succeeds, but tsconfig's noUncheckedIndexedAccess
+  // still widens indexed access to `string | undefined`, so filter with
+  // an explicit type guard instead of a non-null assertion.
+  const uniquePaths = Array.from(
+    new Set(matches.map((m) => m[1]).filter((p): p is string => typeof p === "string"))
+  );
   const entries = await Promise.all(
     uniquePaths.map(async (p) => {
       if (!cache.has(p)) cache.set(p, readAsDataUrl(p));
