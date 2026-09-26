@@ -43,7 +43,7 @@ export function ParagraphsEditor({
 
   return (
     <div className="space-y-3">
-      <SectionHeading>Текст статьи</SectionHeading>
+      <SectionHeading zone="paragraph">Текст статьи</SectionHeading>
       {paragraphs.map((p, i) => (
         <div key={p.id} data-testid="paragraph-item" data-block-id={p.id} className="space-y-1">
           <TextArea

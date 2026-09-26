@@ -30,7 +30,12 @@ export function Masthead({
       </div>
 
       <div className="mt-[3mm] grid grid-cols-[26mm_1fr_26mm] items-start gap-[4mm]">
-        <Emblem label="Танковые войска" sublabel="Броня соединяет людей" shape="circle" />
+        <Emblem
+          imageSrc="/emblems/emblem-tank-corps.jpg"
+          label="Танковые войска"
+          sublabel="Броня соединяет людей"
+          shape="circle"
+        />
 
         <div className="text-center">
           <h1 className="font-display text-[34px] font-bold uppercase leading-[0.88] tracking-tight">
@@ -53,7 +58,12 @@ export function Masthead({
           </div>
         </div>
 
-        <Emblem label="Часть" sublabel="Вместе к новым победам" shape="shield" />
+        <Emblem
+          imageSrc="/emblems/emblem-shavlinsky.jpg"
+          label="Шавлинский полк"
+          sublabel="Вместе к новым победам"
+          shape="shield"
+        />
       </div>
     </header>
   );

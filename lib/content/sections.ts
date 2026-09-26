@@ -113,11 +113,17 @@ export function blocksToSections(
     };
   }
 
-  // Обложка: отдельная структура, без H1/лида/абзацев по смыслу.
+  // Обложка: отдельная структура, без H1/лида по смыслу — но
+  // произвольный текстовый блок (paragraphs) обложке ЕСТЬ смысл иметь
+  // (найдено QA: hero-колонка выглядит пусто, когда нет цитаты и мало
+  // материала) — это та же зона "paragraph", что и на внутренних
+  // страницах, просто отдельная обложечная раскладка (cover-v2) сама
+  // решает, где и как её показать (см. HeroMedia/CoverV2).
   let title = "";
   let titleId: string | undefined;
   let subtitle = "";
   let subtitleId: string | undefined;
+  const paragraphs: PageSections["paragraphs"] = [];
   const photos: PageSections["photos"] = [];
   let quoteText = "";
   let quoteAuthor = "";
@@ -146,6 +152,9 @@ export function blocksToSections(
         personName: b.personName ?? "",
         personRole: b.personRole ?? "",
       });
+    if (b.type === "text" && (!b.variant || b.variant === "paragraph")) {
+      paragraphs.push({ id: b.id, text: b.text });
+    }
     if (b.type === "quote") {
       quoteText = b.text;
       quoteAuthor = b.author ?? "";
@@ -159,7 +168,7 @@ export function blocksToSections(
     subtitle,
     subtitleId,
     lead: "",
-    paragraphs: [],
+    paragraphs,
     achievements: [],
     photos,
     quoteText,

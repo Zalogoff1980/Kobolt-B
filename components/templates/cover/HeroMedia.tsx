@@ -2,6 +2,7 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
 
 type HeroHeadline = { lines: { text: string; accent?: boolean }[] };
 type HeroQuote = { text: string; author?: string };
+type HeroParagraph = { id: string; text: string };
 
 /**
  * Главный визуальный блок обложки (ТЗ п.3: "главный визуальный блок").
@@ -14,6 +15,7 @@ export function HeroMedia({
   photo,
   headline,
   subtitle,
+  paragraphs,
   quote,
 }: {
   photo?: { src: string; caption?: string };
@@ -22,9 +24,15 @@ export function HeroMedia({
    *  "Подзаголовок" редактора обложки, шаг 7) — набрана заметно мельче
    *  и без акцентного цвета, чтобы не спорить с headline. */
   subtitle?: string;
+  /** Текстовый блок hero-колонки (найдено QA: без него колонка
+   *  выглядит пустой, если материала мало и нет цитаты) — та же зона
+   *  "paragraph", что и обычный абзац статьи на внутренних страницах,
+   *  просто отрисован в hero-раскладке обложки. Необязателен —
+   *  cover-v1 его не передаёт вовсе, вид не меняется. */
+  paragraphs?: HeroParagraph[];
   quote?: HeroQuote;
 }) {
-  const hasSideColumn = Boolean(headline || subtitle || quote);
+  const hasSideColumn = Boolean(headline || subtitle || (paragraphs && paragraphs.length > 0) || quote);
 
   return (
     <div className="flex gap-[3mm]" style={{ height: "96mm" }}>
@@ -50,7 +58,7 @@ export function HeroMedia({
       {hasSideColumn && (
         <div className="flex flex-1 flex-col justify-center gap-[6mm]">
           {headline && (
-            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[0.95]">
+            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[1.15]">
               {headline.lines.map((line) => (
                 <span
                   key={line.text}
@@ -67,6 +75,16 @@ export function HeroMedia({
             <p data-zone="h2" className="font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim">
               {subtitle}
             </p>
+          )}
+
+          {paragraphs && paragraphs.length > 0 && (
+            <div className="space-y-[2mm]">
+              {paragraphs.map((p) => (
+                <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
+                  {p.text}
+                </p>
+              ))}
+            </div>
           )}
 
           {quote && (

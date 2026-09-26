@@ -30,14 +30,14 @@ export function InnerPageForm({
     <div className="space-y-5">
       <div className="space-y-2">
         <SectionHeading>Заголовок</SectionHeading>
-        <Field label="Заголовок (H1)">
+        <Field label="Заголовок" zone="h1">
           <TextInput
             data-testid="field-title"
             value={sections.title}
             onChange={(e) => onChange({ ...sections, title: e.target.value })}
           />
         </Field>
-        <Field label="Подзаголовок (H2)">
+        <Field label="Подзаголовок" zone="h2">
           <TextInput
             data-testid="field-subtitle"
             value={sections.subtitle}
@@ -47,7 +47,7 @@ export function InnerPageForm({
       </div>
 
       <div className="space-y-2">
-        <SectionHeading>Основной текст</SectionHeading>
+        <SectionHeading zone="lead">Основной текст</SectionHeading>
         <Field label="Вводный абзац (лид)">
           <TextArea
             data-testid="field-lead"

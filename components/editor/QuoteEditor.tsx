@@ -23,7 +23,7 @@ export function QuoteEditor({
   if (!expanded) {
     return (
       <div className="space-y-2">
-        <SectionHeading>Цитата</SectionHeading>
+        <SectionHeading zone="quote">Цитата</SectionHeading>
         <SmallButton data-testid="add-quote-button" onClick={() => setExpanded(true)}>
           + Добавить цитату
         </SmallButton>
@@ -33,7 +33,7 @@ export function QuoteEditor({
 
   return (
     <div className="space-y-2">
-      <SectionHeading>Цитата</SectionHeading>
+      <SectionHeading zone="quote">Цитата</SectionHeading>
       <Field label="Текст цитаты">
         <TextArea
           data-testid="field-quote-text"

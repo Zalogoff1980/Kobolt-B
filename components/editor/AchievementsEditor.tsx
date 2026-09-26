@@ -28,7 +28,7 @@ export function AchievementsEditor({
 
   return (
     <div className="space-y-2">
-      <SectionHeading>Достижения и награды</SectionHeading>
+      <SectionHeading zone="achievement">Достижения и награды</SectionHeading>
       {achievements.map((a) => (
         <div key={a.id} data-testid="achievement-item" data-block-id={a.id} className="flex gap-1">
           <TextInput

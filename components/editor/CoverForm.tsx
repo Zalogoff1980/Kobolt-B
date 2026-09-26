@@ -4,6 +4,7 @@ import { Issue } from "@/lib/content/issue";
 import { PageSections } from "@/lib/content/sections";
 import { TextInput, Field, SectionHeading } from "./fields";
 import { PhotosEditor } from "./PhotosEditor";
+import { ParagraphsEditor } from "./ParagraphsEditor";
 import { QuoteEditor } from "./QuoteEditor";
 
 /**
@@ -53,7 +54,7 @@ export function CoverForm({
 
       <div className="space-y-2">
         <SectionHeading>Главный материал обложки</SectionHeading>
-        <Field label="Главный заголовок (hero)">
+        <Field label="Главный заголовок (hero)" zone="h1">
           <TextInput
             data-testid="field-title"
             value={sections.title}
@@ -61,7 +62,7 @@ export function CoverForm({
             placeholder="Готовы выполнить задачу в любых условиях"
           />
         </Field>
-        <Field label="Подзаголовок">
+        <Field label="Подзаголовок" zone="h2">
           <TextInput
             data-testid="field-subtitle"
             value={sections.subtitle}
@@ -74,6 +75,15 @@ export function CoverForm({
         photos={sections.photos}
         maxCount={1}
         onChange={(photos) => onSectionsChange({ ...sections, photos })}
+      />
+
+      {/* Текстовый блок hero-колонки обложки (найдено QA: без текста,
+          если материала мало, а нет цитаты, колонка выглядит пусто) —
+          та же зона "paragraph", что и обычный текст статьи, просто
+          читается шаблоном обложки отдельно от cover-v1 (см. CoverV2). */}
+      <ParagraphsEditor
+        paragraphs={sections.paragraphs}
+        onChange={(paragraphs) => onSectionsChange({ ...sections, paragraphs })}
       />
 
       <QuoteEditor

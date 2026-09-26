@@ -1,16 +1,41 @@
 "use client";
 
 import { ReactNode } from "react";
+import { ZONE_LABELS } from "./guides/ContentZoneOverlay";
 
 /** Общие примитивы полей редактора — единообразный минималистичный
  *  вид форм, без превращения интерфейса в "конструктор дизайна" (ТЗ
  *  шага 7, п.5: "не превращать каждый декоративный элемент в поле"). */
 
-export function Field({ label, children }: { label: string; children: ReactNode }) {
+/** Маленькая метка зоны (H1/H2/ЛИД/ФОТО/ЦИТАТА/…) — те же подписи, что
+ *  рисует ContentZoneOverlay поверх превью (см. ZONE_LABELS), поэтому
+ *  оператор может напрямую сопоставить поле формы с блоком на
+ *  странице, а не гадать по названию поля. */
+function ZoneTag({ zone }: { zone: string }) {
+  return (
+    <span className="ml-2 rounded-hairline border border-olive-dim/40 px-1 py-0.5 font-display text-[7px] font-bold uppercase tracking-wide text-olive-dim">
+      {ZONE_LABELS[zone] ?? zone.toUpperCase()}
+    </span>
+  );
+}
+
+export function Field({
+  label,
+  zone,
+  children,
+}: {
+  label: string;
+  /** data-zone этого поля на самой странице (см. ContentZoneOverlay) —
+   *  необязателен: не у каждого поля формы есть зона (например, номер
+   *  выпуска или дата — это не Content Zone, а метаданные). */
+  zone?: string;
+  children: ReactNode;
+}) {
   return (
     <label className="block">
       <span className="font-display text-[10px] font-bold uppercase tracking-wide text-olive">
         {label}
+        {zone && <ZoneTag zone={zone} />}
       </span>
       <div className="mt-1">{children}</div>
     </label>
@@ -51,10 +76,11 @@ export function SmallButton({
   );
 }
 
-export function SectionHeading({ children }: { children: ReactNode }) {
+export function SectionHeading({ children, zone }: { children: ReactNode; zone?: string }) {
   return (
-    <h3 className="border-b border-ink/10 pb-1 font-display text-xs font-bold uppercase tracking-wide text-ink">
+    <h3 className="flex items-center border-b border-ink/10 pb-1 font-display text-xs font-bold uppercase tracking-wide text-ink">
       {children}
+      {zone && <ZoneTag zone={zone} />}
     </h3>
   );
 }

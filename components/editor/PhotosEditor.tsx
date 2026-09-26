@@ -51,7 +51,7 @@ export function PhotosEditor({
 
   return (
     <div className="space-y-3">
-      <SectionHeading>Фотографии</SectionHeading>
+      <SectionHeading zone="photo">Фотографии</SectionHeading>
       {photos.map((p) => (
         <div key={p.id} data-testid="photo-item" data-block-id={p.id} className="space-y-1.5 rounded-container border border-ink/10 p-2">
           <div className="flex items-center gap-2">
