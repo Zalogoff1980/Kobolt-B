@@ -67,11 +67,14 @@ export function CoverV2({ issue }: { issue: Issue }) {
         {/* Шапка — крупнее, чем у cover-v1: заголовок издания несёт
             основной визуальный вес страницы (по макету). Заголовок
             почти во всю ширину центральной колонки (QA: "таких же
-            размеров хотелось бы добиться"), №/дата — на одной строке
-            с подзаголовком, справа (QA: "нравится расположение и
-            размер номер и дата выпуска" в референсе). Отступы вокруг
-            гербов увеличены (QA: "отступ увеличить"). */}
-        <div className="mt-[7mm] grid grid-cols-[32mm_1fr_32mm] items-start gap-[7mm]">
+            размеров хотелось бы добиться"). Отступы вокруг гербов
+            увеличены (QA: "отступ увеличить"); оба герба одного
+            размера (QA: "приведи этот герб по размеру с предыдущим")
+            и выровнены строго по верхней границе — items-start плюс
+            сами PNG обрезаны по непрозрачной области (без внутренних
+            прозрачных полей вокруг рисунка), поэтому object-contain
+            больше не "проседает" вниз с воздухом сверху. */}
+        <div className="mt-[7mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
           <Emblem
             imageSrc="/emblems/emblem-tank-corps.png"
             label="Танковые войска"
@@ -81,13 +84,16 @@ export function CoverV2({ issue }: { issue: Issue }) {
           />
 
           <div className="text-center">
-            <h1 className="font-display text-[90px] font-bold uppercase leading-[0.8] tracking-tight">
-              <span className="block text-ink">Танковый</span>
-              {/* Белый текст на тёмной подложке — как в референсе
-                  (QA: "цвет текста белый, подложка и цвет её как в
-                  образце"); inline-block, а не block на всю ширину,
-                  чтобы подложка облегала именно текст, а не колонку. */}
-              <span className="mt-[1.5mm] inline-block bg-olive px-[4mm] py-[1mm] text-paper">
+            <h1 className="font-display uppercase tracking-tight">
+              <span className="block text-[90px] font-bold leading-[0.8] text-ink">Танковый</span>
+              {/* Белый текст на тёмной подложке — как в референсе (QA:
+                  "цвет текста белый, подложка и цвет её как в образце").
+                  Кегль чуть меньше первой строки и запас паддинга внутри
+                  плашки (QA: "чуть меньше размер и чтобы не сливался с
+                  границей подложки") — иначе буквы упирались в край
+                  оливкового фона. inline-block, а не block на всю
+                  ширину, чтобы подложка облегала именно текст. */}
+              <span className="mt-[2mm] inline-block bg-olive px-[6mm] py-[2mm] text-[76px] font-bold leading-[0.85] text-paper">
                 Батальон
               </span>
             </h1>
@@ -98,20 +104,25 @@ export function CoverV2({ issue }: { issue: Issue }) {
               </span>
             </div>
 
-            <div className="mt-[2.5mm] flex items-baseline justify-between gap-[4mm]">
-              <p className="font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
-                Внутреннее издание танкового батальона
-              </p>
-              <IssueMeta number={issue.number} date={issue.date} />
-            </div>
+            <p className="mt-[2.5mm] font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
+              Внутреннее издание танкового батальона
+            </p>
           </div>
 
           <Emblem
-            imageSrc="/emblems/emblem-shavlinsky.jpg"
+            imageSrc="/emblems/emblem-shavlinsky.png"
             label="Шавлинский полк"
             sublabel="Вместе к новым победам"
             shape="shield"
+            sizeMm={33}
           />
+        </div>
+
+        {/* №/дата выпуска — по правому краю ВСЕЙ страницы (QA:
+            "сориентироваться по правому краю макета"), а не только
+            правого края центральной колонки шапки, как было раньше. */}
+        <div className="mt-[3mm] flex justify-end">
+          <IssueMeta number={issue.number} date={issue.date} />
         </div>
 
         <EditorialRule variant="double" className="mt-[4mm]" />

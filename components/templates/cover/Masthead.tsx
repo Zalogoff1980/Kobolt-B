@@ -59,7 +59,7 @@ export function Masthead({
         </div>
 
         <Emblem
-          imageSrc="/emblems/emblem-shavlinsky.jpg"
+          imageSrc="/emblems/emblem-shavlinsky.png"
           label="Шавлинский полк"
           sublabel="Вместе к новым победам"
           shape="shield"
