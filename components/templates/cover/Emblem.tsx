@@ -36,7 +36,7 @@ export function Emblem({ imageSrc, label, sublabel, shape = "circle", sizeMm = 3
         <img
           src={imageSrc}
           alt={label}
-          className="object-contain"
+          className="object-contain opacity-70"
           style={{ height: `${sizeMm}mm`, width: `${sizeMm}mm` }}
         />
       ) : (
