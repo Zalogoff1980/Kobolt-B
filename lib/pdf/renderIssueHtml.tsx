@@ -1,4 +1,3 @@
-import { renderToStaticMarkup } from "react-dom/server";
 import { Issue } from "@/lib/content/issue";
 import { A4Page } from "@/components/canvas/A4Page";
 import { buildTailwindCssForHtml } from "./buildTailwindCss";
@@ -19,6 +18,19 @@ import { getEmbeddedFontCss } from "./googleFonts";
  * лишней 5-й пустой страницы.
  */
 export async function renderIssueHtml(issue: Issue): Promise<string> {
+  // Динамический import(), а не статический `import ... from
+  // "react-dom/server"` вверху файла: Next.js App Router статически
+  // анализирует граф модулей под app/ и lib/ и жёстко запрещает
+  // ЛЮБОЙ статический импорт react-dom/server где бы то ни было в
+  // этом дереве ("You're importing a component that imports
+  // react-dom/server...") — это ограничение относится и к обычным
+  // Route Handler'ам, не только к клиентским компонентам. Реальная
+  // сборка на Vercel упала именно на этом (см. build log). Динамический
+  // import(), выполняемый только в рантайме внутри функции, не виден
+  // статическому трассировщику Next — стандартный обход для случаев
+  // "SSR внутри Route Handler" (PDF/email-рендер и т.п.).
+  const { renderToStaticMarkup } = await import("react-dom/server");
+
   const pagesMarkup = ([1, 2, 3, 4] as const)
     .map((n, i) => {
       const inner = renderToStaticMarkup(<A4Page issue={issue} pageNumber={n} />);
