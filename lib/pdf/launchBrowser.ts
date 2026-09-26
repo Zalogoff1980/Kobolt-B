@@ -25,7 +25,12 @@ export async function launchPdfBrowser(): Promise<Browser> {
     const chromium = (await import("@sparticuz/chromium")).default;
     return puppeteer.launch({
       args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
+      // A4Page's own CSS fixes each page at 210mm x 297mm regardless of
+      // viewport size, and route.ts prints via page.pdf() rather than a
+      // screenshot, so the actual viewport dimensions don't affect the
+      // output — no need to set one explicitly. (The 141.x release of
+      // this package also dropped the old `chromium.defaultViewport`
+      // property this used to read.)
       executablePath: await chromium.executablePath(),
       headless: true,
     });
