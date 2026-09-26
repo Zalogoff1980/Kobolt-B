@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Issue } from "@/lib/content/issue";
 import { OVERFLOW_MESSAGE } from "./guides/ContentZoneOverlay";
+import { prepareIssueForPdf } from "@/lib/pdf/prepareIssueForPdf";
 
 /**
  * "Скачать PDF" (ТЗ шага PDF, п.13). Работает и на desktop, и на
@@ -38,12 +39,24 @@ export function DownloadPdfButton({
     setState("loading");
     setErrorMessage(null);
     try {
+      // Vercel's serverless functions have a hard ~4.5MB request-body
+      // limit — real photos at full IndexedDB resolution can exceed
+      // that across 4 pages, producing a 413 before route.ts even
+      // runs. Shrink a *copy* of the issue for this one request only;
+      // IndexedDB and the live preview keep the originals untouched.
+      const pdfIssue = await prepareIssueForPdf(issue);
       const res = await fetch("/api/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(issue),
+        body: JSON.stringify(pdfIssue),
       });
       if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error(
+            "Фото в выпуске слишком большие даже после сжатия — уменьшите " +
+              "количество или разрешение фотографий и попробуйте снова."
+          );
+        }
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? `Сервер вернул ошибку ${res.status}`);
       }
