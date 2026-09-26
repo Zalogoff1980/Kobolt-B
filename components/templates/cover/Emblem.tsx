@@ -6,6 +6,11 @@ type EmblemProps = {
   label: string;
   sublabel?: string;
   shape?: "circle" | "shield";
+  /** Размер изображения герба в мм (только когда есть imageSrc) —
+   *  по умолчанию 30мм; временный per-instance override для QA-примерки
+   *  разного размера конкретного герба (пока размеры левого/правого
+   *  не унифицированы окончательно). */
+  sizeMm?: number;
 };
 
 /**
@@ -15,7 +20,7 @@ type EmblemProps = {
  * рассчитан на подстановку изображения; без него — опрятная заглушка,
  * а не попытка нарисовать чужую геральдику "на глаз".
  */
-export function Emblem({ imageSrc, label, sublabel, shape = "circle" }: EmblemProps) {
+export function Emblem({ imageSrc, label, sublabel, shape = "circle", sizeMm = 30 }: EmblemProps) {
   const frame =
     shape === "circle" ? "rounded-full" : "rounded-t-full rounded-b-md";
 
@@ -28,7 +33,12 @@ export function Emblem({ imageSrc, label, sublabel, shape = "circle" }: EmblemPr
         // два визуально спорящих контура (найдено QA). Просто крупнее,
         // ближе к пропорциям референса.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageSrc} alt={label} className="h-[30mm] w-[30mm] object-contain" />
+        <img
+          src={imageSrc}
+          alt={label}
+          className="object-contain"
+          style={{ height: `${sizeMm}mm`, width: `${sizeMm}mm` }}
+        />
       ) : (
         <div
           className={`flex h-[20mm] w-[20mm] items-center justify-center border-2 border-ink/70 ${frame} bg-white/40`}

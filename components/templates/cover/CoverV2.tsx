@@ -73,10 +73,11 @@ export function CoverV2({ issue }: { issue: Issue }) {
             гербов увеличены (QA: "отступ увеличить"). */}
         <div className="mt-[7mm] grid grid-cols-[32mm_1fr_32mm] items-start gap-[7mm]">
           <Emblem
-            imageSrc="/emblems/emblem-tank-corps.jpg"
+            imageSrc="/emblems/emblem-tank-corps.png"
             label="Танковые войска"
             sublabel="Броня соединяет людей"
             shape="circle"
+            sizeMm={33}
           />
 
           <div className="text-center">

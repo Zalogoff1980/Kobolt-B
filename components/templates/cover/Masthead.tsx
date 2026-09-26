@@ -31,7 +31,7 @@ export function Masthead({
 
       <div className="mt-[3mm] grid grid-cols-[26mm_1fr_26mm] items-start gap-[4mm]">
         <Emblem
-          imageSrc="/emblems/emblem-tank-corps.jpg"
+          imageSrc="/emblems/emblem-tank-corps.png"
           label="Танковые войска"
           sublabel="Броня соединяет людей"
           shape="circle"
