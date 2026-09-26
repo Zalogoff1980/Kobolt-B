@@ -29,14 +29,23 @@ export function NewsBlock({ rawText }: { rawText?: string | null }) {
         </span>
       </div>
 
-      <ul className="mt-[3mm] space-y-[2mm]">
+      {/* Раньше — плоский список, одна строка = одна новость (QA:
+          "плохо смотрится"). Теперь сетка в 2 колонки, каждая новость —
+          с крупным акцентным номером и тонкой линейкой сверху, тот же
+          язык, что и у пронумерованных записей "В номере" рядом — а не
+          безликий список тире. */}
+      <div className="mt-[3mm] grid grid-cols-2 gap-x-[6mm] gap-y-[3mm]">
         {items.map((text, i) => (
-          <li key={i} className="flex items-baseline gap-[2mm] font-body text-[8.5px] leading-relaxed text-ink/90">
-            <span className="flex-shrink-0 text-accent">—</span>
-            <span>{text}</span>
-          </li>
+          <div key={i} className="border-t border-ink/15 pt-[2mm]">
+            <div className="flex items-start gap-[2mm]">
+              <span className="flex-shrink-0 font-display text-[13px] font-bold leading-none text-accent">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <p className="font-body text-[8px] leading-snug text-ink/90">{text}</p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
