@@ -56,7 +56,6 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
   const { title, subtitle, lead, paragraphs, photos, quotes, birthdays } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
-  const quote = quotes[0];
   const { cols, heightMm } = gridLayout(photos.length);
   const isTwoColumnLayout = photos.length === 2;
 
@@ -128,9 +127,11 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                     ))}
                   </div>
                 )}
-                {quote && (
-                  <div className={lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}>
-                    <PullQuote text={quote.text} author={quote.author} />
+                {quotes.length > 0 && (
+                  <div className={`space-y-[3mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
+                    {quotes.map((q) => (
+                      <PullQuote key={q.id} text={q.text} author={q.author} />
+                    ))}
                   </div>
                 )}
               </div>
@@ -237,9 +238,11 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             </div>
           )}
 
-          {quote && (
-            <div className={`max-w-[110mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
-              <PullQuote text={quote.text} author={quote.author} />
+          {quotes.length > 0 && (
+            <div className={`max-w-[110mm] space-y-[3mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
+              {quotes.map((q) => (
+                <PullQuote key={q.id} text={q.text} author={q.author} />
+              ))}
             </div>
           )}
         </div>

@@ -29,7 +29,6 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
     issue.pages[pageNumber].content.blocks
   );
   const railPhotos = photos.slice(0, 3);
-  const quote = quotes[0];
   const photoHeight = railPhotoHeight(railPhotos.length);
 
   return (
@@ -59,7 +58,13 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
               {p.text}
             </p>
           ))}
-          {quote && <PullQuote text={quote.text} author={quote.author} />}
+          {quotes.length > 0 && (
+            <div className="space-y-[3mm]">
+              {quotes.map((q) => (
+                <PullQuote key={q.id} text={q.text} author={q.author} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div data-zone="photo" className="space-y-[3mm]">

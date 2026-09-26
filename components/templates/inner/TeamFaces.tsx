@@ -32,9 +32,9 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
     issue.pages[pageNumber].content.blocks
   );
   const faces = photos.slice(0, 3);
-  const quote = quotes[0];
   const heightMm = photoHeightMm(faces.length);
-  const hasBelowPhotos = Boolean(lead) || paragraphs.length > 0 || achievements.length > 0 || Boolean(quote);
+  const hasBelowPhotos =
+    Boolean(lead) || paragraphs.length > 0 || achievements.length > 0 || quotes.length > 0;
 
   return (
     <InnerPageShell
@@ -130,13 +130,15 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
               </div>
             )}
 
-            {quote && (
+            {quotes.length > 0 && (
               <div
-                className={`max-w-[110mm] ${
+                className={`max-w-[110mm] space-y-[3mm] ${
                   lead || paragraphs.length > 0 || achievements.length > 0 ? "mt-[4mm]" : ""
                 }`}
               >
-                <PullQuote text={quote.text} author={quote.author} />
+                {quotes.map((q) => (
+                  <PullQuote key={q.id} text={q.text} author={q.author} />
+                ))}
               </div>
             )}
           </div>

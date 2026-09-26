@@ -24,7 +24,11 @@ function firstOfType<T extends ContentBlock["type"]>(
 export function CoverV1({ issue }: { issue: Issue }) {
   const coverBlocks = issue.pages[1].content.blocks;
   const heroPhoto = firstOfType(coverBlocks, "photo");
-  const heroQuote = firstOfType(coverBlocks, "quote");
+  // Сколько угодно цитат (QA: "дать возможность добавлять такой блок
+  // сколько нужно" — раньше читалась только первая, firstOfType).
+  const heroQuotes = coverBlocks.filter(
+    (b): b is Extract<ContentBlock, { type: "quote" }> => b.type === "quote"
+  );
   // Обложка не использует H1 (он зарезервирован под заголовок статьи
   // внутренних страниц) — здесь level 2 это главный hero-заголовок,
   // level 3 — подзаголовок под ним (поля редактора, шаг 7).
@@ -87,7 +91,7 @@ export function CoverV1({ issue }: { issue: Issue }) {
             }
             subtitle={heroSubtitle?.text}
             paragraphs={paragraphs}
-            quote={heroQuote ? { text: heroQuote.text, author: heroQuote.author } : undefined}
+            quotes={heroQuotes.map((q) => ({ id: q.id, text: q.text, author: q.author }))}
           />
         </div>
 

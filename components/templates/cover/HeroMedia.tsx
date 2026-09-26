@@ -1,7 +1,7 @@
 import { EngravingTank } from "@/components/decorative/EngravingTank";
 
 type HeroHeadline = { lines: { text: string; accent?: boolean }[] };
-type HeroQuote = { text: string; author?: string };
+type HeroQuote = { id: string; text: string; author?: string };
 type HeroParagraph = { id: string; text: string };
 
 /**
@@ -16,7 +16,7 @@ export function HeroMedia({
   headline,
   subtitle,
   paragraphs,
-  quote,
+  quotes,
 }: {
   photo?: { src: string; caption?: string };
   headline?: HeroHeadline;
@@ -30,9 +30,13 @@ export function HeroMedia({
    *  просто отрисован в hero-раскладке обложки. Необязателен —
    *  cover-v1 его не передаёт вовсе, вид не меняется. */
   paragraphs?: HeroParagraph[];
-  quote?: HeroQuote;
+  /** Сколько угодно цитат (QA: "дать возможность добавлять такой блок
+   *  сколько нужно" — раньше была ровно одна). */
+  quotes?: HeroQuote[];
 }) {
-  const hasSideColumn = Boolean(headline || subtitle || (paragraphs && paragraphs.length > 0) || quote);
+  const hasSideColumn = Boolean(
+    headline || subtitle || (paragraphs && paragraphs.length > 0) || (quotes && quotes.length > 0)
+  );
 
   return (
     <div className="flex gap-[3mm]" style={{ height: "96mm" }}>
@@ -93,22 +97,30 @@ export function HeroMedia({
             </div>
           )}
 
-          {quote && (
+          {quotes && quotes.length > 0 && (
             <div
-              data-zone="quote"
-              className={`border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm] ${
+              className={`space-y-[3mm] ${
                 headline || subtitle || (paragraphs && paragraphs.length > 0) ? "mt-[6mm]" : ""
               }`}
             >
-              <span className="font-display text-[16px] leading-none text-accent">“</span>
-              <p className="font-display text-[9px] font-bold uppercase leading-snug">
-                {quote.text}
-              </p>
-              {quote.author && (
-                <p className="mt-[1.5mm] font-body text-[6.5px] uppercase text-olive-dim">
-                  {quote.author}
-                </p>
-              )}
+              {quotes.map((quote) => (
+                // Кавычка убрана (QA: "убрать в нём кавычки") — акцентная
+                // левая линия border-accent уже маркирует блок как цитату.
+                <div
+                  key={quote.id}
+                  data-zone="quote"
+                  className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]"
+                >
+                  <p className="font-display text-[9px] font-bold uppercase leading-snug">
+                    {quote.text}
+                  </p>
+                  {quote.author && (
+                    <p className="mt-[1.5mm] font-body text-[6.5px] uppercase text-olive-dim">
+                      {quote.author}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>

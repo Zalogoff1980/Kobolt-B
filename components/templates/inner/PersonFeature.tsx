@@ -20,7 +20,6 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
-  const quote = quotes[0];
   // personName/personRole — поля самого фото-блока; без фото им просто
   // неоткуда взяться, поэтому "кредит" осмыслен только в ветке с фото
   // ниже (строка ~55). Раньше здесь был ещё и вариант "нет фото, но
@@ -52,9 +51,11 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
         ))}
       </div>
 
-      {quote && (
-        <div className="mt-[4mm]">
-          <PullQuote text={quote.text} author={quote.author} />
+      {quotes.length > 0 && (
+        <div className="mt-[4mm] space-y-[3mm]">
+          {quotes.map((q) => (
+            <PullQuote key={q.id} text={q.text} author={q.author} />
+          ))}
         </div>
       )}
     </div>

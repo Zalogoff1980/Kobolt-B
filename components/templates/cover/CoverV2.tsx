@@ -38,7 +38,11 @@ function firstOfType<T extends ContentBlock["type"]>(
 export function CoverV2({ issue }: { issue: Issue }) {
   const coverBlocks = issue.pages[1].content.blocks;
   const heroPhoto = firstOfType(coverBlocks, "photo");
-  const heroQuote = firstOfType(coverBlocks, "quote");
+  // Сколько угодно цитат (QA: "дать возможность добавлять такой блок
+  // сколько нужно" — раньше читалась только первая, firstOfType).
+  const heroQuotes = coverBlocks.filter(
+    (b): b is Extract<ContentBlock, { type: "quote" }> => b.type === "quote"
+  );
   const heroHeading = coverBlocks.find((b) => b.type === "heading" && b.level === 2) as
     | Extract<ContentBlock, { type: "heading" }>
     | undefined;
@@ -157,7 +161,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             }
             subtitle={heroSubtitle?.text}
             paragraphs={paragraphs}
-            quote={heroQuote ? { text: heroQuote.text, author: heroQuote.author } : undefined}
+            quotes={heroQuotes.map((q) => ({ id: q.id, text: q.text, author: q.author }))}
           />
         </div>
 

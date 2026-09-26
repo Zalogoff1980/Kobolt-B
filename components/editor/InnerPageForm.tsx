@@ -88,11 +88,8 @@ export function InnerPageForm({
       )}
 
       <QuoteEditor
-        text={sections.quoteText}
-        author={sections.quoteAuthor}
-        onChange={({ text, author }) =>
-          onChange({ ...sections, quoteText: text, quoteAuthor: author })
-        }
+        quotes={sections.quotes}
+        onChange={(quotes) => onChange({ ...sections, quotes })}
       />
     </div>
   );

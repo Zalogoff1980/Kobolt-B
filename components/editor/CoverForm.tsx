@@ -92,11 +92,8 @@ export function CoverForm({
       />
 
       <QuoteEditor
-        text={sections.quoteText}
-        author={sections.quoteAuthor}
-        onChange={({ text, author }) =>
-          onSectionsChange({ ...sections, quoteText: text, quoteAuthor: author })
-        }
+        quotes={sections.quotes}
+        onChange={(quotes) => onSectionsChange({ ...sections, quotes })}
       />
 
       {/* Блок "Новости" под списком "В номере" — сырой многострочный

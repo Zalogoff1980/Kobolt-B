@@ -17,7 +17,6 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
-  const quote = quotes[0];
   const hasBodyText = Boolean(lead) || paragraphs.length > 0;
 
   return (
@@ -54,7 +53,13 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               {p.text}
             </p>
           ))}
-          {quote && !hasBodyText && <PullQuote text={quote.text} author={quote.author} />}
+          {quotes.length > 0 && !hasBodyText && (
+            <div className="space-y-[3mm]">
+              {quotes.map((q) => (
+                <PullQuote key={q.id} text={q.text} author={q.author} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
@@ -83,9 +88,11 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               блоком под всей раскладкой — так место под фото занято
               содержанием, а не пустотой. Если цитаты нет, колонка
               просто заканчивается на фото — ничего не выдумываем. */}
-          {quote && hasBodyText && (
-            <div className="mt-[4mm]">
-              <PullQuote text={quote.text} author={quote.author} />
+          {quotes.length > 0 && hasBodyText && (
+            <div className="mt-[4mm] space-y-[3mm]">
+              {quotes.map((q) => (
+                <PullQuote key={q.id} text={q.text} author={q.author} />
+              ))}
             </div>
           )}
         </div>

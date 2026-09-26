@@ -33,13 +33,15 @@ import { groupPageBlocks } from "./pageBlocks";
  * структура (ветка titleLevel===2 ниже). lead для обложки всегда
  * пустой и не сохраняется.
  *
- * Стабильность id (шаг 8, п.13–14): title/subtitle/lead/quote — это
- * ровно один блок каждый, но у них тоже есть свой ContentBlock.id, и
- * он должен переживать редактирование текста, а не пересоздаваться
- * на каждое нажатие клавиши. Поэтому секция хранит titleId/subtitleId/
- * leadId/quoteId — id существующего блока, если он был, иначе
- * undefined до первого sectionsToBlocks (там для него генерируется id
- * один раз).
+ * Стабильность id (шаг 8, п.13–14): title/subtitle/lead — это ровно
+ * один блок каждый, но у них тоже есть свой ContentBlock.id, и он
+ * должен переживать редактирование текста, а не пересоздаваться на
+ * каждое нажатие клавиши. Поэтому секция хранит titleId/subtitleId/
+ * leadId — id существующего блока, если он был, иначе undefined до
+ * первого sectionsToBlocks (там для него генерируется id один раз).
+ * quotes — уже список (сколько угодно цитат), поэтому каждая запись
+ * несёт свой id прямо в себе, тем же приёмом, что paragraphs/
+ * achievements/birthdays.
  */
 export type PageSections = {
   title: string;
@@ -64,9 +66,11 @@ export type PageSections = {
     personName: string;
     personRole: string;
   }[];
-  quoteText: string;
-  quoteAuthor: string;
-  quoteId?: string;
+  /** Цитаты страницы — сколько угодно (QA: "дать возможность добавлять
+   *  такой блок сколько нужно"; раньше — не больше одной, все шаблоны
+   *  читали только quotes[0]/firstOfType). Тот же список-паттерн, что
+   *  и у paragraphs/achievements/birthdays. */
+  quotes: { id: string; text: string; author: string }[];
 };
 
 export function emptySections(): PageSections {
@@ -78,8 +82,7 @@ export function emptySections(): PageSections {
     achievements: [],
     birthdays: [],
     photos: [],
-    quoteText: "",
-    quoteAuthor: "",
+    quotes: [],
   };
 }
 
@@ -118,9 +121,7 @@ export function blocksToSections(
         personName: p.personName ?? "",
         personRole: p.personRole ?? "",
       })),
-      quoteText: g.quotes[0]?.text ?? "",
-      quoteAuthor: g.quotes[0]?.author ?? "",
-      quoteId: g.quotes[0]?.id,
+      quotes: g.quotes.map((q) => ({ id: q.id, text: q.text, author: q.author ?? "" })),
     };
   }
 
@@ -136,9 +137,7 @@ export function blocksToSections(
   let subtitleId: string | undefined;
   const paragraphs: PageSections["paragraphs"] = [];
   const photos: PageSections["photos"] = [];
-  let quoteText = "";
-  let quoteAuthor = "";
-  let quoteId: string | undefined;
+  const quotes: PageSections["quotes"] = [];
   let titleFound = false;
   let subtitleFound = false;
 
@@ -167,9 +166,7 @@ export function blocksToSections(
       paragraphs.push({ id: b.id, text: b.text });
     }
     if (b.type === "quote") {
-      quoteText = b.text;
-      quoteAuthor = b.author ?? "";
-      quoteId = b.id;
+      quotes.push({ id: b.id, text: b.text, author: b.author ?? "" });
     }
   }
 
@@ -183,9 +180,7 @@ export function blocksToSections(
     achievements: [],
     birthdays: [],
     photos,
-    quoteText,
-    quoteAuthor,
-    quoteId,
+    quotes,
   };
 }
 
@@ -262,12 +257,16 @@ export function sectionsToBlocks(
       message: b.message.trim() || undefined,
     });
   }
-  if (sections.quoteText.trim()) {
+  // Как и абзацы/достижения — пустой текст не фильтруется здесь (см.
+  // комментарий выше про paragraphs): "+ Добавить цитату" сначала
+  // добавляет пустую запись, и она должна остаться видимой/
+  // редактируемой формой, а не исчезать при следующей пересборке.
+  for (const q of sections.quotes) {
     blocks.push({
-      id: sections.quoteId ?? createBlockId(),
+      id: q.id,
       type: "quote",
-      text: sections.quoteText,
-      author: sections.quoteAuthor.trim() || undefined,
+      text: q.text,
+      author: q.author.trim() || undefined,
     });
   }
 

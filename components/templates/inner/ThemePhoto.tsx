@@ -24,7 +24,6 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
-  const quote = quotes[0];
 
   return (
     <InnerPageShell
@@ -71,9 +70,11 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
             </div>
           )}
 
-          {quote && (
-            <div className={`max-w-[110mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
-              <PullQuote text={quote.text} author={quote.author} />
+          {quotes.length > 0 && (
+            <div className={`max-w-[110mm] space-y-[3mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
+              {quotes.map((q) => (
+                <PullQuote key={q.id} text={q.text} author={q.author} />
+              ))}
             </div>
           )}
         </div>
