@@ -51,7 +51,7 @@ export function ParagraphsEditor({
             value={p.text}
             onChange={(e) => update(p.id, e.target.value)}
             rows={3}
-            placeholder="Абзац текста…"
+            placeholder="Текст…"
           />
           <div className="flex gap-1">
             <SmallButton data-testid="paragraph-move-up" onClick={() => move(i, -1)} disabled={i === 0}>
@@ -65,13 +65,13 @@ export function ParagraphsEditor({
               ↓
             </SmallButton>
             <SmallButton data-testid="paragraph-remove" onClick={() => remove(p.id)}>
-              Удалить абзац
+              Удалить текст
             </SmallButton>
           </div>
         </div>
       ))}
       <SmallButton data-testid="paragraph-add" onClick={add}>
-        + Добавить абзац
+        + Добавить текст
       </SmallButton>
     </div>
   );
