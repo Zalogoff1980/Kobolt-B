@@ -61,7 +61,14 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
   const isTwoColumnLayout = photos.length === 2;
 
   if (isTwoColumnLayout) {
-    const [photoLeft, photoRight] = photos;
+    // noUncheckedIndexedAccess считает элементы деструктуризации массива
+    // потенциально undefined даже после проверки photos.length === 2
+    // строкой выше (найдено сборкой на Vercel: "'photoLeft' is possibly
+    // 'undefined'") — используем photos[0]/photos[1] напрямую с
+    // ненулевым утверждением, а не деструктуризацию: длина уже
+    // гарантирована isTwoColumnLayout.
+    const photoLeft = photos[0]!;
+    const photoRight = photos[1]!;
 
     return (
       <InnerPageShell
