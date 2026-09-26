@@ -49,7 +49,13 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
   const isLastOdd = (i: number) => i === entries.length - 1 && entries.length % 2 === 1;
 
   return (
-    <div className="grid h-full grid-cols-[42mm_1fr] gap-[6mm]">
+    // Без h-full: у cover-v2 теперь под этим блоком идёт ещё и
+    // NewsBlock (см. CoverV2.tsx) — если ContentsGrid растягивался бы
+    // на всю оставшуюся высоту сам по себе, месту для новостей ниже
+    // просто неоткуда было бы взяться. Без h-full сетка занимает
+    // столько высоты, сколько требует её реальное содержимое (grid и
+    // так выравнивает обе колонки по высоте между собой).
+    <div className="grid grid-cols-[42mm_1fr] gap-[6mm]">
       <div>
         <h3 className="font-display text-[15px] font-bold uppercase leading-none tracking-wide text-olive">
           В номере:

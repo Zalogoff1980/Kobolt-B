@@ -7,6 +7,7 @@ import { IssueMeta } from "./IssueMeta";
 import { EditorialRule } from "@/components/shared/EditorialRule";
 import { HeroMedia } from "./HeroMedia";
 import { ContentsGrid } from "./ContentsGrid";
+import { NewsBlock } from "./NewsBlock";
 
 const TAGLINE = ["СИЛА", "В ДВИЖЕНИИ", "ЧЕСТЬ", "БРАТСТВО", "ПОБЕДА"];
 const CLOSING_LINE = "Там, где другие останавливаются, танкисты идут вперёд.";
@@ -164,6 +165,16 @@ export function CoverV2({ issue }: { issue: Issue }) {
 
         <div className="mt-[4mm] flex-1">
           <ContentsGrid issue={issue} />
+          {/* Блок "Новости" — тот же самый компонент, что и у cover-v1
+              (Issue.coverNews не привязан к конкретному шаблону обложки).
+              Раньше рендерился только в CoverV1 — при переключении
+              шаблона страницы 1 на cover-v2 введённые новости "исчезали"
+              (тот же класс бага, что уже был с текстовым блоком hero-
+              колонки: cover-уровневые поля должны читаться ОБОИМИ
+              шаблонами обложки, иначе смена варианта теряет контент). */}
+          <div className="mt-[5mm]">
+            <NewsBlock rawText={issue.coverNews} />
+          </div>
         </div>
 
         <p className="mt-[2mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
