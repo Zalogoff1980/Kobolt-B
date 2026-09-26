@@ -2,7 +2,7 @@
 
 import { Issue } from "@/lib/content/issue";
 import { PageSections } from "@/lib/content/sections";
-import { TextInput, Field, SectionHeading } from "./fields";
+import { TextInput, TextArea, Field, SectionHeading } from "./fields";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { QuoteEditor } from "./QuoteEditor";
@@ -28,7 +28,7 @@ export function CoverForm({
 }: {
   issue: Issue;
   sections: PageSections;
-  onIssueMetaChange: (patch: { number?: string; date?: string }) => void;
+  onIssueMetaChange: (patch: { number?: string; date?: string; coverNews?: string | null }) => void;
   onSectionsChange: (next: PageSections) => void;
 }) {
   return (
@@ -93,6 +93,26 @@ export function CoverForm({
           onSectionsChange({ ...sections, quoteText: text, quoteAuthor: author })
         }
       />
+
+      {/* Блок "Новости" под списком "В номере" — сырой многострочный
+          текст: каждая строка (после Enter) становится отдельной
+          короткой новостью при отрисовке (см. NewsBlock.tsx). Одно
+          текстовое поле, а не список с "+ Добавить" — по просьбе
+          оператора ("одним текстом с несколькими переносами сделаем в
+          несколько абзацев"), сюда обычно вписывают 3–4 короткие
+          заметки. Не часть sections/PageContent — отдельное поле
+          выпуска (см. Issue.coverNews), поэтому меняется через
+          onIssueMetaChange, а не onSectionsChange. */}
+      <div className="space-y-2">
+        <SectionHeading zone="news">Новости</SectionHeading>
+        <TextArea
+          data-testid="field-cover-news"
+          value={issue.coverNews ?? ""}
+          onChange={(e) => onIssueMetaChange({ coverNews: e.target.value })}
+          rows={5}
+          placeholder={"Каждая строка — отдельная новость.\nНапример:\nБатальон занял 1-е место на учениях.\nПрибыло новое пополнение техники."}
+        />
+      </div>
     </div>
   );
 }

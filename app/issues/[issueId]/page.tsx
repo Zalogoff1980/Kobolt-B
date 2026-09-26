@@ -97,7 +97,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     });
   }
 
-  function handleIssueMetaChange(patch: { number?: string; date?: string }) {
+  function handleIssueMetaChange(patch: { number?: string; date?: string; coverNews?: string | null }) {
     persist({ ...issue!, ...patch });
   }
 

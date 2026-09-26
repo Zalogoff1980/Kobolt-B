@@ -49,6 +49,17 @@ export type Issue = {
    *  тематическая страница (3), "Лица батальона" (4) — все 4 страницы
    *  выпуска по ТЗ. */
   pages: Record<PageNumber, PageState>;
+  /** Блок "Новости" на обложке (cover-v1) — короткие заметки под
+   *  списком "В номере" (найдено QA: "разместим блок новости... одним
+   *  текстом с несколькими переносами сделаем в несколько абзацев").
+   *  Намеренно НЕ часть ContentBlock/PageContent страницы 1 — это не
+   *  редакционный материал конкретной страницы, а отдельный
+   *  элемент оформления обложки, поэтому живёт как отдельное поле
+   *  выпуска, не завязанное на групировку/шаблоны блоков. Хранится как
+   *  сырой текст: каждая непустая строка — одна новость, разбиение при
+   *  отрисовке (см. NewsBlock.tsx). Опционально — старые Issue без
+   *  этого поля остаются валидными без миграции. */
+  coverNews?: string | null;
 };
 
 export function createIssue(params: { number: string; date: string }): Issue {
@@ -60,6 +71,7 @@ export function createIssue(params: { number: string; date: string }): Issue {
     status: "draft",
     createdAt: now,
     updatedAt: now,
+    coverNews: null,
     pages: {
       1: { content: emptyPageContent(1), templateId: "cover-v1" },
       2: { content: emptyPageContent(2), templateId: null },

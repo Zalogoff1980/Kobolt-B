@@ -52,12 +52,14 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
                 // долей строки — то есть ~66.6% ширины полосы контента,
                 // и заканчивается там же, где должна начинаться миниатюра
                 // здесь. При ширине контента 186мм это ~62мм (было 18мм —
-                // заметно мельче, чем в референсе).
+                // заметно мельче, чем в референсе). Высота увеличена с
+                // 14мм до 30мм отдельным QA-шагом (было "смотрится очень
+                // узко, нехорошо").
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={entry.thumbnailSrc}
                   alt=""
-                  className="h-[14mm] w-[62mm] flex-shrink-0 object-cover"
+                  className="h-[30mm] w-[62mm] flex-shrink-0 object-cover"
                 />
               )}
             </div>

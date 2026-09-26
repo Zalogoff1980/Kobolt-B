@@ -7,6 +7,7 @@ import { Masthead } from "./Masthead";
 import { EditorialRule } from "@/components/shared/EditorialRule";
 import { HeroMedia } from "./HeroMedia";
 import { ContentsBlock, ContentsEntry } from "./ContentsBlock";
+import { NewsBlock } from "./NewsBlock";
 
 function firstOfType<T extends ContentBlock["type"]>(
   blocks: ContentBlock[],
@@ -88,6 +89,13 @@ export function CoverV1({ issue }: { issue: Issue }) {
 
         <div className="mt-[4mm] flex-1">
           <ContentsBlock entries={contentsEntries} />
+          {/* Блок "Новости" — под списком "В номере", во всю ширину
+              (QA: "синий прямоугольничек, туда мы разместим блок
+              новости"). Рендерится только когда текст заполнен —
+              иначе ничего не добавляет к пустой странице. */}
+          <div className="mt-[5mm]">
+            <NewsBlock rawText={issue.coverNews} />
+          </div>
         </div>
       </div>
     </PageFrame>

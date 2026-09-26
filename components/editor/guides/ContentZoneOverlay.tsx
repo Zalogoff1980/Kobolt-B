@@ -44,6 +44,7 @@ export const ZONE_LABELS: Record<string, string> = {
   caption: "ПОДПИСЬ",
   quote: "ЦИТАТА",
   achievement: "ДОСТИЖЕНИЯ",
+  news: "НОВОСТИ",
 };
 
 export const OVERFLOW_MESSAGE =
