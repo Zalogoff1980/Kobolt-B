@@ -44,12 +44,12 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               Отступ от заголовка — тот же space-y-[3mm], что и между
               остальными элементами колонки. */}
           {lead && (
-            <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-[1.6] text-ink/90">
+            <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.6] text-ink/90">
               {p.text}
             </p>
           ))}

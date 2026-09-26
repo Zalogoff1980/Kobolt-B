@@ -42,10 +42,10 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
         {/* Основной текст/лид — отдельное семантическое поле, крупнее
             и жирнее обычных абзацев. */}
         {lead && (
-          <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-[1.6] text-ink">{lead.text}</p>
+          <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">{lead.text}</p>
         )}
         {paragraphs.map((p) => (
-          <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-[1.6] text-ink/90">
+          <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.6] text-ink/90">
             {p.text}
           </p>
         ))}
