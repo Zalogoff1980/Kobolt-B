@@ -6,6 +6,12 @@ import {
   CoverEngraving03,
   CoverEngraving04,
 } from "./coverArt";
+import {
+  Page2Engraving01,
+  Page2Engraving02,
+  Page2Engraving03,
+  Page2Engraving04,
+} from "./page2Art";
 
 export type MotifComponent = ComponentType<{ className?: string }>;
 
@@ -23,11 +29,21 @@ export type EngravingOption = { id: string; label: string; kind: EngravingKind }
  * гравюры сопоставлен с компонентом и с тем, для какой страницы он
  * доступен — BackgroundEngraving и EngravingPicker оба читают отсюда.
  *
- * Сейчас реализовано намеренно только 4 варианта для Page 1 (обложка),
- * предоставленные пользователем напрямую — полная библиотека ~16
- * абстрактных line-art мотивов (components/decorative/engravings/motifs.tsx)
- * подготовлена в коде для будущих страниц 2–4, но пока сознательно НЕ
+ * Реализовано: 4 варианта для Page 1 (обложка) и 4 варианта для Page 2
+ * ("История") — оба набора предоставлены пользователем напрямую, как
+ * готовые полноразмерные A4 иллюстрации (public/engravings/*.jpg), а
+ * не собраны из отдельных элементов. Полная библиотека ~16 абстрактных
+ * line-art мотивов (components/decorative/engravings/motifs.tsx)
+ * подготовлена в коде для страниц 3–4, но пока сознательно НЕ
  * подключена сюда и нигде не выбирается (следующий этап).
+ *
+ * Page 2 получает ровно тот же kind: "cover-art" (полноразмерная
+ * иллюстрация, opacity-25 — см. BackgroundEngraving.tsx), что и Page 1
+ * (QA: "про прозрачность так же, как и на странице 1") — kind не
+ * привязан к конкретной странице, он просто описывает, ЧТО это за
+ * изображение (полноразмерная композиция vs мелкая line-art иконка),
+ * поэтому единственное, что нужно было сделать для одинаковой
+ * прозрачности — использовать тот же kind, а не копировать стили.
  */
 export const ENGRAVING_OPTIONS_BY_PAGE: Record<PageNumber, EngravingOption[]> = {
   1: [
@@ -36,7 +52,12 @@ export const ENGRAVING_OPTIONS_BY_PAGE: Record<PageNumber, EngravingOption[]> = 
     { id: "cover-engraving-03", label: "Вариант 3 — танк на марше", kind: "cover-art" },
     { id: "cover-engraving-04", label: "Вариант 4 — колонна и чертежи", kind: "cover-art" },
   ],
-  2: [],
+  2: [
+    { id: "page2-engraving-01", label: "Вариант 1 — танковая мастерская", kind: "cover-art" },
+    { id: "page2-engraving-02", label: "Вариант 2 — танковая колонна", kind: "cover-art" },
+    { id: "page2-engraving-03", label: "Вариант 3 — минималистичный", kind: "cover-art" },
+    { id: "page2-engraving-04", label: "Вариант 4 — танк и чертежи", kind: "cover-art" },
+  ],
   3: [],
   4: [],
 };
@@ -46,6 +67,10 @@ export const ENGRAVING_COMPONENTS: Record<string, MotifComponent> = {
   "cover-engraving-02": CoverEngraving02,
   "cover-engraving-03": CoverEngraving03,
   "cover-engraving-04": CoverEngraving04,
+  "page2-engraving-01": Page2Engraving01,
+  "page2-engraving-02": Page2Engraving02,
+  "page2-engraving-03": Page2Engraving03,
+  "page2-engraving-04": Page2Engraving04,
 };
 
 export function engravingKindFor(id: string | null | undefined): EngravingKind | null {
