@@ -54,18 +54,11 @@ export function CoverV2({ issue }: { issue: Issue }) {
   return (
     <PageFrame backgroundEngravingId={issue.pages[1].backgroundEngravingId}>
       <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[6mm]">
-        {/* Верхний дивайдер — симметрия с двойной линейкой ПОСЛЕ шапки
-            (QA: "сверху разместить дивайдер... получается небольшой
-            разброд"); без него блок тег-лайн+шапка висел у самого
-            верха страницы ничем не отделённый. Тот же variant="double",
-            что и внизу шапки — обычная тонкая линия (variant по
-            умолчанию, 1px 25%-непрозрачности) на фоновой гравюре и
-            текстуре бумаги оказалась практически незаметна (QA: "не
-            вижу дивайдер"). */}
-        <EditorialRule variant="double" />
-
-        {/* Тег-лайн */}
-        <div className="mt-[3mm] flex items-center justify-center gap-[2mm] font-display text-[7px] font-bold uppercase tracking-[0.2em] text-olive-dim">
+        {/* Тег-лайн ПЕРЕД верхним дивайдером (QA: "сначала текстовая
+            строка... а потом дивайдер, вот тогда блок будет цельным") —
+            тег-лайн и дивайдер вместе образуют одну "шапку шапки", а не
+            дивайдер сам по себе висящий в воздухе над текстом. */}
+        <div className="flex items-center justify-center gap-[2mm] font-display text-[7px] font-bold uppercase tracking-[0.2em] text-olive-dim">
           {TAGLINE.map((word, i) => (
             <span key={word} className="flex items-center gap-[2mm]">
               {i > 0 && <span className="text-accent">•</span>}
@@ -73,6 +66,16 @@ export function CoverV2({ issue }: { issue: Issue }) {
             </span>
           ))}
         </div>
+
+        {/* Дивайдер — симметрия с двойной линейкой ПОСЛЕ шапки (QA:
+            "сверху разместить дивайдер... получается небольшой
+            разброд"); без него блок тег-лайн+шапка висел у самого
+            верха страницы ничем не отделённый. Тот же variant="double",
+            что и внизу шапки — обычная тонкая линия (variant по
+            умолчанию, 1px 25%-непрозрачности) на фоновой гравюре и
+            текстуре бумаги оказалась практически незаметна (QA: "не
+            вижу дивайдер"). */}
+        <EditorialRule variant="double" className="mt-[3mm]" />
 
         {/* Шапка — крупнее, чем у cover-v1: заголовок издания несёт
             основной визуальный вес страницы (по макету). Заголовок
