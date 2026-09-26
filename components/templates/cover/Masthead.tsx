@@ -57,7 +57,11 @@ export function Masthead({
             <span className="text-olive">Батальон</span>
           </h1>
 
-          <div className="mx-auto mt-[2mm] inline-block -rotate-1 bg-accent px-[4mm] py-[1mm]">
+          {/* Плашка "Боевой листок" поднята к заголовку (QA, скриншот с
+              размеченным блоком: "поднять вверх на 8-10 пикселей") —
+              было mt-[2mm], тот же порядок правки, что и раньше для
+              подзаголовка HeroMedia ("6-8 пикселей" → шаг ~2мм). */}
+          <div className="mx-auto mt-[-1mm] inline-block -rotate-1 bg-accent px-[4mm] py-[1mm]">
             <span className="font-display text-[15px] font-bold uppercase tracking-wide text-paper">
               Боевой листок
             </span>
