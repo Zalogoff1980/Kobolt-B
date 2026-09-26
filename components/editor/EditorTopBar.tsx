@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatIssueDate } from "@/lib/content/format";
 import { Issue } from "@/lib/content/issue";
 import { DownloadPdfButton } from "./DownloadPdfButton";
+import { ShareButton } from "./ShareButton";
 
 /**
  * PRIORITY 5 — небольшой UI cleanup шапки редактора: "Выпуски" и
@@ -38,7 +39,10 @@ export function EditorTopBar({
         <span data-testid="issue-meta" className="font-display text-sm font-bold uppercase tracking-wide text-ink">
           Выпуск №{issue.number} · {formatIssueDate(issue.date)}
         </span>
-        <DownloadPdfButton issue={issue} overflowingPages={overflowingPages} />
+        <div className="flex items-start gap-2">
+          <ShareButton issue={issue} overflowingPages={overflowingPages} />
+          <DownloadPdfButton issue={issue} overflowingPages={overflowingPages} />
+        </div>
       </div>
     </div>
   );
