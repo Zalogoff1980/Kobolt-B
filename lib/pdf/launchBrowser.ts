@@ -12,6 +12,16 @@ import puppeteer, { Browser } from "puppeteer-core";
 //    few common system paths as a fallback.
 export async function launchPdfBrowser(): Promise<Browser> {
   if (process.env.VERCEL) {
+    // @sparticuz/chromium decides whether it's running on a Lambda-like
+    // container (and therefore needs to extract its bundled Chromium
+    // binary + shared libraries such as libnss3.so) by checking for
+    // AWS-Lambda-specific environment variables. Vercel's functions are
+    // Lambda-like but don't set those variables, so on older package
+    // versions the extraction step silently never ran, producing
+    // "libnss3.so: cannot open shared object file" at launch time. Set
+    // a fallback value (only if unset) so detection succeeds here too.
+    process.env.AWS_LAMBDA_JS_RUNTIME ??= "nodejs22.x";
+
     const chromium = (await import("@sparticuz/chromium")).default;
     return puppeteer.launch({
       args: chromium.args,

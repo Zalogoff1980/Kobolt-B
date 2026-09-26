@@ -20,7 +20,7 @@
     "postcss": "8.4.41",
     "autoprefixer": "10.4.20",
     "puppeteer-core": "^23.0.0",
-    "@sparticuz/chromium": "^131.0.0"
+    "@sparticuz/chromium": "^141.0.0"
   },
   "devDependencies": {
     "typescript": "5.5.4",
