@@ -60,7 +60,14 @@ export function HeroMedia({
       </div>
 
       {hasSideColumn && (
-        <div className="flex flex-1 flex-col justify-center gap-0">
+        // Было flex-1 justify-center — колонка заголовка/цитаты
+        // центрировалась по вертикали в 96мм-строке hero-блока, из-за
+        // чего верх заголовка не совпадал с верхом фото (QA, шаблон
+        // "Боевой листок": "привязать верхнюю границу заголовка к
+        // верхней границе изображения" — тот же принцип top-alignment,
+        // что уже применён во всех внутренних шаблонах). Без
+        // justify-center колонка по умолчанию прижата к началу (верху).
+        <div className="flex flex-1 flex-col gap-0">
           {headline && (
             <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[1.6]">
               {headline.lines.map((line) => (
