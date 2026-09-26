@@ -51,7 +51,9 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
     >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
-      <div className="mt-[5mm]">
+      {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
+          для всех внутренних шаблонов) — было 5мм. */}
+      <div className="mt-[4mm]">
         {photos.length > 0 ? (
           <div
             data-zone="photo"
@@ -83,10 +85,13 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
         {/* Основной текст/лид — отдельное семантическое поле (не
             "первый абзац"), крупнее и жирнее тела статьи, полной
             шириной над многоколоночным телом. */}
+        {/* Текстовый блок подтянут к фото/друг к другу так же, как на
+            обложке (лид/абзацы теперь идут через тот же тесный 3мм
+            ритм, что и в двухколоночных шаблонах — было 5мм/5мм). */}
         {lead && (
           <p
             data-zone="lead"
-            className="mt-[5mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink"
+            className="mt-[4mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink"
           >
             {lead.text}
           </p>
@@ -94,7 +99,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
 
         {paragraphs.length > 0 && (
           <div
-            className={`mt-[5mm] gap-[6mm] text-[8.5px] leading-relaxed text-ink/90 ${
+            className={`mt-[3mm] gap-[6mm] text-[8.5px] leading-relaxed text-ink/90 ${
               paragraphs.length > 1 ? "columns-2 [column-fill:balance]" : ""
             }`}
             style={paragraphs.length === 1 ? { maxWidth: "110mm" } : undefined}

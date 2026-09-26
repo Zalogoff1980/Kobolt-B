@@ -61,15 +61,19 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
     >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
+      {/* Заголовок → фото/текст уплотнён (единая "плотность как на
+          обложке" для всех внутренних шаблонов) — было 5мм. */}
       {photo ? (
-        <div className="mt-[5mm] grid grid-cols-[68mm_1fr] items-start gap-[6mm]">
+        <div className="mt-[4mm] grid grid-cols-[68mm_1fr] items-start gap-[6mm]">
           <div>
             <div data-zone="photo" className="h-[130mm] overflow-hidden bg-olive/10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photo.src} alt={photo.personName ?? photo.caption ?? ""} className="h-full w-full object-cover" />
             </div>
             {hasCredit && (
-              <div data-zone="caption" className="mt-[2mm]">
+              // Тот же отступ, что у подписи-имени в TeamFaces (было
+              // 2мм здесь vs 1.5мм там — унифицировано).
+              <div data-zone="caption" className="mt-[1.5mm]">
                 {photo.personName && (
                   <p className="font-display text-[11px] font-bold uppercase leading-tight">
                     {photo.personName}
@@ -90,7 +94,7 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
           {textColumn}
         </div>
       ) : (
-        <div className="mt-[5mm]">{textColumn}</div>
+        <div className="mt-[4mm]">{textColumn}</div>
       )}
     </InnerPageShell>
   );

@@ -26,7 +26,11 @@ export function InnerPageShell({
     <PageFrame backgroundEngravingId={backgroundEngravingId}>
       <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[10mm]">
         <InnerHeader pageNumber={pageNumber} issueNumber={issueNumber} issueDate={issueDate} />
-        <div className="mt-[5mm] flex-1">{children}</div>
+        {/* Отступ от шапки уплотнён (по опыту обложки: "плотность как
+            на обложке" — заголовок должен начинаться на одной и той же,
+            более собранной высоте от верха на всех внутренних страницах,
+            а не висеть в воздухе). Было 5мм. */}
+        <div className="mt-[4mm] flex-1">{children}</div>
       </div>
     </PageFrame>
   );
