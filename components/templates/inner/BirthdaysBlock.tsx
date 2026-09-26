@@ -1,6 +1,14 @@
-import { PageSections } from "@/lib/content/sections";
+import { ContentBlock } from "@/lib/content/types";
 
-type Birthday = PageSections["birthdays"][number];
+// Рендер-компонент получает данные из groupPageBlocks (см.
+// PhotoGridText.tsx) — это ContentBlock[] с исходной, "сырой" формой
+// birthday-блока (message?: string, как и во всех остальных
+// ContentBlock), а не редакторская PageSections.birthdays (там
+// message: string без "?", чтобы контролируемый <input> в форме не
+// становился неконтролируемым при пустом значении). Использование
+// PageSections-типа здесь раньше приводило к рассинхронизации типов —
+// сборка падала ("Types of property 'message' are incompatible").
+type Birthday = Extract<ContentBlock, { type: "birthday" }>;
 
 /**
  * Блок "Наши именинники" — правая колонка Template B страницы 2
