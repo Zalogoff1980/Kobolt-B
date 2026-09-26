@@ -6,6 +6,7 @@ import { TextInput, TextArea, Field, SectionHeading } from "./fields";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { AchievementsEditor } from "./AchievementsEditor";
+import { BirthdaysEditor } from "./BirthdaysEditor";
 import { QuoteEditor } from "./QuoteEditor";
 
 /** Общая форма для страниц 2–4: заголовок/подзаголовок, фото, текст,
@@ -25,6 +26,7 @@ export function InnerPageForm({
 }) {
   const { maxCount, showPersonFields } = photoConfigFor(pageNumber, templateId);
   const showAchievements = templateId === "team-faces-v1";
+  const showBirthdays = templateId === "photo-grid-v1";
 
   return (
     <div className="space-y-5">
@@ -75,6 +77,13 @@ export function InnerPageForm({
         <AchievementsEditor
           achievements={sections.achievements}
           onChange={(achievements) => onChange({ ...sections, achievements })}
+        />
+      )}
+
+      {showBirthdays && (
+        <BirthdaysEditor
+          birthdays={sections.birthdays}
+          onChange={(birthdays) => onChange({ ...sections, birthdays })}
         />
       )}
 

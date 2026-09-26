@@ -4,6 +4,7 @@ type HeadingBlock = Extract<ContentBlock, { type: "heading" }>;
 type TextBlock = Extract<ContentBlock, { type: "text" }>;
 type PhotoBlock = Extract<ContentBlock, { type: "photo" }>;
 type QuoteBlock = Extract<ContentBlock, { type: "quote" }>;
+type BirthdayBlock = Extract<ContentBlock, { type: "birthday" }>;
 
 /**
  * Раскладывает произвольный набор ContentBlock внутренней страницы на
@@ -44,6 +45,7 @@ export function groupPageBlocks(blocks: ContentBlock[]) {
   const achievements: TextBlock[] = [];
   const photos: PhotoBlock[] = [];
   const quotes: QuoteBlock[] = [];
+  const birthdays: BirthdayBlock[] = [];
 
   for (const block of blocks) {
     if (block.type === "heading") {
@@ -67,7 +69,8 @@ export function groupPageBlocks(blocks: ContentBlock[]) {
     }
     if (block.type === "photo") photos.push(block);
     if (block.type === "quote") quotes.push(block);
+    if (block.type === "birthday") birthdays.push(block);
   }
 
-  return { title, subtitle, lead, paragraphs, achievements, photos, quotes };
+  return { title, subtitle, lead, paragraphs, achievements, photos, quotes, birthdays };
 }

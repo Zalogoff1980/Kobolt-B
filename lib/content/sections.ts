@@ -53,6 +53,10 @@ export type PageSections = {
   leadId?: string;
   paragraphs: { id: string; text: string }[];
   achievements: { id: string; text: string }[];
+  /** "Наши именинники" — только у Template B страницы 2 (photo-grid-v1,
+   *  найдено QA). Отдельный список от achievements: три поля на запись,
+   *  а не одна строка. */
+  birthdays: { id: string; name: string; date: string; message: string }[];
   photos: {
     id: string;
     src: string;
@@ -72,6 +76,7 @@ export function emptySections(): PageSections {
     lead: "",
     paragraphs: [],
     achievements: [],
+    birthdays: [],
     photos: [],
     quoteText: "",
     quoteAuthor: "",
@@ -100,6 +105,12 @@ export function blocksToSections(
       leadId: g.lead?.id,
       paragraphs: g.paragraphs.map((p) => ({ id: p.id, text: p.text })),
       achievements: g.achievements.map((a) => ({ id: a.id, text: a.text })),
+      birthdays: g.birthdays.map((b) => ({
+        id: b.id,
+        name: b.name,
+        date: b.date,
+        message: b.message ?? "",
+      })),
       photos: g.photos.map((p) => ({
         id: p.id,
         src: p.src,
@@ -170,6 +181,7 @@ export function blocksToSections(
     lead: "",
     paragraphs,
     achievements: [],
+    birthdays: [],
     photos,
     quoteText,
     quoteAuthor,
@@ -240,6 +252,15 @@ export function sectionsToBlocks(
   }
   for (const a of sections.achievements) {
     blocks.push({ id: a.id, type: "text", text: a.text, variant: "achievement" });
+  }
+  for (const b of sections.birthdays) {
+    blocks.push({
+      id: b.id,
+      type: "birthday",
+      name: b.name,
+      date: b.date,
+      message: b.message.trim() || undefined,
+    });
   }
   if (sections.quoteText.trim()) {
     blocks.push({

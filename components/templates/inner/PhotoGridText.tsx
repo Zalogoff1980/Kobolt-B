@@ -2,6 +2,7 @@ import { Issue } from "@/lib/content/issue";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
+import { BirthdaysBlock } from "./BirthdaysBlock";
 import { PullQuote } from "@/components/shared/PullQuote";
 import { EngravingTank } from "@/components/decorative/EngravingTank";
 
@@ -43,13 +44,120 @@ function gridLayout(count: number): { cols: number; heightMm: number } {
  * лид+абзацы+цитата центрируется по высоте в оставшемся под фото
  * пространстве, а не повисает прижатым к верху с пустотой снизу (QA:
  * "если текста будет мало... остаётся много пространства").
+ *
+ * Отдельная композиция для РОВНО двух фото (QA, скриншот: "текст
+ * выравнивался по ширине первого фото... справа на всю высоту по
+ * ширине второго фото разместить блок наши именинники") — см.
+ * isTwoColumnLayout ниже. При другом количестве фото колонок для
+ * такого разделения физически нет, поэтому там остаётся прежняя
+ * раскладка "сетка фото сверху, текст на всю ширину снизу".
  */
 export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
-  const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
+  const { title, subtitle, lead, paragraphs, photos, quotes, birthdays } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
   const quote = quotes[0];
   const { cols, heightMm } = gridLayout(photos.length);
+  const isTwoColumnLayout = photos.length === 2;
+
+  if (isTwoColumnLayout) {
+    const [photoLeft, photoRight] = photos;
+
+    return (
+      <InnerPageShell
+        pageNumber={pageNumber}
+        issueNumber={issue.number}
+        issueDate={issue.date}
+        backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      >
+        <div className="flex h-full flex-col">
+          <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
+
+          {/* Левая колонка — ровно ширина первого фото (текст под ним
+              выровнен по этой же ширине, а не растянут на всю страницу,
+              как раньше); правая — ширина второго фото, на всю
+              оставшуюся высоту страницы занята "Наши именинники" (QA:
+              "справа на всю высоту по ширине второго фото"). Обе
+              колонки — одна grid-строка с теми же gap-[3mm], что и у
+              исходной сетки фото, поэтому ширины колонок совпадают 1:1
+              с шириной фото над ними. */}
+          <div className="mt-[4mm] grid flex-1 grid-cols-2 gap-[3mm]">
+            <div className="flex flex-col">
+              <figure
+                data-zone="photo"
+                className="relative flex-shrink-0 overflow-hidden bg-olive/10"
+                style={{ height: `${heightMm}mm` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photoLeft.src}
+                  alt={photoLeft.caption ?? ""}
+                  className="h-full w-full object-cover"
+                />
+                {photoLeft.caption && (
+                  <figcaption
+                    data-zone="caption"
+                    className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]"
+                  >
+                    <span className="font-body text-[6.5px] italic text-paper/90">
+                      {photoLeft.caption}
+                    </span>
+                  </figcaption>
+                )}
+              </figure>
+
+              <div className="mt-[4mm] flex flex-1 flex-col justify-center">
+                {lead && (
+                  <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
+                    {lead.text}
+                  </p>
+                )}
+                {paragraphs.length > 0 && (
+                  <div className={`space-y-[3mm] text-[8.5px] leading-relaxed text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+                    {paragraphs.map((p) => (
+                      <p key={p.id} data-zone="paragraph" className="font-body">
+                        {p.text}
+                      </p>
+                    ))}
+                  </div>
+                )}
+                {quote && (
+                  <div className={lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}>
+                    <PullQuote text={quote.text} author={quote.author} />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <figure
+                className="relative flex-shrink-0 overflow-hidden bg-olive/10"
+                style={{ height: `${heightMm}mm` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photoRight.src}
+                  alt={photoRight.caption ?? ""}
+                  className="h-full w-full object-cover"
+                />
+                {photoRight.caption && (
+                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
+                    <span className="font-body text-[6.5px] italic text-paper/90">
+                      {photoRight.caption}
+                    </span>
+                  </figcaption>
+                )}
+              </figure>
+
+              <div className="mt-[4mm] flex-1">
+                <BirthdaysBlock entries={birthdays} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </InnerPageShell>
+    );
+  }
 
   return (
     <InnerPageShell

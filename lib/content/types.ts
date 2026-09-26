@@ -48,7 +48,23 @@ export type ContentBlock =
       personName?: string;
       personRole?: string;
     }
-  | { id: BlockId; type: "quote"; text: string; author?: string };
+  | { id: BlockId; type: "quote"; text: string; author?: string }
+  | {
+      id: BlockId;
+      type: "birthday";
+      /** Блок "Наши именинники" (Template B страницы 2, photo-grid-v1,
+       *  QA: "справа... разместить блок наши именинники... с
+       *  возможностью добавить несколько фамилий с датой... и текстом
+       *  небольшого поздравления"). Структурная запись (не просто
+       *  строка, как achievement) — три отдельных поля, а не один текст
+       *  с самодельным разделителем, чтобы шаблон мог оформить дату и
+       *  поздравление типографически по-разному. */
+      name: string;
+      /** Как ввёл пользователь ("28 сентября", "12.10") — без парсинга,
+       *  как и Issue.number. */
+      date: string;
+      message?: string;
+    };
 
 export type PageNumber = 1 | 2 | 3 | 4;
 
