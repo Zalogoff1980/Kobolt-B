@@ -27,7 +27,7 @@ export function ArticleTitle({
       {title && (
         <h1
           data-zone="h1"
-          className="font-display text-[28px] font-bold uppercase leading-[0.92] tracking-tight text-ink"
+          className="font-display text-[28px] font-bold uppercase leading-[1.6] tracking-tight text-ink"
         >
           {title}
         </h1>
@@ -35,7 +35,7 @@ export function ArticleTitle({
       {subtitle && (
         <h2
           data-zone="h2"
-          className="mt-[1.5mm] font-display text-[12px] font-bold uppercase tracking-wide text-olive"
+          className="mt-[1.5mm] font-display text-[12px] font-bold uppercase leading-[1.6] tracking-wide text-olive"
         >
           {subtitle}
         </h2>

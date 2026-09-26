@@ -58,7 +58,7 @@ export function HeroMedia({
       {hasSideColumn && (
         <div className="flex flex-1 flex-col justify-center gap-0">
           {headline && (
-            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[1.15]">
+            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[1.6]">
               {headline.lines.map((line) => (
                 <span key={line.text} className={line.accent ? "text-accent" : ""}>
                   {line.text}
@@ -75,7 +75,7 @@ export function HeroMedia({
           {subtitle && (
             <p
               data-zone="h2"
-              className={`font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim ${
+              className={`font-display text-[10px] font-bold uppercase leading-[1.6] tracking-wide text-olive-dim ${
                 headline ? "mt-[4mm]" : ""
               }`}
             >
