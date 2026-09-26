@@ -70,7 +70,7 @@ export default function NewIssuePage() {
             type="submit"
             disabled={saving}
             data-testid="submit-new-issue"
-            className="w-full bg-ink py-2.5 font-display font-bold uppercase tracking-wide text-paper disabled:opacity-50"
+            className="w-full bg-ink py-2.5 font-display font-bold tracking-wide text-paper disabled:opacity-50"
           >
             {saving ? "Создаём…" : "Создать выпуск"}
           </button>

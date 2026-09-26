@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getIssue, updateIssue } from "@/lib/db/issues";
 import { Issue } from "@/lib/content/issue";
 import { PageSections, blocksToSections, sectionsToBlocks } from "@/lib/content/sections";
@@ -11,6 +11,8 @@ import { PageList } from "@/components/editor/PageList";
 import { TemplatePicker } from "@/components/editor/TemplatePicker";
 import { CoverForm } from "@/components/editor/CoverForm";
 import { InnerPageForm } from "@/components/editor/InnerPageForm";
+import { ContentZoneOverlay } from "@/components/editor/guides/ContentZoneOverlay";
+import { HiddenOverflowProbe } from "@/components/editor/guides/HiddenOverflowProbe";
 
 /**
  * Редактор выпуска (ТЗ шага 7).
@@ -27,6 +29,8 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
   const [issue, setIssue] = useState<Issue | null | undefined>(undefined);
   const [activePage, setActivePage] = useState<1 | 2 | 3 | 4>(1);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("saved");
+  const [overflowingPages, setOverflowingPages] = useState<number[]>([]);
+  const previewRootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getIssue(params.issueId).then((found) => setIssue(found ?? null));
@@ -83,7 +87,12 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
 
   return (
     <div className="flex h-screen flex-col">
-      <EditorTopBar number={issue.number} date={issue.date} saveStatus={saveStatus} />
+      <EditorTopBar issue={issue} saveStatus={saveStatus} overflowingPages={overflowingPages} />
+      {/* Скрытый DOM-замер всех 4 страниц разом (не только активной) —
+          источник overflowingPages для "Скачать PDF" (PRIORITY 1, п.12):
+          кнопка не должна пропустить overflow на странице, которую
+          пользователь сейчас не редактирует. */}
+      <HiddenOverflowProbe issue={issue} onResult={setOverflowingPages} />
 
       {/*
         Mobile (< lg): sidebar и preview складываются друг под другом
@@ -132,7 +141,14 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
         {/* A4 PREVIEW — целиком масштабируется, пропорция страницы не меняется */}
         <div className="flex-1 bg-stage p-6 lg:overflow-auto">
           <PagePreviewScaler>
-            <A4Page issue={issue} pageNumber={activePage} />
+            {/* relative-обёртка — точка отсчёта для ContentZoneOverlay
+                (offset-геометрия зон считается относительно неё же).
+                Сам A4Page не меняется и не оборачивается ничем на
+                production-пути — только здесь, в редакторе. */}
+            <div ref={previewRootRef} className="relative">
+              <A4Page issue={issue} pageNumber={activePage} />
+              <ContentZoneOverlay containerRef={previewRootRef} />
+            </div>
           </PagePreviewScaler>
         </div>
       </div>

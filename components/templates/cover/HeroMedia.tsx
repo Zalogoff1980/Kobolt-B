@@ -29,6 +29,7 @@ export function HeroMedia({
   return (
     <div className="flex gap-[3mm]" style={{ height: "96mm" }}>
       <div
+        data-zone="photo"
         className={`relative overflow-hidden bg-olive/10 ${hasSideColumn ? "flex-[2.1]" : "flex-1"}`}
       >
         {photo ? (
@@ -40,7 +41,7 @@ export function HeroMedia({
           </div>
         )}
         {photo?.caption && (
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
+          <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
             <p className="font-body text-[7.5px] italic text-paper/90">{photo.caption}</p>
           </div>
         )}
@@ -49,7 +50,7 @@ export function HeroMedia({
       {hasSideColumn && (
         <div className="flex flex-1 flex-col justify-center gap-[6mm]">
           {headline && (
-            <h2 className="font-display text-[19px] font-bold uppercase leading-[0.95]">
+            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[0.95]">
               {headline.lines.map((line) => (
                 <span
                   key={line.text}
@@ -63,13 +64,13 @@ export function HeroMedia({
           )}
 
           {subtitle && (
-            <p className="font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim">
+            <p data-zone="h2" className="font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim">
               {subtitle}
             </p>
           )}
 
           {quote && (
-            <div className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]">
+            <div data-zone="quote" className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]">
               <span className="font-display text-[16px] leading-none text-accent">“</span>
               <p className="font-display text-[9px] font-bold uppercase leading-snug">
                 {quote.text}

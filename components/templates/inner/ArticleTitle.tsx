@@ -17,12 +17,18 @@ export function ArticleTitle({
     <div className="flex items-start justify-between gap-[6mm]">
       <div>
         {title && (
-          <h1 className="font-display text-[28px] font-bold uppercase leading-[0.92] tracking-tight text-ink">
+          <h1
+            data-zone="h1"
+            className="font-display text-[28px] font-bold uppercase leading-[0.92] tracking-tight text-ink"
+          >
             {title}
           </h1>
         )}
         {subtitle && (
-          <h2 className="mt-[1.5mm] font-display text-[12px] font-bold uppercase tracking-wide text-olive">
+          <h2
+            data-zone="h2"
+            className="mt-[1.5mm] font-display text-[12px] font-bold uppercase tracking-wide text-olive"
+          >
             {subtitle}
           </h2>
         )}

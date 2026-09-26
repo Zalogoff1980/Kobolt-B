@@ -49,6 +49,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
       <div className="mt-[5mm]">
         {photos.length > 0 ? (
           <div
+            data-zone="photo"
             className="grid gap-[3mm]"
             style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
           >
@@ -61,7 +62,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.src} alt={p.caption ?? ""} className="h-full w-full object-cover" />
                 {p.caption && (
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
+                  <figcaption data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
                     <span className="font-body text-[6.5px] italic text-paper/90">{p.caption}</span>
                   </figcaption>
                 )}
@@ -69,7 +70,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             ))}
           </div>
         ) : (
-          <div className="flex h-[70mm] items-center justify-center bg-olive/10">
+          <div data-zone="photo" className="flex h-[70mm] items-center justify-center bg-olive/10">
             <EngravingTank className="h-[50%] w-[60%] text-olive/30" />
           </div>
         )}
@@ -79,6 +80,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             шириной над многоколоночным телом. */}
         {lead && (
           <p
+            data-zone="lead"
             className="mt-[5mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink"
           >
             {lead.text}
@@ -93,7 +95,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             style={paragraphs.length === 1 ? { maxWidth: "110mm" } : undefined}
           >
             {paragraphs.map((p) => (
-              <p key={p.id} className="mb-[3mm] break-inside-avoid font-body">
+              <p key={p.id} data-zone="paragraph" className="mb-[3mm] break-inside-avoid font-body">
                 {p.text}
               </p>
             ))}

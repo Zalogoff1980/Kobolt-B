@@ -42,7 +42,7 @@ export function SmallButton({
   return (
     <button
       {...props}
-      className={`appearance-none rounded-hairline border border-ink/20 px-2 py-1 text-xs uppercase text-olive-dim hover:border-ink/40 disabled:opacity-30 ${
+      className={`appearance-none rounded-hairline border border-ink/20 px-2 py-1 text-xs text-olive-dim hover:border-ink/40 disabled:opacity-30 ${
         props.className ?? ""
       }`}
     >

@@ -41,26 +41,26 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
           {/* Основной текст/лид — отдельное семантическое поле,
               крупнее и жирнее обычных абзацев. */}
           {lead && (
-            <p className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
+            <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
               {lead.text}
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">
+            <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
               {p.text}
             </p>
           ))}
           {quote && <PullQuote text={quote.text} author={quote.author} />}
         </div>
 
-        <div className="space-y-[3mm]">
+        <div data-zone="photo" className="space-y-[3mm]">
           {railPhotos.length > 0 ? (
             railPhotos.map((p) => (
               <figure key={p.id} className="relative overflow-hidden bg-olive/10" style={{ height: `${photoHeight}mm` }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.src} alt={p.caption ?? ""} className="h-full w-full object-cover" />
                 {p.caption && (
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
+                  <figcaption data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
                     <span className="font-body text-[6.5px] italic text-paper/90">{p.caption}</span>
                   </figcaption>
                 )}

@@ -256,6 +256,102 @@ Preview в браузере (через headless Chromium), — разметка
 (например, Browserless) и обращаться к нему по HTTP из `/api/pdf`,
 если потребуется больше 50 сек. на функцию.
 
+## Статус: PDF export, Content Zones / Editor Guides, UI cleanup (текущий этап)
+
+Реализовано в порядке, зафиксированном в ТЗ этого этапа:
+
+### PRIORITY 1 — `/api/pdf`
+
+- `app/api/pdf/route.ts` — `POST`, Node.js runtime, принимает полный
+  `Issue` JSON в теле запроса, ничего не читает из IndexedDB (сервер о
+  ней просто не знает).
+- `lib/pdf/renderIssueHtml.tsx` — рендерит **тот же** `A4Page`
+  (`react-dom/server`), что и живой Preview, четыре страницы подряд в
+  одном HTML-документе с `page-break-after: always` между ними — один
+  вызов `page.pdf()` даёт ровно 4 физические страницы без склейки
+  через сторонние библиотеки.
+- `lib/pdf/buildTailwindCss.ts` — компилирует настоящий Tailwind CSS
+  (те же токены цвета/радиусов/шрифтов, что в `tailwind.config.ts`)
+  под контент конкретно этого HTML, а не читает файл сборки `.next` —
+  надёжнее в serverless-окружении и не зависит от хеша имени файла.
+- `lib/pdf/googleFonts.ts` — Oswald/PT Sans встраиваются как base64
+  `@font-face` (тот же источник, из которого их берёт `next/font` на
+  этапе сборки Next.js), поэтому сам рендер PDF не зависит от сети.
+- `lib/pdf/launchBrowser.ts` — на Vercel (`process.env.VERCEL`) —
+  `puppeteer-core` + `@sparticuz/chromium`; локально — `puppeteer-core`
+  + путь к уже установленному Chromium через `PUPPETEER_EXECUTABLE_PATH`
+  (см. "Required environment" ниже).
+- Кнопка **"Скачать PDF"** (`components/editor/DownloadPdfButton.tsx`)
+  — в `EditorTopBar`, видна и на desktop, и на mobile. Перед запросом
+  проверяет `overflowingPages` (см. ниже) — если хоть одна из 4
+  страниц физически не помещается в свой шаблон, PDF не запрашивается,
+  вместо этого показывается политика overflow.
+- Имя файла: `kobolt-b-vypusk-{issueNumber}.pdf`.
+
+### PRIORITY 2 — семантика контента
+
+Проверено против уже реализованной (в предыдущем этапе) модели
+`H1 → H2 → лид → абзацы → достижения/спецэлементы → цитата`
+(`lib/content/types.ts`, `pageBlocks.ts`, `sections.ts`) — стабильные
+`titleId`/`subtitleId`/`leadId`/`quoteId` сохраняются, регрессии не
+внесено. Изменений в этой части в текущем этапе не потребовалось.
+
+### PRIORITY 3 — Editor Content Zones / Guides
+
+- Каждый шаблон (`components/templates/**`) помечает свои смысловые
+  контейнеры атрибутом `data-zone="h1|h2|lead|paragraph|photo|caption|
+  quote|achievement"` — сам атрибут ничего не стилизует и присутствует
+  везде, включая PDF (безвредная метка, не CSS).
+- `components/editor/guides/ContentZoneOverlay.tsx` — считывает эти
+  `[data-zone]` элементы из реального DOM (геометрия — из
+  offsetTop/Left/Width/Height относительно `.kobolt-page`, не зависит
+  от масштаба `PagePreviewScaler`), рисует тонкие пунктирные рамки +
+  мелкие подписи (H1/ТЕКСТ/ФОТО/…). Монтируется **только** в
+  `app/issues/[issueId]/page.tsx` (редактор) — ни в `/preview`, ни в
+  `/api/pdf` этот компонент не импортируется вообще.
+- Page-level overflow (сравнение `scrollHeight`/`clientHeight`
+  `.kobolt-page`) показывает баннер с точной политикой
+  "Материала слишком много для выбранного шаблона. Выберите другой
+  шаблон или сократите материал." прямо в preview редактора.
+- `components/editor/guides/HiddenOverflowProbe.tsx` — тот же принцип
+  измерения, но для всех 4 страниц разом (не только активной) —
+  результат уходит в кнопку "Скачать PDF".
+
+### PRIORITY 4 — mobile-регрессия
+
+Правки этого этапа не трогали scroll-структуру
+`app/issues/[issueId]/page.tsx` (`overflow-x-hidden overflow-y-auto
+lg:flex-row lg:overflow-hidden`) — новые узлы (`HiddenOverflowProbe`,
+`ContentZoneOverlay`) не участвуют в flex-раскладке страницы вообще
+(`fixed`/`absolute`, вне потока документа). Требует подтверждения
+реальным Playwright-прогоном (см. Runtime QA) — своими средствами
+перезапустить `npm run qa:runtime` в этой песочнице по-прежнему
+нельзя (см. ниже).
+
+### PRIORITY 5 — UI cleanup
+
+- `EditorTopBar`: "Выпуски" / "Сохранено ✓" — на одной строке, обычным
+  регистром (не ALL CAPS), чуть мельче; "Выпуск №… · дата" — отдельной
+  строкой ниже, в прежнем редакционном ALL CAPS стиле (это заголовок-
+  лейбл, не кнопка).
+- Обычные UI-кнопки переведены в sentence case (убран Tailwind-класс
+  `uppercase`, сам текст уже был в нормальном регистре):
+  "Создать выпуск", "Открыть", "Удалить", "Отмена", "Добавить фото"
+  (было "Загрузить фото" + ALL CAPS), кнопки `SmallButton` (абзацы,
+  цитата). `TemplatePicker` и заголовки разделов (`SectionHeading`,
+  `Field`) намеренно не тронуты — это редакционные лейблы, а не
+  экшн-кнопки.
+
+### PRIORITY 6 — архитектура Layout Template / Background Engraving
+
+`lib/content/issue.ts`: `PageState` документирован как целевая триада
+`Layout Template (=templateId) / Content / Background Engraving`,
+добавлено **опциональное** поле `backgroundEngravingId?: string | null`
+— зарезервировано, нигде не читается и не пишется, не требует миграции
+уже сохранённых в IndexedDB выпусков. Полноценная библиотека гравюр
+(~16 вариантов) сознательно не реализована — как и было явно
+запрошено.
+
 ## Запуск
 
 ```bash
@@ -308,10 +404,44 @@ mock DOM. Файлы: `dashboard.spec.ts`, `editor.spec.ts`,
 - npm ≥ 10
 - доступ к registry.npmjs.org (для `npm install`)
 - Chromium для Playwright (`npx playwright install chromium`)
+- для реального PDF-QA (`qa/runtime/pdf-export.spec.ts`) — тот же или
+  любой другой Chromium, доступный `/api/pdf` в режиме разработки:
+  установите переменную окружения `PUPPETEER_EXECUTABLE_PATH`,
+  указав на бинарник (например,
+  `~/.cache/ms-playwright/chromium-*/chrome-linux/chrome` после
+  `npx playwright install chromium`), либо системный
+  `google-chrome`/`chromium`. Без неё `/api/pdf` в dev-режиме вернёт
+  понятную ошибку "не найден исполняемый файл Chromium" вместо PDF —
+  это ожидаемо и не является багом (см. `lib/pdf/launchBrowser.ts`).
+  На Vercel эта переменная не нужна — там используется
+  `@sparticuz/chromium` автоматически.
+- сеть до `fonts.googleapis.com`/`fonts.gstatic.com` при первом вызове
+  `/api/pdf` в тёплом инстансе (встраивает Oswald/PT Sans как base64;
+  см. `lib/pdf/googleFonts.ts`) — при недоступности сети PDF всё равно
+  сформируется, но шрифтами лягут системные fallback (Arial Narrow/
+  Arial), а не Oswald/PT Sans.
 
-**Эти тесты подготовлены, но НЕ запускались** — песочница, в которой
-велась разработка, не имеет доступа к npm registry
-(`HTTP 403 host_not_allowed` от egress-прокси; см. отчёт шага 9).
-Не считайте написание этих тестов доказательством прохождения
-runtime QA — это доказательство только после реального
-`npm run qa:runtime` на машине с сетью.
+**`package.json` в этом этапе изменился** (`tailwindcss`/`postcss`/
+`autoprefixer` перенесены из `devDependencies` в `dependencies` —
+нужны в рантайме `/api/pdf`, не только на билде; добавлены
+`puppeteer-core`, `@sparticuz/chromium`, `pdf-parse`) — существующий
+`package-lock.json`, если он уже был закоммичен после прошлого этапа,
+**рассинхронизирован** с новым `package.json`. Перед `npm install`/
+`npm ci` в CI это нужно перегенерировать:
+
+```bash
+rm -f package-lock.json
+npm install
+```
+
+и закоммитить получившийся `package-lock.json`.
+
+**Эти тесты (включая новые `content-zones.spec.ts` и
+`pdf-export.spec.ts`) подготовлены, но НЕ запускались** — песочница, в
+которой велась разработка этого этапа, не имеет доступа к npm registry
+(`registry.npmjs.org` не в allowlist сетевого прокси; проверено
+`curl`/`npm install`, тот же класс ограничения, что и в отчёте шага 9).
+Не считайте написание этих тестов или чтение исходного кода
+доказательством прохождения runtime/PDF QA — это доказательство
+только после реального `npm run qa:runtime` (и ручной проверки кнопки
+"Скачать PDF") на машине с сетью.

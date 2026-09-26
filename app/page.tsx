@@ -53,7 +53,7 @@ export default function HomePage() {
         <Link
           href="/issues/new"
           data-testid="create-issue-link"
-          className="mt-6 inline-block bg-accent px-4 py-2 font-display font-bold uppercase tracking-wide text-paper"
+          className="mt-6 inline-block bg-accent px-4 py-2 font-display font-bold tracking-wide text-paper"
         >
           + Создать выпуск
         </Link>
@@ -97,14 +97,14 @@ export default function HomePage() {
                   <Link
                     href={`/issues/${issue.id}`}
                     data-testid="open-issue-link"
-                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs uppercase text-ink hover:border-ink/40"
+                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs text-ink hover:border-ink/40"
                   >
                     Открыть
                   </Link>
                   <button
                     onClick={() => setPendingDelete(issue)}
                     data-testid="delete-issue-button"
-                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs uppercase text-olive-dim hover:border-accent hover:text-accent"
+                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs text-olive-dim hover:border-accent hover:text-accent"
                   >
                     Удалить
                   </button>
@@ -130,14 +130,14 @@ export default function HomePage() {
               <button
                 onClick={() => setPendingDelete(null)}
                 data-testid="cancel-delete-button"
-                className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs uppercase"
+                className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs"
               >
                 Отмена
               </button>
               <button
                 onClick={confirmDelete}
                 data-testid="confirm-delete-button"
-                className="bg-accent px-3 py-1.5 text-xs uppercase text-paper"
+                className="bg-accent px-3 py-1.5 text-xs text-paper"
               >
                 Удалить
               </button>

@@ -35,10 +35,10 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
         {/* Основной текст/лид — отдельное семантическое поле, крупнее
             и жирнее обычных абзацев. */}
         {lead && (
-          <p className="font-body text-[9.5px] font-bold leading-relaxed text-ink">{lead.text}</p>
+          <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">{lead.text}</p>
         )}
         {paragraphs.map((p) => (
-          <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">
+          <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
             {p.text}
           </p>
         ))}
@@ -59,12 +59,12 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
       {photo ? (
         <div className="mt-[5mm] grid grid-cols-[68mm_1fr] items-start gap-[6mm]">
           <div>
-            <div className="h-[130mm] overflow-hidden bg-olive/10">
+            <div data-zone="photo" className="h-[130mm] overflow-hidden bg-olive/10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photo.src} alt={photo.personName ?? photo.caption ?? ""} className="h-full w-full object-cover" />
             </div>
             {hasCredit && (
-              <div className="mt-[2mm]">
+              <div data-zone="caption" className="mt-[2mm]">
                 {photo.personName && (
                   <p className="font-display text-[11px] font-bold uppercase leading-tight">
                     {photo.personName}

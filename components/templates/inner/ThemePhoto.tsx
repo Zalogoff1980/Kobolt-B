@@ -24,7 +24,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
     <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
-      <div className="relative mt-[5mm] h-[105mm] overflow-hidden bg-olive/10">
+      <div data-zone="photo" className="relative mt-[5mm] h-[105mm] overflow-hidden bg-olive/10">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photo.src} alt={photo.caption ?? ""} className="h-full w-full object-cover" />
@@ -34,7 +34,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
           </div>
         )}
         {photo?.caption && (
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
+          <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
             <p className="font-body text-[7px] italic text-paper/90">{photo.caption}</p>
           </div>
         )}
@@ -43,7 +43,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
       {/* Основной текст/лид — отдельное семантическое поле, крупнее и
           жирнее тела статьи, полной шириной над многоколоночным телом. */}
       {lead && (
-        <p className="mt-[5mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
+        <p data-zone="lead" className="mt-[5mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
           {lead.text}
         </p>
       )}
@@ -56,7 +56,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
           style={paragraphs.length === 1 ? { maxWidth: "120mm" } : undefined}
         >
           {paragraphs.map((p) => (
-            <p key={p.id} className="mb-[3mm] break-inside-avoid font-body">
+            <p key={p.id} data-zone="paragraph" className="mb-[3mm] break-inside-avoid font-body">
               {p.text}
             </p>
           ))}

@@ -35,6 +35,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
 
       {faces.length > 0 && (
         <div
+          data-zone="photo"
           className="mt-[5mm] grid gap-[4mm]"
           style={{ gridTemplateColumns: `repeat(${faces.length}, 1fr)` }}
         >
@@ -45,7 +46,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                 <img src={p.src} alt={p.personName ?? p.caption ?? ""} className="h-full w-full object-cover" />
               </div>
               {(p.personName || p.personRole) && (
-                <div className="mt-[1.5mm]">
+                <div data-zone="caption" className="mt-[1.5mm]">
                   {p.personName && (
                     <p className="font-display text-[9px] font-bold uppercase leading-tight">
                       {p.personName}
@@ -67,7 +68,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
           жирнее обычных абзацев, полной шириной над многоколоночным
           телом. */}
       {lead && (
-        <p className="mt-[5mm] max-w-[140mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
+        <p data-zone="lead" className="mt-[5mm] max-w-[140mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
           {lead.text}
         </p>
       )}
@@ -80,7 +81,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
           style={paragraphs.length === 1 ? { maxWidth: "130mm" } : undefined}
         >
           {paragraphs.map((p) => (
-            <p key={p.id} className="mb-[3mm] break-inside-avoid font-body">
+            <p key={p.id} data-zone="paragraph" className="mb-[3mm] break-inside-avoid font-body">
               {p.text}
             </p>
           ))}
@@ -88,7 +89,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
       )}
 
       {achievements.length > 0 && (
-        <div className="mt-[4mm] max-w-[140mm]">
+        <div data-zone="achievement" className="mt-[4mm] max-w-[140mm]">
           <ul className="space-y-[1.5mm]">
             {achievements.map((a) => (
               <li key={a.id} className="flex items-baseline gap-[2mm] font-body text-[8px] text-ink/90">

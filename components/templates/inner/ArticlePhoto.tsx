@@ -30,12 +30,12 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               обычных абзацев, отдельное семантическое поле, а не
               "первый абзац по счёту" (найденная проблема иерархии). */}
           {lead && (
-            <p className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
+            <p data-zone="lead" className="font-body text-[9.5px] font-bold leading-relaxed text-ink">
               {lead.text}
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} className="font-body text-[8.5px] leading-relaxed text-ink/90">
+            <p key={p.id} data-zone="paragraph" className="font-body text-[8.5px] leading-relaxed text-ink/90">
               {p.text}
             </p>
           ))}
@@ -43,7 +43,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
         </div>
 
         <div>
-          <div className="relative h-[150mm] overflow-hidden bg-olive/10">
+          <div data-zone="photo" className="relative h-[150mm] overflow-hidden bg-olive/10">
             {photo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={photo.src} alt={photo.caption ?? ""} className="h-full w-full object-cover" />
@@ -53,7 +53,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               </div>
             )}
             {photo?.caption && (
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
+              <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
                 <p className="font-body text-[7px] italic text-paper/90">{photo.caption}</p>
               </div>
             )}

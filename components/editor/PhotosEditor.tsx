@@ -107,11 +107,11 @@ export function PhotosEditor({
 
       <label
         data-testid="photo-upload-label"
-        className={`inline-block rounded-hairline border px-2 py-1 text-xs uppercase ${
+        className={`inline-block rounded-hairline border px-2 py-1 text-xs ${
           atMax ? "cursor-not-allowed border-ink/10 text-ink/30" : "cursor-pointer border-ink/20 text-olive-dim hover:border-ink/40"
         }`}
       >
-        + Загрузить фото
+        + Добавить фото
         <input
           type="file"
           accept="image/*"
