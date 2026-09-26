@@ -26,10 +26,11 @@ export function BackgroundEngraving({ id }: { id: string | null | undefined }) {
 
   if (kind === "cover-art") {
     // Полноценная иллюстрация на всю страницу — под контентом, но
-    // достаточно заметная (это фон обложки, а не тонкий водяной знак).
+    // приглушённая (25% непрозрачности), чтобы текст поверх оставался
+    // читаемым и гравюра работала как фон, а не спорила с контентом.
     return (
       <div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 overflow-hidden opacity-25"
         aria-hidden="true"
         data-testid="background-engraving"
         data-engraving-id={id}
