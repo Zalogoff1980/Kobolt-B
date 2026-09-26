@@ -32,8 +32,17 @@ function gridLayout(count: number): { cols: number; heightMm: number } {
 /**
  * Template B страницы "История" — "несколько фотографий + текст"
  * (ТЗ шаг 3). Фотогалерея сверху (её раскладка считается от числа
- * снимков), текст статьи — ниже, в две колонки для более "новостного"
- * ритма, отличного от Template A.
+ * снимков), текст статьи — ниже, одной колонкой на всю ширину.
+ *
+ * Раньше текст был разложен через CSS columns-2 с автоматической
+ * балансировкой браузером — из-за этого перенос абзацев между
+ * "колонками" был недетерминирован и зависел от объёма текста, а не от
+ * структуры контента (QA: "непонятно, как в блоке редактора к какой
+ * фотке относить текст"). Заменено на простую одну колонку, как во
+ * всех остальных внутренних шаблонах. Если текста мало, весь блок
+ * лид+абзацы+цитата центрируется по высоте в оставшемся под фото
+ * пространстве, а не повисает прижатым к верху с пустотой снизу (QA:
+ * "если текста будет мало... остаётся много пространства").
  */
 export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
@@ -49,74 +58,76 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
     >
-      <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
+      {/* Корневой блок — flex-column на всю высоту страницы: заголовок и
+          фотогалерея сверху фиксированной высоты, текстовая секция ниже —
+          flex-1 с центрированием, чтобы короткий текст не повисал
+          прижатым к верху с пустотой снизу. ArticleTitle обязательно
+          внутри ЭТОГО же flex-контейнера (а не снаружи) — иначе h-full
+          у текстовой секции считался бы от родителя целиком, не оставляя
+          места под уже занятую заголовком/фото высоту. */}
+      <div className="flex h-full flex-col">
+        <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
-      {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
-          для всех внутренних шаблонов) — было 5мм. */}
-      <div className="mt-[4mm]">
-        {photos.length > 0 ? (
-          <div
-            data-zone="photo"
-            className="grid gap-[3mm]"
-            style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-          >
-            {photos.map((p) => (
-              <figure
-                key={p.id}
-                className="relative overflow-hidden bg-olive/10"
-                style={{ height: `${heightMm}mm` }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.src} alt={p.caption ?? ""} className="h-full w-full object-cover" />
-                {p.caption && (
-                  <figcaption data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
-                    <span className="font-body text-[6.5px] italic text-paper/90">{p.caption}</span>
-                  </figcaption>
-                )}
-              </figure>
-            ))}
-          </div>
-        ) : (
-          <div data-zone="photo" className="flex h-[70mm] items-center justify-center bg-olive/10">
-            <EngravingTank className="h-[50%] w-[60%] text-olive/30" />
-          </div>
-        )}
+        {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
+            для всех внутренних шаблонов) — было 5мм. */}
+        <div className="mt-[4mm] flex-shrink-0">
+          {photos.length > 0 ? (
+            <div
+              data-zone="photo"
+              className="grid gap-[3mm]"
+              style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+            >
+              {photos.map((p) => (
+                <figure
+                  key={p.id}
+                  className="relative overflow-hidden bg-olive/10"
+                  style={{ height: `${heightMm}mm` }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.src} alt={p.caption ?? ""} className="h-full w-full object-cover" />
+                  {p.caption && (
+                    <figcaption data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
+                      <span className="font-body text-[6.5px] italic text-paper/90">{p.caption}</span>
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <div data-zone="photo" className="flex h-[70mm] items-center justify-center bg-olive/10">
+              <EngravingTank className="h-[50%] w-[60%] text-olive/30" />
+            </div>
+          )}
+        </div>
 
-        {/* Основной текст/лид — отдельное семантическое поле (не
-            "первый абзац"), крупнее и жирнее тела статьи, полной
-            шириной над многоколоночным телом. */}
-        {/* Текстовый блок подтянут к фото/друг к другу так же, как на
-            обложке (лид/абзацы теперь идут через тот же тесный 3мм
-            ритм, что и в двухколоночных шаблонах — было 5мм/5мм). */}
-        {lead && (
-          <p
-            data-zone="lead"
-            className="mt-[4mm] max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink"
-          >
-            {lead.text}
-          </p>
-        )}
+        {/* Текст — одной колонкой на всю ширину (было: CSS columns-2 с
+            непредсказуемым авто-балансом, из-за чего в редакторе не было
+            понятно, к какой "колонке" относится абзац). Лид/абзацы/цитата
+            центрируются как единый блок в оставшемся под фото
+            пространстве — если текста мало, он не прилипает к верху. */}
+        <div className="mt-[4mm] flex flex-1 flex-col justify-center">
+          {lead && (
+            <p data-zone="lead" className="max-w-[130mm] font-body text-[9.5px] font-bold leading-relaxed text-ink">
+              {lead.text}
+            </p>
+          )}
 
-        {paragraphs.length > 0 && (
-          <div
-            className={`mt-[3mm] gap-[6mm] text-[8.5px] leading-relaxed text-ink/90 ${
-              paragraphs.length > 1 ? "columns-2 [column-fill:balance]" : ""
-            }`}
-            style={paragraphs.length === 1 ? { maxWidth: "110mm" } : undefined}
-          >
-            {paragraphs.map((p) => (
-              <p key={p.id} data-zone="paragraph" className="mb-[3mm] break-inside-avoid font-body">
-                {p.text}
-              </p>
-            ))}
-          </div>
-        )}
+          {paragraphs.length > 0 && (
+            <div className={`max-w-[130mm] space-y-[3mm] text-[8.5px] leading-relaxed text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+              {paragraphs.map((p) => (
+                <p key={p.id} data-zone="paragraph" className="font-body">
+                  {p.text}
+                </p>
+              ))}
+            </div>
+          )}
 
-        {quote && (
-          <div className="mt-[4mm] max-w-[110mm]">
-            <PullQuote text={quote.text} author={quote.author} />
-          </div>
-        )}
+          {quote && (
+            <div className={`max-w-[110mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
+              <PullQuote text={quote.text} author={quote.author} />
+            </div>
+          )}
+        </div>
       </div>
     </InnerPageShell>
   );
