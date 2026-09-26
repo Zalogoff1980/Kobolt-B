@@ -1,29 +1,15 @@
 import puppeteer, { Browser } from "puppeteer-core";
 
-/**
- * Запускает headless Chromium для /api/pdf.
- *
- * Два окружения — два способа найти бинарник, оба через один и тот же
- * лёгкий `puppeteer-core` (без бандла собственного Chromium — на
- * Vercel serverless-функции ограничены по размеру, полный `puppeteer`
- * с бандлом Chromium туда возить нет смысла):
- *
- * 1. Vercel/production: `@sparticuz/chromium` — Chromium-сборка,
- *    спроектированная специально под serverless (маленькая, статично
- *    слинкована под Amazon Linux, на котором и работают функции
- *    Vercel). Определяем среду по `process.env.VERCEL` (стандартная
- *    переменная, которую сама платформа выставляет во всех функциях).
- * 2. Локально / GitHub Codespaces: явный путь к уже существующему
- *    Chromium через `PUPPETEER_EXECUTABLE_PATH` (стандартное для
- *    puppeteer-core имя переменной). В этом репозитории Chromium для
- *    Playwright уже ставится командой `npx playwright install
- *    chromium` (см. README → Runtime QA) — значение пути обычно можно
- *    получить командой `npx playwright install --dry-run chromium`
- *    или найти в `~/.cache/ms-playwright/chromium-*/chrome-linux/chrome`.
- *    Если переменная не задана, пробуем несколько частых системных
- *    путей как запасной вариант, иначе — понятная ошибка вместо
- *    невнятного краша Puppeteer.
- */
+// Launches headless Chromium for /api/pdf.
+//
+// Two environments, two ways to find the binary, both through the same
+// lightweight puppeteer-core (no bundled Chromium of its own):
+//
+// 1. Vercel/production: @sparticuz/chromium, a Chromium build made for
+//    serverless functions. Detected via process.env.VERCEL.
+// 2. Local / Codespaces: an explicit path to an already-installed
+//    Chromium via PUPPETEER_EXECUTABLE_PATH (or PDF_CHROMIUM_PATH), or a
+//    few common system paths as a fallback.
 export async function launchPdfBrowser(): Promise<Browser> {
   if (process.env.VERCEL) {
     const chromium = (await import("@sparticuz/chromium")).default;
@@ -55,11 +41,12 @@ export async function launchPdfBrowser(): Promise<Browser> {
 
   if (!executablePath) {
     throw new Error(
-      "Не найден исполняемый файл Chromium для локального PDF-рендера. " +
-        "Установите переменную окружения PUPPETEER_EXECUTABLE_PATH, указав на " +
-        "уже установленный Chromium (например, путь Playwright из " +
-        "'~/.cache/ms-playwright/chromium-*/chrome-linux/chrome' после " +
-        "'npx playwright install chromium'), либо системный google-chrome/chromium."
+      "No local Chromium executable found for PDF rendering. Set the " +
+        "PUPPETEER_EXECUTABLE_PATH environment variable to point at an " +
+        "installed Chromium (for example, the Playwright path under " +
+        "the ms-playwright cache directory after running " +
+        "npx playwright install chromium), or install a system " +
+        "google-chrome/chromium binary."
     );
   }
 
