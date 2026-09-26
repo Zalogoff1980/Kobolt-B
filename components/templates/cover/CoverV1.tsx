@@ -87,13 +87,17 @@ export function CoverV1({ issue }: { issue: Issue }) {
 
         <EditorialRule className="mt-[4mm]" />
 
-        <div className="mt-[4mm] flex-1">
-          <ContentsBlock entries={contentsEntries} />
-          {/* Блок "Новости" — под списком "В номере", во всю ширину
-              (QA: "синий прямоугольничек, туда мы разместим блок
-              новости"). Рендерится только когда текст заполнен —
-              иначе ничего не добавляет к пустой странице. */}
-          <div className="mt-[5mm]">
+        {/* "В номере" | "Новости" — та же пропорция колонок, что и в
+            hero-строке выше (фото flex-[2.1] + текст flex-1 из HeroMedia),
+            так что список превью выравнивается по правому краю ровно
+            под фото, а новости идут дальше под текстовой колонкой (QA:
+            "выровнять их по правому краю верхней картинки... справа, в
+            освободившемся месте, вставить блок с новостями"). */}
+        <div className="mt-[4mm] flex flex-1 gap-[3mm]">
+          <div className="flex-[2.1]">
+            <ContentsBlock entries={contentsEntries} />
+          </div>
+          <div className="flex-1">
             <NewsBlock rawText={issue.coverNews} />
           </div>
         </div>
