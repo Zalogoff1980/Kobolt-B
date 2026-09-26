@@ -5,6 +5,7 @@ import Link from "next/link";
 import { listIssues, deleteIssue } from "@/lib/db/issues";
 import { Issue } from "@/lib/content/issue";
 import { formatIssueDate } from "@/lib/content/format";
+import { PageThumbnail } from "@/components/editor/PageThumbnail";
 
 const PAGE_COUNT = 4; // формат выпуска фиксирован ТЗ: ровно 4 страницы
 
@@ -85,13 +86,24 @@ export default function HomePage() {
                 data-issue-id={issue.id}
                 className="flex items-center justify-between gap-3 py-3"
               >
-                <div className="min-w-0">
-                  <p data-testid="issue-row-title" className="font-display font-bold uppercase">
-                    Выпуск № {issue.number} — {formatIssueDate(issue.date)}
-                  </p>
-                  <p className="mt-0.5 text-xs text-olive-dim">
-                    {PAGE_COUNT} страницы · изменён {formatUpdatedAt(issue.updatedAt)}
-                  </p>
+                <div className="flex min-w-0 items-center gap-3">
+                  {/* Превью выпуска на начальном экране (QA: "превью
+                      страниц выпусков... брать титульный лист") — тот
+                      же PageThumbnail, что уже используется в списке
+                      страниц редактора, просто страница 1 (обложка).
+                      Один источник рендера (A4Page) — превью здесь
+                      никогда не разойдётся с тем, что реально в
+                      выпуске, само по себе (например, после смены
+                      cover-v1 ↔ cover-v2). */}
+                  <PageThumbnail issue={issue} pageNumber={1} widthPx={48} />
+                  <div className="min-w-0">
+                    <p data-testid="issue-row-title" className="font-display font-bold uppercase">
+                      Выпуск № {issue.number} — {formatIssueDate(issue.date)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-olive-dim">
+                      {PAGE_COUNT} страницы · изменён {formatUpdatedAt(issue.updatedAt)}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-shrink-0 gap-2">
                   <Link
