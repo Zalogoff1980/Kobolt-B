@@ -54,8 +54,14 @@ export function CoverV2({ issue }: { issue: Issue }) {
   return (
     <PageFrame backgroundEngravingId={issue.pages[1].backgroundEngravingId}>
       <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[8mm]">
+        {/* Верхний дивайдер — симметрия с двойной линейкой ПОСЛЕ шапки
+            (QA: "сверху разместить дивайдер... получается небольшой
+            разброд"); без него блок тег-лайн+шапка висел у самого
+            верха страницы ничем не отделённый. */}
+        <EditorialRule />
+
         {/* Тег-лайн */}
-        <div className="flex items-center justify-center gap-[2mm] font-display text-[7px] font-bold uppercase tracking-[0.2em] text-olive-dim">
+        <div className="mt-[4mm] flex items-center justify-center gap-[2mm] font-display text-[7px] font-bold uppercase tracking-[0.2em] text-olive-dim">
           {TAGLINE.map((word, i) => (
             <span key={word} className="flex items-center gap-[2mm]">
               {i > 0 && <span className="text-accent">•</span>}
@@ -73,8 +79,10 @@ export function CoverV2({ issue }: { issue: Issue }) {
             и выровнены строго по верхней границе — items-start плюс
             сами PNG обрезаны по непрозрачной области (без внутренних
             прозрачных полей вокруг рисунка), поэтому object-contain
-            больше не "проседает" вниз с воздухом сверху. */}
-        <div className="mt-[7mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
+            больше не "проседает" вниз с воздухом сверху. Отступ перед
+            блоком увеличен (QA: "спустить ниже") — раньше шапка шла
+            почти вплотную за тег-лайном. */}
+        <div className="mt-[10mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
           <Emblem
             imageSrc="/emblems/emblem-tank-corps.png"
             label="Танковые войска"
