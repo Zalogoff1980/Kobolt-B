@@ -1,13 +1,4 @@
-/** Разбивает сырой многострочный текст на отдельные новости — каждая
- *  непустая строка (после переноса) становится одной короткой
- *  заметкой. Пустые строки (лишние переносы при наборе) не создают
- *  пустых записей. */
-function splitNews(raw: string): string[] {
-  return raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
-}
+import { splitLines } from "@/lib/content/textLines";
 
 /**
  * Блок "Новости" на обложке (cover-v1/v2) — небольшая колонка справа от
@@ -23,7 +14,7 @@ function splitNews(raw: string): string[] {
  * не рендерится вовсе (ничего не выдумываем).
  */
 export function NewsBlock({ rawText }: { rawText?: string | null }) {
-  const items = splitNews(rawText ?? "");
+  const items = splitLines(rawText ?? "");
   if (items.length === 0) return null;
 
   return (

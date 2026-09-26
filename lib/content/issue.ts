@@ -60,6 +60,19 @@ export type Issue = {
    *  отрисовке (см. NewsBlock.tsx). Опционально — старые Issue без
    *  этого поля остаются валидными без миграции. */
   coverNews?: string | null;
+  /** Блок "День в истории" на обложке cover-v2 ("Боевой листок") —
+   *  заменяет собой текстовый список "В номере" в ContentsGrid (найдено
+   *  QA: список заголовков страниц слева и подписи под миниатюрами
+   *  справа в одном блоке дублировали друг друга — "два одинаковых
+   *  блока в разной степени содержания"). Миниатюры страниц справа
+   *  остаются как есть (там уже есть подписи-заголовки — второй раз их
+   *  показывать слева было незачем), а освободившееся место занимают
+   *  исторические факты дня выпуска. Как и coverNews — намеренно НЕ
+   *  часть ContentBlock/PageContent страницы 1, сырой текст, каждая
+   *  непустая строка — один факт (см. splitLines в lib/content/textLines.ts,
+   *  общий разбор для этого поля и для coverNews). Опционально — старые
+   *  Issue без этого поля остаются валидными без миграции. */
+  dayInHistory?: string | null;
 };
 
 export function createIssue(params: { number: string; date: string }): Issue {
@@ -72,6 +85,7 @@ export function createIssue(params: { number: string; date: string }): Issue {
     createdAt: now,
     updatedAt: now,
     coverNews: null,
+    dayInHistory: null,
     pages: {
       1: { content: emptyPageContent(1), templateId: "cover-v1" },
       2: { content: emptyPageContent(2), templateId: null },

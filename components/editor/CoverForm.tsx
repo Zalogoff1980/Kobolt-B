@@ -28,7 +28,12 @@ export function CoverForm({
 }: {
   issue: Issue;
   sections: PageSections;
-  onIssueMetaChange: (patch: { number?: string; date?: string; coverNews?: string | null }) => void;
+  onIssueMetaChange: (patch: {
+    number?: string;
+    date?: string;
+    coverNews?: string | null;
+    dayInHistory?: string | null;
+  }) => void;
   onSectionsChange: (next: PageSections) => void;
 }) {
   return (
@@ -111,6 +116,26 @@ export function CoverForm({
           onChange={(e) => onIssueMetaChange({ coverNews: e.target.value })}
           rows={5}
           placeholder={"Каждая строка — отдельная новость.\nНапример:\nБатальон занял 1-е место на учениях.\nПрибыло новое пополнение техники."}
+        />
+      </div>
+
+      {/* Блок "День в истории" — только у шаблона "Боевой листок"
+          (cover-v2, см. ContentsGrid.tsx): заменяет собой список "В
+          номере", который дублировал подписи под миниатюрами страниц
+          (QA: "два одинаковых блока в разной степени содержания"). Тот
+          же формат ввода, что и у "Новости" — строка через Enter =
+          один факт. Поле показывается всегда (не только когда выбран
+          cover-v2), так же как coverNews не зависит от текущего
+          шаблона обложки — значение сохраняется в Issue независимо от
+          того, какой шаблон сейчас активен. */}
+      <div className="space-y-2">
+        <SectionHeading zone="dayInHistory">День в истории</SectionHeading>
+        <TextArea
+          data-testid="field-day-in-history"
+          value={issue.dayInHistory ?? ""}
+          onChange={(e) => onIssueMetaChange({ dayInHistory: e.target.value })}
+          rows={5}
+          placeholder={"Каждая строка — отдельный факт (используется в шаблоне «Боевой листок»).\nНапример:\nВ этот день в 1943 году началась Курская битва."}
         />
       </div>
     </div>
