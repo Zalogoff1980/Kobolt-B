@@ -43,7 +43,12 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
   const { cols, heightMm } = gridLayout(photos.length);
 
   return (
-    <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
+    <InnerPageShell
+      pageNumber={pageNumber}
+      issueNumber={issue.number}
+      issueDate={issue.date}
+      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+    >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
       <div className="mt-[5mm]">

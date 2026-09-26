@@ -21,7 +21,12 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
   const hasBodyText = Boolean(lead) || paragraphs.length > 0;
 
   return (
-    <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
+    <InnerPageShell
+      pageNumber={pageNumber}
+      issueNumber={issue.number}
+      issueDate={issue.date}
+      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+    >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
       <div className="mt-[5mm] grid grid-cols-[1fr_76mm] items-start gap-[6mm]">

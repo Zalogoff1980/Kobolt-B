@@ -46,7 +46,7 @@ export function CoverV1({ issue }: { issue: Issue }) {
     });
 
   return (
-    <PageFrame>
+    <PageFrame backgroundEngravingId={issue.pages[1].backgroundEngravingId}>
       {/* Фоновая гравюрная иллюстрация (ТЗ п.11) — композиционный якорь
           нижней части страницы, когда материала мало (ТЗ п.4). Показываем
           её, только если фото уже занимает hero-блок: если фото ещё нет,

@@ -53,7 +53,12 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
   );
 
   return (
-    <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
+    <InnerPageShell
+      pageNumber={pageNumber}
+      issueNumber={issue.number}
+      issueDate={issue.date}
+      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+    >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
       {photo ? (

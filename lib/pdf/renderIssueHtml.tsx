@@ -2,6 +2,7 @@ import { Issue } from "@/lib/content/issue";
 import { A4Page } from "@/components/canvas/A4Page";
 import { buildTailwindCssForHtml } from "./buildTailwindCss";
 import { getEmbeddedFontCss } from "./googleFonts";
+import { inlineEngravingImages } from "./inlineStaticImages";
 
 /**
  * Единственное место, которое превращает Issue в HTML-документ для
@@ -31,13 +32,20 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
   // "SSR внутри Route Handler" (PDF/email-рендер и т.п.).
   const { renderToStaticMarkup } = await import("react-dom/server");
 
-  const pagesMarkup = ([1, 2, 3, 4] as const)
+  const rawPagesMarkup = ([1, 2, 3, 4] as const)
     .map((n, i) => {
       const inner = renderToStaticMarkup(<A4Page issue={issue} pageNumber={n} />);
       const isLast = i === 3;
       return `<div class="pdf-page-wrap"${isLast ? "" : ' style="page-break-after: always;"'}>${inner}</div>`;
     })
     .join("\n");
+
+  // Background engravings (BackgroundEngraving.tsx) reference static
+  // files under public/engravings/ by path — resolve those to base64
+  // before Tailwind scans the markup (doesn't affect scanning either
+  // way, but keeps the two passes clearly separated: content first,
+  // then styling).
+  const pagesMarkup = await inlineEngravingImages(rawPagesMarkup);
 
   const [tailwindCss, fontCss] = await Promise.all([
     buildTailwindCssForHtml(pagesMarkup),

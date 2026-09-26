@@ -1,30 +1,28 @@
 import { PageContent, PageNumber, emptyPageContent } from "./types";
 
 /**
- * PRIORITY 6 — архитектурная подготовка (без реализации): разделение
- * "что и как расположено" (Layout Template) и "что нарисовано на фоне"
- * (Background Engraving) — это НЕ два независимых поля прямо сейчас
- * (реализация нескольких сотен вариантов гравюр — отдельный, более
- * поздний этап, явно отложенный в ТЗ), а фиксация будущей формы:
+ * PRIORITY 6 — разделение "что и как расположено" (Layout Template) и
+ * "что нарисовано на фоне" (Background Engraving):
  *
  *   Issue
  *    └── Page
  *         ├── Layout Template   — grid/placement/content zones/columns/
  *         │                       photo & text areas/размеры — то,
- *         │                       чем СЕГОДНЯ уже управляет templateId.
+ *         │                       чем управляет templateId.
  *         ├── Content           — PageContent (blocks) — не меняется.
  *         └── Background Engraving — ТОЛЬКО фоновая иллюстрация/
  *                                     декоративная композиция; никогда
  *                                     не влияет на layout/content и
- *                                     наоборот.
+ *                                     наоборот (см. BackgroundEngraving.tsx
+ *                                     и components/decorative/engravings/registry.tsx).
  *
- * `backgroundEngravingId` — зарезервированное, пока всегда `null`/не
- * читаемое ничем поле. Как только появится реальная библиотека
- * гравюр (~16 вариантов, отложено), сюда добавится её выбор, точно
- * так же отдельно от templateId, как templateId сегодня отделён от
- * content (см. комментарий поля ниже) — само появление этого поля не
- * требует менять ни один существующий шаблон или сохранённый Issue:
- * его отсутствие в старых записях IndexedDB равносильно `null`. */
+ * `backgroundEngravingId` — сейчас реализовано для страницы 1
+ * (обложка, 4 готовых варианта — components/decorative/engravings/coverArt.tsx),
+ * страницы 2–4 пока не имеют доступных вариантов (полная библиотека
+ * абстрактных line-art мотивов подготовлена в motifs.tsx, но
+ * сознательно не подключена — следующий этап). Поле опционально, чтобы
+ * уже сохранённые в IndexedDB Issue (без этого поля вовсе) оставались
+ * валидными без миграции — его отсутствие равносильно `null`. */
 export type PageState = {
   content: PageContent;
   /** Layout Template этой страницы — grid/placement/content
@@ -32,10 +30,9 @@ export type PageState = {
    *  Хранится ОТДЕЛЬНО от PageContent (корректировка №4) — смена
    *  шаблона переписывает только это поле, массив blocks не трогается. */
   templateId: string | null;
-  /** PRIORITY 6, задел на будущее — см. комментарий типа выше.
-   *  Не читается и не пишется нигде в текущем коде; опционально,
-   *  чтобы уже сохранённые в IndexedDB Issue (без этого поля вовсе)
-   *  оставались валидными без миграции. */
+  /** PRIORITY 6 — см. комментарий типа выше. Хранится и меняется
+   *  ОТДЕЛЬНО от templateId и content: EngravingPicker (редактор)
+   *  переписывает только это поле, ничего больше. */
   backgroundEngravingId?: string | null;
 };
 

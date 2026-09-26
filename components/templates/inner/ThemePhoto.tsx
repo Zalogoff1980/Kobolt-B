@@ -21,7 +21,12 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
   const quote = quotes[0];
 
   return (
-    <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
+    <InnerPageShell
+      pageNumber={pageNumber}
+      issueNumber={issue.number}
+      issueDate={issue.date}
+      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+    >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
       <div data-zone="photo" className="relative mt-[5mm] h-[105mm] overflow-hidden bg-olive/10">

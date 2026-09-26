@@ -13,15 +13,17 @@ export function InnerPageShell({
   pageNumber,
   issueNumber,
   issueDate,
+  backgroundEngravingId = null,
   children,
 }: {
   pageNumber: number;
   issueNumber: string;
   issueDate: string;
+  backgroundEngravingId?: string | null;
   children: ReactNode;
 }) {
   return (
-    <PageFrame>
+    <PageFrame backgroundEngravingId={backgroundEngravingId}>
       <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[10mm]">
         <InnerHeader pageNumber={pageNumber} issueNumber={issueNumber} issueDate={issueDate} />
         <div className="mt-[5mm] flex-1">{children}</div>

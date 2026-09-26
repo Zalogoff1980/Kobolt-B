@@ -33,7 +33,12 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
   const photoHeight = railPhotoHeight(railPhotos.length);
 
   return (
-    <InnerPageShell pageNumber={pageNumber} issueNumber={issue.number} issueDate={issue.date}>
+    <InnerPageShell
+      pageNumber={pageNumber}
+      issueNumber={issue.number}
+      issueDate={issue.date}
+      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+    >
       <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
       <div className="mt-[5mm] grid grid-cols-[1fr_58mm] items-start gap-[6mm]">

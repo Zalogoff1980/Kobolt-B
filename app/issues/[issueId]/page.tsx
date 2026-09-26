@@ -9,6 +9,7 @@ import { PagePreviewScaler } from "@/components/canvas/PagePreviewScaler";
 import { EditorTopBar } from "@/components/editor/EditorTopBar";
 import { PageList } from "@/components/editor/PageList";
 import { TemplatePicker } from "@/components/editor/TemplatePicker";
+import { EngravingPicker } from "@/components/editor/EngravingPicker";
 import { CoverForm } from "@/components/editor/CoverForm";
 import { InnerPageForm } from "@/components/editor/InnerPageForm";
 import { ContentZoneOverlay } from "@/components/editor/guides/ContentZoneOverlay";
@@ -81,6 +82,21 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     });
   }
 
+  // Меняет ТОЛЬКО backgroundEngravingId — content, templateId и всё
+  // остальное состояние страницы остаётся байт-в-байт тем же самым
+  // объектом (spread ...issue!.pages[activePage]), поэтому смена (или
+  // сброс на "Нет") фоновой гравюры физически не может задеть текст,
+  // фото или раскладку (PRIORITY 6).
+  function handleEngravingChange(engravingId: string | null) {
+    persist({
+      ...issue!,
+      pages: {
+        ...issue!.pages,
+        [activePage]: { ...issue!.pages[activePage], backgroundEngravingId: engravingId },
+      },
+    });
+  }
+
   function handleIssueMetaChange(patch: { number?: string; date?: string }) {
     persist({ ...issue!, ...patch });
   }
@@ -116,6 +132,14 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
               pageNumber={activePage}
               currentTemplateId={issue.pages[activePage].templateId}
               onChange={handleTemplateChange}
+            />
+          </div>
+
+          <div className="mt-4 border-t border-ink/10 pt-4">
+            <EngravingPicker
+              pageNumber={activePage}
+              currentEngravingId={issue.pages[activePage].backgroundEngravingId}
+              onChange={handleEngravingChange}
             />
           </div>
 
