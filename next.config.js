@@ -17,8 +17,13 @@ const nextConfig = {
     // seen on the real Vercel deployment. This explicitly forces the
     // whole @sparticuz/chromium package directory into the /api/pdf
     // function's bundle.
+    // The key is a route-path glob (matched against the request path,
+    // not the source file path) — using "app/api/pdf/route.ts" here
+    // previously matched nothing, so the include had no effect. "/api/**"
+    // matches every API route, which safely covers /api/pdf regardless
+    // of the exact matching convention Next.js expects.
     outputFileTracingIncludes: {
-      "app/api/pdf/route.ts": ["./node_modules/@sparticuz/chromium/**/*"],
+      "/api/**": ["./node_modules/@sparticuz/chromium/**/*"],
     },
   },
 };
