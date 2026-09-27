@@ -25,9 +25,16 @@ export function ArticleTitle({
   const heading = (
     <div>
       {title && (
+        // Межстрочный интервал и отступ до h2 приведены к образцу
+        // страницы 1 (QA: "образец 1 стр" — hero-заголовок обложки,
+        // components/templates/cover/HeroMedia.tsx, leading-snug вместо
+        // leading-[1.6]: "стандартное правило 1.6×кегль рассчитано на
+        // связный текст абзаца, а не на короткий многострочный
+        // заголовок-акцент"). Тот же принцип — единый для всех
+        // заголовков h1/h2, а не только для обложки.
         <h1
           data-zone="h1"
-          className="font-display text-[33px] font-bold uppercase leading-[1.6] tracking-tight text-ink"
+          className="font-display text-[33px] font-bold uppercase leading-snug tracking-tight text-ink"
         >
           {title}
         </h1>
@@ -35,7 +42,7 @@ export function ArticleTitle({
       {subtitle && (
         <h2
           data-zone="h2"
-          className="mt-[1.5mm] font-display text-[23px] font-bold uppercase leading-[1.6] tracking-wide text-olive"
+          className="mt-[2mm] font-display text-[23px] font-bold uppercase leading-snug tracking-wide text-olive"
         >
           {subtitle}
         </h2>
