@@ -76,7 +76,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
                 тот же что и справа") — симметричный угловой отступ
                 внутри фото, вне зависимости от подписи под фото. */}
             {quotes.length > 0 && (
-              <div className="absolute bottom-[4mm] right-[4mm] max-w-[65%] space-y-[2mm]">
+              <div className="absolute bottom-[2mm] right-[2mm] max-w-[65%] space-y-[2mm]">
                 {quotes.map((q) => (
                   <div
                     key={q.id}

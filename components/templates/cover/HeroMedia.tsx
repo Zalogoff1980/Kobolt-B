@@ -71,7 +71,7 @@ export function HeroMedia({
             справа") — симметричный угловой отступ внутри фото, вне
             зависимости от того, есть ли подпись под фото. */}
         {quotes && quotes.length > 0 && (
-          <div className="absolute bottom-[4mm] right-[4mm] max-w-[65%] space-y-[2mm]">
+          <div className="absolute bottom-[2mm] right-[2mm] max-w-[65%] space-y-[2mm]">
             {quotes.map((quote) => (
               <div
                 key={quote.id}
