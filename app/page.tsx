@@ -34,31 +34,26 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper p-8 font-body text-ink">
-      <div className="mx-auto max-w-2xl">
-        {/* Временная примерка фирменного логотипа (asset без альфа-канала,
-            фон почти идентичен токену paper — контейнер намеренно не
-            перекрашивается отдельно, дашборд и так на bg-paper, поэтому
-            шов не виден без обработки пикселей самого логотипа).
-            h1 оставлен как sr-only — тот же видимый текст "КОБОЛЬТ-Б",
-            что и раньше, просто не глазами: доступность для скринридеров
-            и не ломает существующую проверку dashboard.spec.ts. */}
-        <h1 className="sr-only">КОБОЛЬТ-Б</h1>
+    <main className="min-h-screen bg-paper pb-28 font-body text-ink">
+      {/* Логотип — строго по центру, у самого верха экрана (QA: "строго
+          по центру сверху экрана"), а не прижат к левому краю вместе
+          с остальным контентом. Новая квадратная версия логотипа
+          (kobolt-b-logo-v2) — фон почти идентичен токену paper,
+          отдельно не перекрашиваем контейнер. h1 оставлен как sr-only —
+          тот же видимый текст "КОБОЛЬТ-Б", что и раньше, просто не
+          глазами: доступность для скринридеров и не ломает
+          существующую проверку dashboard.spec.ts. */}
+      <h1 className="sr-only">КОБОЛЬТ-Б</h1>
+      <div className="flex justify-center pt-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/brand/kobolt-b-logo.png"
+          src="/brand/kobolt-b-logo-v2.png"
           alt="КОБОЛЬТ-Б — конструктор боевого листка танкового батальона"
-          className="h-24 w-auto sm:h-32"
+          className="h-28 w-auto sm:h-36"
         />
+      </div>
 
-        <Link
-          href="/issues/new"
-          data-testid="create-issue-link"
-          className="mt-6 inline-block bg-accent px-4 py-2 font-display font-bold tracking-wide text-paper"
-        >
-          + Создать выпуск
-        </Link>
-
+      <div className="mx-auto max-w-2xl p-8 pt-4">
         <div className="mt-8 border-t border-ink/20 pt-6">
           <h2 className="font-display text-sm font-bold uppercase tracking-wide text-olive">
             Выпуски
@@ -124,6 +119,22 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
+        </div>
+      </div>
+
+      {/* Кнопка "Создать выпуск" закреплена внизу экрана (QA: "кнопку
+          создать выпуск внизу экрана ставим, чтоб удобней было" — на
+          телефоне это ближе к большому пальцу, чем верх страницы, где
+          она была раньше). */}
+      <div className="fixed inset-x-0 bottom-0 border-t border-ink/10 bg-paper/95 p-4 backdrop-blur-sm">
+        <div className="mx-auto max-w-2xl">
+          <Link
+            href="/issues/new"
+            data-testid="create-issue-link"
+            className="block bg-accent px-4 py-3 text-center font-display font-bold tracking-wide text-paper"
+          >
+            + Создать выпуск
+          </Link>
         </div>
       </div>
 
