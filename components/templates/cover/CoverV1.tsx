@@ -111,6 +111,11 @@ export function CoverV1({ issue }: { issue: Issue }) {
             <NewsBlock rawText={issue.coverNews} />
           </div>
         </div>
+
+        {/* Дивайдер внизу страницы (QA: "выполни дивайдер снизу каждой
+            страницы. Такой же как сверху") — та же двойная линейка,
+            что открывает шапку сверху. */}
+        <EditorialRule variant="double" className="mt-[4mm]" />
       </div>
     </PageFrame>
   );

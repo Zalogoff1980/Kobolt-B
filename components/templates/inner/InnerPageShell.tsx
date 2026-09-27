@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { PageFrame } from "@/components/canvas/PageFrame";
 import { InnerHeader } from "./InnerHeader";
+import { EditorialRule } from "@/components/shared/EditorialRule";
 
 /**
  * Общая оболочка внутренней страницы: PageFrame + постоянная шапка +
@@ -35,6 +36,11 @@ export function InnerPageShell({
             своя, более высокая шапка), так что плотность здесь не должна
             быть один в один такой же. */}
         <div className="mt-[8mm] flex-1">{children}</div>
+        {/* Дивайдер внизу страницы (QA: "выполни дивайдер снизу каждой
+            страницы. Такой же как сверху") — та же двойная линейка,
+            что закрывает шапку сверху (InnerHeader), теперь закрывает
+            страницу и снизу. */}
+        <EditorialRule variant="double" className="mt-[4mm]" />
       </div>
     </PageFrame>
   );
