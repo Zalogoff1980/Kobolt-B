@@ -112,25 +112,42 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                 )}
               </figure>
 
-              <div className="mt-[4mm] flex flex-1 flex-col justify-center">
+              {/* Порядок в этом шаблоне (QA: "сначала цитата потом
+                  текст") — цитата, затем лид/абзацы. Без justify-center
+                  (QA: "текстовый блок подтянуть выше, выровнять с Наши
+                  именинники") — блок начинается сразу после фото тем же
+                  отступом mt-[4mm], что и колонка "Наши именинники"
+                  справа, поэтому верх обоих блоков совпадает. */}
+              <div className="mt-[4mm] flex flex-1 flex-col">
+                {quotes.length > 0 && (
+                  <div className="space-y-[3mm]">
+                    {quotes.map((q) => (
+                      <PullQuote key={q.id} text={q.text} author={q.author} />
+                    ))}
+                  </div>
+                )}
                 {lead && (
-                  <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
+                  // Межстрочный интервал вводного абзаца уменьшен (QA:
+                  // "уменьшить межстрочное") — было leading-[1.6].
+                  <p
+                    data-zone="lead"
+                    className={`font-body text-[19px] font-bold leading-snug text-ink ${
+                      quotes.length > 0 ? "mt-[4mm]" : ""
+                    }`}
+                  >
                     {lead.text}
                   </p>
                 )}
                 {paragraphs.length > 0 && (
-                  <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+                  <div
+                    className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${
+                      lead || quotes.length > 0 ? "mt-[3mm]" : ""
+                    }`}
+                  >
                     {paragraphs.map((p) => (
                       <p key={p.id} data-zone="paragraph" className="font-body">
                         {p.text}
                       </p>
-                    ))}
-                  </div>
-                )}
-                {quotes.length > 0 && (
-                  <div className={`space-y-[3mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
-                    {quotes.map((q) => (
-                      <PullQuote key={q.id} text={q.text} author={q.author} />
                     ))}
                   </div>
                 )}
