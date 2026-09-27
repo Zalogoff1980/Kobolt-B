@@ -223,19 +223,26 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
               </div>
             )}
 
-            {/* Размер строки увеличен (QA: "строчка с достижениями...
-                очень мелко") — было text-[8px], тот же кегль, что и
-                мелкие технические подписи (например, подпись под
-                значком награды), а не читаемый текст уровня остальной
-                статьи. */}
+            {/* Разделитель перед достижениями (QA: "после наград
+                горизонтальный разделитель") — тонкая линия + отступ,
+                тот же приём, что и между записями "День в истории"/
+                "Новости" на обложке, вместо голого margin-top.
+                Заголовок "Достижения:" тем же шрифтом/размером, что и
+                "Награждён:" у наград выше (QA: "тем же шрифтом что
+                Награждён"); сама строка достижения увеличена до 16px
+                (QA: "шрифт покрупней, 12pt" — 12pt ≈ 16px, тот же
+                кегль, что и у обычного абзаца статьи). */}
             {achievements.length > 0 && (
               <div
                 data-zone="achievement"
-                className={lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}
+                className="mt-[4mm] border-t border-ink/15 pt-[3mm]"
               >
-                <ul className="space-y-[2mm]">
+                <p className="font-display text-[15px] font-bold uppercase leading-none tracking-wide text-olive">
+                  Достижения:
+                </p>
+                <ul className="mt-[2mm] space-y-[2mm]">
                   {achievements.map((a) => (
-                    <li key={a.id} className="flex items-baseline gap-[2mm] font-body text-[13px] leading-snug text-ink/90">
+                    <li key={a.id} className="flex items-baseline gap-[2mm] font-body text-[16px] leading-snug text-ink/90">
                       <span className="text-accent">—</span>
                       <span>{a.text}</span>
                     </li>
