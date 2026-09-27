@@ -154,14 +154,22 @@ export function ContentZoneOverlay({
           key={z.key}
           data-testid="content-zone"
           data-zone-overflow={z.overflow}
+          // Переполненная зона раньше подсвечивалась "accent" —
+          // фирменным красным, тем же, что и предупреждающая плашка
+          // внизу страницы. QA: "красный воспринимается как ошибка...
+          // заменить на спокойный цвет" — это оверлей РЕДАКТОРА
+          // (никогда не в preview/PDF, см. комментарий класса выше),
+          // не сама публикация, поэтому смысла в тревожном красном
+          // здесь нет — используем отдельный "zone-alert" (спокойный
+          // холодный синий), логика/геометрия зон не меняется.
           className={`absolute border border-dashed ${
-            z.overflow ? "border-accent" : "border-olive-dim/40"
+            z.overflow ? "border-zone-alert" : "border-olive-dim/40"
           }`}
           style={{ top: z.top, left: z.left, width: z.width, height: z.height }}
         >
           <span
             className={`absolute -top-[11px] left-0 whitespace-nowrap font-display text-[7px] font-bold uppercase tracking-wide ${
-              z.overflow ? "text-accent" : "text-olive-dim/80"
+              z.overflow ? "text-zone-alert" : "text-olive-dim/80"
             }`}
           >
             {z.label}

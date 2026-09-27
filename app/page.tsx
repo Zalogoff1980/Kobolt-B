@@ -34,34 +34,54 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-28 font-body text-ink">
+    <main className="flex h-screen flex-col bg-paper font-body text-ink">
       {/* Логотип — строго по центру, у самого верха экрана (QA: "строго
           по центру сверху экрана"), а не прижат к левому краю вместе
-          с остальным контентом. Увеличен в полтора раза (QA: "увеличить
-          раза в полтора" — было h-28/h-36, стало h-[10.5rem]/h-[13.5rem]).
-          Обычный normal-режим наложения (QA: "ставь это и режим
-          наложения normal" — multiply и overlay не подошли, финальная
-          версия картинки без смешения с фоном). h1 оставлен как
-          sr-only — тот же видимый текст "КОБОЛЬТ-Б",
-          что и раньше, просто не глазами: доступность для
-          скринридеров и не ломает существующую проверку
-          dashboard.spec.ts. */}
-      <h1 className="sr-only">КОБОЛЬТ-Б</h1>
-      <div className="flex justify-center pt-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/brand/kobolt-b-logo-v3.png"
-          alt="КОБОЛЬТ-Б — конструктор боевого листка танкового батальона"
-          className="h-[10.5rem] w-auto mix-blend-normal sm:h-[13.5rem]"
-        />
+          с остальным контентом. Увеличен ещё в полтора раза сверх
+          прежнего размера (QA: "увеличить примерно до 150% от текущего
+          размера" — было h-[10.5rem]/h-[13.5rem], стало h-[15.75rem]/
+          h-[20.25rem]). Обычный normal-режим наложения (QA: "ставь это
+          и режим наложения normal" — multiply и overlay не подошли,
+          финальная версия картинки без смешения с фоном). h1 оставлен
+          как sr-only — тот же видимый текст "КОБОЛЬТ-Б", что и раньше,
+          просто не глазами: доступность для скринридеров и не ломает
+          существующую проверку dashboard.spec.ts.
+
+          Логотип + заголовок "Выпуски" + разделитель ниже вынесены в
+          отдельный flex-shrink-0 блок ВНЕ прокручиваемой области (QA:
+          "список выпусков должен прокручиваться независимо, при этом
+          визуально уходить/скрываться ПОД верхним divider... карточки
+          не должны наезжать на него"). Раньше вся страница была одним
+          общим потоком (body/main целиком скроллился) — весь экран
+          лежит в flex-col на h-screen, шапка ниже не резиновая
+          (flex-shrink-0), а список живёт в СВОЁМ overflow-y-auto
+          контейнере — физически отдельная область прокрутки не может
+          наложиться на шапку выше, а не просто визуально "спрятана"
+          z-index-трюком. */}
+      <div className="flex-shrink-0">
+        <h1 className="sr-only">КОБОЛЬТ-Б</h1>
+        <div className="flex justify-center pt-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/kobolt-b-logo-v3.png"
+            alt="КОБОЛЬТ-Б — конструктор боевого листка танкового батальона"
+            className="h-[15.75rem] w-auto mix-blend-normal sm:h-[20.25rem]"
+          />
+        </div>
+        <div className="mx-auto max-w-2xl px-8 pt-4">
+          <div className="mt-8 border-t border-ink/20 pt-6">
+            <h2 className="font-display text-sm font-bold uppercase tracking-wide text-olive">
+              Выпуски
+            </h2>
+          </div>
+        </div>
       </div>
 
-      <div className="mx-auto max-w-2xl p-8 pt-4">
-        <div className="mt-8 border-t border-ink/20 pt-6">
-          <h2 className="font-display text-sm font-bold uppercase tracking-wide text-olive">
-            Выпуски
-          </h2>
-
+      {/* Прокручиваемая область — своя, независимая от шапки выше (см.
+          комментарий там же). pb-28 сохраняет прежний зазор от
+          закреплённой снизу кнопки "Создать выпуск". */}
+      <div className="flex-1 overflow-y-auto pb-28">
+        <div className="mx-auto max-w-2xl px-8 pt-2">
           {issues === null && <p className="mt-2 text-olive-dim">Загрузка…</p>}
 
           {issues?.length === 0 && (
@@ -95,7 +115,17 @@ export default function HomePage() {
                       cover-v1 ↔ cover-v2). */}
                   <PageThumbnail issue={issue} pageNumber={1} widthPx={48} />
                   <div className="min-w-0">
-                    <p data-testid="issue-row-title" className="font-display font-bold uppercase">
+                    {/* Компактнее (QA: "уменьшить размер шрифта,
+                        межстрочное расстояние, сохранить иерархию") —
+                        было без явного размера (унаследованный ~16px
+                        браузерный) и обычного line-height; text-sm +
+                        leading-tight держат её визуально крупнее и
+                        жирнее подписи ниже (сохранена иерархия), но
+                        сама строка теперь не растягивает высоту карточки. */}
+                    <p
+                      data-testid="issue-row-title"
+                      className="font-display text-sm font-bold uppercase leading-tight"
+                    >
                       Выпуск № {issue.number} — {formatIssueDate(issue.date)}
                     </p>
                     <p className="mt-0.5 text-xs text-olive-dim">
