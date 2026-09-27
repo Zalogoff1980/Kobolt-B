@@ -13,10 +13,12 @@
  * — AwardOption.id используется как элемент массива photo.awardIds, а
  * не как единственное значение поля.
  *
- * Сейчас каталог пуст — файлы значков ещё не предоставлены. Как только
- * пользователь пришлёт изображения наград, каждая добавляется сюда тем
- * же приёмом, что и гравюры страниц 3–4: файл в public/awards/<id>.png
- * (или .jpg), запись в AWARD_OPTIONS с человекочитаемым label.
+ * Первые 4 награды предоставлены пользователем напрямую (как и гравюры
+ * страниц 3–4) — фото медали/ордена на однотонном фоне, обрезанные по
+ * содержимому и уменьшенные до иконочного размера. Как только появятся
+ * ещё, каждая добавляется сюда тем же приёмом: файл в
+ * public/awards/<id>.jpg (или .png), запись в AWARD_OPTIONS с
+ * человекочитаемым label.
  */
 export type AwardOption = {
   id: string;
@@ -28,7 +30,16 @@ export type AwardOption = {
   src: string;
 };
 
-export const AWARD_OPTIONS: AwardOption[] = [];
+export const AWARD_OPTIONS: AwardOption[] = [
+  { id: "award-georgiy-zhukov", label: "Медаль «Георгий Жуков»", src: "/awards/award-georgiy-zhukov.jpg" },
+  { id: "award-za-otvagu", label: "Медаль «За отвагу»", src: "/awards/award-za-otvagu.jpg" },
+  {
+    id: "award-za-boevye-otlichiya",
+    label: "Медаль «За боевые отличия»",
+    src: "/awards/award-za-boevye-otlichiya.jpg",
+  },
+  { id: "award-order-muzhestva", label: "Орден Мужества", src: "/awards/award-order-muzhestva.jpg" },
+];
 
 export function awardById(id: string): AwardOption | undefined {
   return AWARD_OPTIONS.find((a) => a.id === id);
