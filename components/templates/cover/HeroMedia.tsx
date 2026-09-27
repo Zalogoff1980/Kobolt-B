@@ -39,10 +39,18 @@ export function HeroMedia({
   );
 
   return (
-    <div className="flex gap-[3mm]" style={{ height: "96mm" }}>
+    // Без фиксированной высоты на всей строке (QA: "цитата наехала на
+    // новости" — при большом количестве текста/цитат в боковой колонке
+    // контент вылезал за пределы фиксированных 96мм и накладывался на
+    // следующий блок страницы, т.к. фото внутри было обрезано
+    // overflow-hidden, а колонка с текстом — нет). Высота 96мм теперь
+    // задана только самому фото; строка в целом растягивается по
+    // высоте более высокого из двух — фото или колонки, — и соседний
+    // блок ниже просто сдвигается вниз, а не перекрывается.
+    <div className="flex gap-[3mm]">
       <div
         data-zone="photo"
-        className={`relative overflow-hidden bg-olive/10 ${hasSideColumn ? "flex-[2.1]" : "flex-1"}`}
+        className={`relative h-[96mm] overflow-hidden bg-olive/10 ${hasSideColumn ? "flex-[2.1]" : "flex-1"}`}
       >
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -69,7 +77,13 @@ export function HeroMedia({
         // justify-center колонка по умолчанию прижата к началу (верху).
         <div className="flex flex-1 flex-col gap-0">
           {headline && (
-            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-[1.6]">
+            // Межстрочный интервал уменьшен (QA: "слишком разлетелось") —
+            // стандартное правило 1,6×кегль рассчитано на связный текст
+            // абзаца, а не на короткий многострочный заголовок-акцент:
+            // при двух строках 19px оно давало заметно больше воздуха
+            // между строками, чем внутри самих букв. leading-snug (1.375)
+            // визуально плотнее, оставаясь читаемым.
+            <h2 data-zone="h1" className="font-display text-[19px] font-bold uppercase leading-snug">
               {headline.lines.map((line) => (
                 <span key={line.text} className={line.accent ? "text-accent" : ""}>
                   {line.text}
@@ -86,7 +100,7 @@ export function HeroMedia({
           {subtitle && (
             <p
               data-zone="h2"
-              className={`font-display text-[13px] font-bold uppercase leading-[1.6] tracking-wide text-olive-dim ${
+              className={`font-display text-[13px] font-bold uppercase leading-snug tracking-wide text-olive-dim ${
                 headline ? "mt-[4mm]" : ""
               }`}
             >
