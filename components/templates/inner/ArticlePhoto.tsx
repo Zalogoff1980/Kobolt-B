@@ -69,21 +69,18 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
                 Правый нижний угол") — раньше шла отдельным блоком под
                 фото или в левой колонке; теперь фото всегда несёт
                 цитату на себе, вместо пустого места под ним. Плашка
-                полупрозрачная (белый с 80% прозрачностью, т.е. 20%
-                непрозрачности), текст тёмный — на светлой подложке
-                акцентный белый текст был бы нечитаем. Если под фото
-                уже есть подпись (caption), цитата поднята выше неё,
-                чтобы не наслаиваться. */}
+                почти непрозрачная, ближе к чисто белому (QA: "цвет
+                плашки ближе к белому" — первая попытка на 20%
+                непрозрачности была слишком прозрачной), текст тёмный.
+                Отступ снизу равен отступу справа (QA: "отступ снизу
+                тот же что и справа") — симметричный угловой отступ
+                внутри фото, вне зависимости от подписи под фото. */}
             {quotes.length > 0 && (
-              <div
-                className={`absolute right-[4mm] max-w-[65%] space-y-[2mm] ${
-                  photo?.caption ? "bottom-[14mm]" : "bottom-[4mm]"
-                }`}
-              >
+              <div className="absolute bottom-[4mm] right-[4mm] max-w-[65%] space-y-[2mm]">
                 {quotes.map((q) => (
                   <div
                     key={q.id}
-                    className="border-l-2 border-accent bg-white/20 px-[3mm] py-[2.5mm] backdrop-blur-sm"
+                    className="border-l-2 border-accent bg-white/95 px-[3mm] py-[2.5mm]"
                   >
                     <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
                       {q.text}

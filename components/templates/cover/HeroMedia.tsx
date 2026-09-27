@@ -63,22 +63,20 @@ export function HeroMedia({
         {/* Цитата — врезкой в тело фото, правый нижний угол (QA:
             "к цитате применить правило быть в теле фотографии. Правый
             нижний угол" — раньше шла отдельным блоком в текстовой
-            колонке справа). Плашка полупрозрачная (белый с 80%
-            прозрачностью, т.е. 20% непрозрачности), текст тёмный — на
-            светлой подложке акцентный тёмный текст читается, а не
-            наоборот. Если есть подпись под фото (caption), цитата
-            поднята выше неё, чтобы не наслаиваться. */}
+            колонке справа). Плашка почти непрозрачная, ближе к чисто
+            белому (QA: "цвет плашки ближе к белому" — первая попытка
+            на 20% непрозрачности была слишком прозрачной, фото
+            просвечивало и текст терялся), текст тёмный. Отступ снизу
+            равен отступу справа (QA: "отступ снизу тот же что и
+            справа") — симметричный угловой отступ внутри фото, вне
+            зависимости от того, есть ли подпись под фото. */}
         {quotes && quotes.length > 0 && (
-          <div
-            className={`absolute right-[4mm] max-w-[65%] space-y-[2mm] ${
-              photo?.caption ? "bottom-[14mm]" : "bottom-[4mm]"
-            }`}
-          >
+          <div className="absolute bottom-[4mm] right-[4mm] max-w-[65%] space-y-[2mm]">
             {quotes.map((quote) => (
               <div
                 key={quote.id}
                 data-zone="quote"
-                className="border-l-2 border-accent bg-white/20 px-[3mm] py-[2.5mm] backdrop-blur-sm"
+                className="border-l-2 border-accent bg-white/95 px-[3mm] py-[2.5mm]"
               >
                 <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
                   {quote.text}
