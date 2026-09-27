@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Oswald, PT_Sans } from "next/font/google";
 import "@/styles/globals.css";
 
@@ -33,6 +33,22 @@ const ptSans = PT_Sans({
 export const metadata: Metadata = {
   title: "КОБОЛЬТ-Б",
   description: "Конструктор внутреннего боевого листка танкового батальона",
+};
+
+// Без этого браузер на мобильном разрешает жест pinch-to-zoom/double-tap
+// зуммировать всю страницу целиком (QA: "нигде не должен быть ресайз
+// страницы кроме как в превью... редактор, стартовая страница жестом не
+// ресайзить") — стартовый экран и редактор верстают фиксированный UI,
+// произвольный зум браузера ломает раскладку. Единственное место, где
+// страница действительно меняет масштаб — сама A4-страница внутри
+// превью (PagePreviewScaler) — но это программный CSS transform: scale
+// по ширине контейнера, а не жест зума браузера, поэтому запрет
+// pinch-zoom его не касается и продолжает работать как раньше.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
