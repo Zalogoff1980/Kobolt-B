@@ -39,9 +39,10 @@ export default function HomePage() {
           по центру сверху экрана"), а не прижат к левому краю вместе
           с остальным контентом. Увеличен в полтора раза (QA: "увеличить
           раза в полтора" — было h-28/h-36, стало h-[10.5rem]/h-[13.5rem]).
-          mix-blend-overlay "растворяет" светлый фон самого лого в фоне
-          страницы (QA: "попробуй overlay" — multiply визуально не
-          подошёл). h1 оставлен как sr-only — тот же видимый текст "КОБОЛЬТ-Б",
+          Обычный normal-режим наложения (QA: "ставь это и режим
+          наложения normal" — multiply и overlay не подошли, финальная
+          версия картинки без смешения с фоном). h1 оставлен как
+          sr-only — тот же видимый текст "КОБОЛЬТ-Б",
           что и раньше, просто не глазами: доступность для
           скринридеров и не ломает существующую проверку
           dashboard.spec.ts. */}
@@ -49,9 +50,9 @@ export default function HomePage() {
       <div className="flex justify-center pt-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/brand/kobolt-b-logo-v2.png"
+          src="/brand/kobolt-b-logo-v3.png"
           alt="КОБОЛЬТ-Б — конструктор боевого листка танкового батальона"
-          className="h-[10.5rem] w-auto mix-blend-overlay sm:h-[13.5rem]"
+          className="h-[10.5rem] w-auto mix-blend-normal sm:h-[13.5rem]"
         />
       </div>
 
