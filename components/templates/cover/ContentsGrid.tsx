@@ -92,34 +92,52 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 content-center gap-[4mm]">
-        {entries.map((entry, i) => (
-          <div key={entry.pageNumber} className={isLastOdd(i) ? "col-span-2" : ""}>
-            <div className="h-[28mm] overflow-hidden bg-olive/10">
-              {entry.thumbnailSrc && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={entry.thumbnailSrc}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
+      <div>
+        {/* Невидимый дублёр заголовка "День в истории:" — резервирует
+            ровно ту же высоту + отступ, что и настоящий заголовок
+            слева (QA: "выровнять миниатюры по верхней линии 01 в
+            истории"). Раньше сетка миниатюр была отцентрирована по
+            вертикали (content-center) относительно левой колонки —
+            из-за заголовка слева колонки были разной "естественной"
+            высоты, и миниатюры съезжали вниз относительно "01", а не
+            начинались вровень с ним. Дублирование реального элемента
+            (а не подбор мм вручную) гарантирует точное совпадение
+            высоты независимо от метрик шрифта. */}
+        <h3
+          aria-hidden="true"
+          className="invisible font-display text-[15px] font-bold uppercase leading-none tracking-wide"
+        >
+          День в истории:
+        </h3>
+        <div className="mt-[4mm] grid grid-cols-2 gap-[4mm]">
+          {entries.map((entry, i) => (
+            <div key={entry.pageNumber} className={isLastOdd(i) ? "col-span-2" : ""}>
+              <div className="h-[28mm] overflow-hidden bg-olive/10">
+                {entry.thumbnailSrc && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={entry.thumbnailSrc}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              <div className="mt-[2mm] flex items-baseline justify-between gap-[2mm]">
+                <p className="font-display text-[9.5px] font-bold uppercase leading-tight text-ink">
+                  {entry.title ?? "Материал ещё не добавлен"}
+                </p>
+                <span className="flex-shrink-0 font-display text-[13px] font-bold uppercase text-accent">
+                  Стр. {entry.pageNumber}
+                </span>
+              </div>
+              {entry.subtitle && (
+                <p className="mt-[0.5mm] font-body text-[7.5px] leading-snug text-olive-dim">
+                  {entry.subtitle}
+                </p>
               )}
             </div>
-            <div className="mt-[2mm] flex items-baseline justify-between gap-[2mm]">
-              <p className="font-display text-[9.5px] font-bold uppercase leading-tight text-ink">
-                {entry.title ?? "Материал ещё не добавлен"}
-              </p>
-              <span className="flex-shrink-0 font-display text-[13px] font-bold uppercase text-accent">
-                Стр. {entry.pageNumber}
-              </span>
-            </div>
-            {entry.subtitle && (
-              <p className="mt-[0.5mm] font-body text-[7.5px] leading-snug text-olive-dim">
-                {entry.subtitle}
-              </p>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
