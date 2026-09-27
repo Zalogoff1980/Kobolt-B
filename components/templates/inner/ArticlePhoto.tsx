@@ -2,6 +2,7 @@ import { Issue } from "@/lib/content/issue";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
+import { PullQuote } from "@/components/shared/PullQuote";
 import { EngravingTank } from "@/components/decorative/EngravingTank";
 
 /**
@@ -64,43 +65,26 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               </div>
             )}
 
-            {/* Цитата — врезкой прямо в тело фото, правый нижний угол
-                (QA: "к цитате применить правило быть в теле фотографии.
-                Правый нижний угол") — раньше шла отдельным блоком под
-                фото или в левой колонке; теперь фото всегда несёт
-                цитату на себе, вместо пустого места под ним. Плашка
-                почти непрозрачная, ближе к чисто белому (QA: "цвет
-                плашки ближе к белому" — первая попытка на 20%
-                непрозрачности была слишком прозрачной), текст тёмный.
-                Отступ снизу равен отступу справа (QA: "отступ снизу
-                тот же что и справа") — симметричный угловой отступ
-                внутри фото, вне зависимости от подписи под фото. */}
-            {quotes.length > 0 && (
-              <div className="absolute bottom-[2mm] right-[2mm] max-w-[65%] space-y-[2mm]">
-                {quotes.map((q) => (
-                  <div
-                    key={q.id}
-                    className="border-l-2 border-accent bg-white/95 px-[3mm] py-[2.5mm]"
-                  >
-                    <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
-                      {q.text}
-                    </p>
-                    {q.author && (
-                      <p className="mt-[1.5mm] font-body text-[11px] uppercase text-ink/80">
-                        {q.author}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
             {photo?.caption && (
               <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
                 <p className="font-body text-[11px] italic text-paper/90">{photo.caption}</p>
               </div>
             )}
           </div>
+
+          {/* Для этого шаблона (статья + большое фото) цитата — снова
+              под фото, а не врезкой поверх него (QA: "цитата загородила
+              собой всё" — при длинном тексте плашка внутри фото
+              закрывала кадр целиком). Без белой заливки (QA: "без
+              белой заливки") — общий PullQuote с акцентной левой
+              линией и лёгким оливковым фоном, как и везде в издании. */}
+          {quotes.length > 0 && (
+            <div className="mt-[4mm] space-y-[3mm]">
+              {quotes.map((q) => (
+                <PullQuote key={q.id} text={q.text} author={q.author} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </InnerPageShell>
