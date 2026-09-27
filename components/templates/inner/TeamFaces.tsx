@@ -128,26 +128,38 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                         редактора можно будет вставлять те награды,
                         которыми кто-то награждён"). Неизвестные/ещё не
                         существующие id молча пропускаются — на случай,
-                        если награда была выбрана, а потом убрана из
-                        реестра. */}
+                        если award была выбрана, а потом убрана из
+                        реестра.
+
+                        Размер значка увеличен (QA: "укрупнить, до сих
+                        пор мелко") — было h-[5mm] w-[5mm]. Картинки
+                        наград портретные, узкие орденские ленты
+                        (реальное соотношение сторон ~420×800px,
+                        ширина вдвое меньше высоты); в квадратном 5×5мм
+                        боксе object-contain вписывал их по высоте,
+                        оставляя всего ~2.7мм реальной ширины — отсюда
+                        и жалоба "тонкие полоски". Бокс теперь сам
+                        повторяет пропорции ленты (7.5мм×14мм), а не
+                        квадрат, поэтому значок использует всю
+                        отведённую площадь, а не только её часть. */}
                     {p.awardIds && p.awardIds.length > 0 && (
                       <div className={p.personRole || p.personBio ? "mt-[2mm]" : ""}>
                         <p className="font-display text-[8px] font-bold uppercase tracking-wide text-olive">
                           Награждён:
                         </p>
-                        <ul className="mt-[1mm] space-y-[1mm]">
+                        <ul className="mt-[1.5mm] space-y-[2mm]">
                           {p.awardIds.map((awardId) => {
                             const award = awardById(awardId);
                             if (!award) return null;
                             return (
-                              <li key={awardId} className="flex items-center gap-[1.5mm]">
+                              <li key={awardId} className="flex items-center gap-[2.5mm]">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                   src={award.src}
                                   alt=""
-                                  className="h-[5mm] w-[5mm] flex-shrink-0 object-contain"
+                                  className="h-[14mm] w-[7.5mm] flex-shrink-0 object-contain"
                                 />
-                                <span className="font-body text-[8px] text-ink/90">{award.label}</span>
+                                <span className="font-body text-[9px] text-ink/90">{award.label}</span>
                               </li>
                             );
                           })}
@@ -187,7 +199,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
             )}
 
             {paragraphs.length > 0 && (
-              <div className={`space-y-[3mm] text-[16px] leading-[1.6] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+              <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
                 {paragraphs.map((p) => (
                   <p key={p.id} data-zone="paragraph" className="font-body">
                     {p.text}

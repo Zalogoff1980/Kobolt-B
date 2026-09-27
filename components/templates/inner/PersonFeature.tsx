@@ -45,7 +45,7 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
           <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">{lead.text}</p>
         )}
         {paragraphs.map((p) => (
-          <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.6] text-ink/90">
+          <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.3] text-ink/90">
             {p.text}
           </p>
         ))}

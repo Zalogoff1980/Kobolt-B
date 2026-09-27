@@ -119,7 +119,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                   </p>
                 )}
                 {paragraphs.length > 0 && (
-                  <div className={`space-y-[3mm] text-[16px] leading-[1.6] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+                  <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
                     {paragraphs.map((p) => (
                       <p key={p.id} data-zone="paragraph" className="font-body">
                         {p.text}
@@ -229,7 +229,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
           )}
 
           {paragraphs.length > 0 && (
-            <div className={`max-w-[130mm] space-y-[3mm] text-[16px] leading-[1.6] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+            <div className={`max-w-[130mm] space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
               {paragraphs.map((p) => (
                 <p key={p.id} data-zone="paragraph" className="font-body">
                   {p.text}

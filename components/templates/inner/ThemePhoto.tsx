@@ -61,7 +61,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
           )}
 
           {paragraphs.length > 0 && (
-            <div className={`max-w-[130mm] space-y-[3mm] text-[16px] leading-[1.6] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+            <div className={`max-w-[130mm] space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
               {paragraphs.map((p) => (
                 <p key={p.id} data-zone="paragraph" className="font-body">
                   {p.text}

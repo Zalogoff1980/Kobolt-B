@@ -54,7 +54,7 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.6] text-ink/90">
+            <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.3] text-ink/90">
               {p.text}
             </p>
           ))}
