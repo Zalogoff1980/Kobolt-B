@@ -55,13 +55,16 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
 
         <div className="mt-[4mm] flex flex-1 flex-col justify-center">
           {lead && (
-            <p data-zone="lead" className="max-w-[130mm] font-body text-[19px] font-bold leading-[1.6] text-ink">
+            // Ширина текста — во всю ширину фото выше (QA, шаблон
+            // "Большое фото и текст": "текст выполнить на всю ширину
+            // фото"), а не ограничена узкой колонкой 130мм.
+            <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
 
           {paragraphs.length > 0 && (
-            <div className={`max-w-[130mm] space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+            <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
               {paragraphs.map((p) => (
                 <p key={p.id} data-zone="paragraph" className="font-body">
                   {p.text}
