@@ -43,8 +43,12 @@ export function PageList({
               onClick={() => onSelect(n)}
               data-testid={`page-item-${n}`}
               data-active={isActive}
+              // Выделение активной страницы — раньше border-accent
+              // (фирменный красный), QA: "активные зоны... выделение
+              // красным заменить" — тот же спокойный "zone-alert", что
+              // и в ContentZoneOverlay, а не оставшийся кое-где красный.
               className={`flex w-full items-center gap-3 rounded-card border px-2 py-2 text-left ${
-                isActive ? "border-accent bg-accent/5" : "border-transparent hover:border-ink/15"
+                isActive ? "border-zone-alert bg-zone-alert/5" : "border-transparent hover:border-ink/15"
               }`}
             >
               <PageThumbnail issue={issue} pageNumber={n} />

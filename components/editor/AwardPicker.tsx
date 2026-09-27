@@ -46,9 +46,12 @@ export function AwardPicker({
               onClick={() => toggle(award.id)}
               data-testid={`award-option-${award.id}`}
               data-selected={selected}
+              // Выделение выбранной награды — было border-accent
+              // (красный), QA: "активные зоны... выделение красным
+              // заменить" — единый спокойный "zone-alert".
               className={`flex items-center gap-1.5 rounded-hairline border px-2 py-1.5 text-left font-display text-[11px] font-bold uppercase tracking-wide ${
                 selected
-                  ? "border-accent bg-accent/10 text-ink"
+                  ? "border-zone-alert bg-zone-alert/10 text-ink"
                   : "border-ink/20 text-olive-dim hover:border-ink/40"
               }`}
             >

@@ -40,7 +40,7 @@ export function EngravingPicker({
           data-selected={!currentEngravingId}
           className={`rounded-hairline border px-2 py-2 font-display text-[11px] font-bold uppercase tracking-wide ${
             !currentEngravingId
-              ? "border-accent bg-accent/10 text-ink"
+              ? "border-zone-alert bg-zone-alert/10 text-ink"
               : "border-ink/20 text-olive-dim hover:border-ink/40"
           }`}
         >
@@ -53,9 +53,12 @@ export function EngravingPicker({
             onClick={() => onChange(opt.id)}
             data-testid={`engraving-option-${opt.id}`}
             data-selected={currentEngravingId === opt.id}
+            // Выделение выбранной гравюры — было border-accent
+            // (красный), QA: "активные зоны... выделение красным
+            // заменить" — единый спокойный "zone-alert".
             className={`rounded-hairline border px-2 py-2 text-left font-display text-[11px] font-bold uppercase tracking-wide ${
               currentEngravingId === opt.id
-                ? "border-accent bg-accent/10 text-ink"
+                ? "border-zone-alert bg-zone-alert/10 text-ink"
                 : "border-ink/20 text-olive-dim hover:border-ink/40"
             }`}
           >

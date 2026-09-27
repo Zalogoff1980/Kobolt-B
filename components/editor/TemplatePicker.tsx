@@ -30,9 +30,14 @@ export function TemplatePicker({
           onClick={() => onChange(opt.id)}
           data-testid={`template-option-${opt.id}`}
           data-selected={currentTemplateId === opt.id}
+          // Выделение выбранного варианта — было border-accent
+          // (красный), QA: "активные зоны... выделение красным
+          // заменить" — единый спокойный "zone-alert" по всем таким
+          // селекторам редактора (см. PageList/EngravingPicker/
+          // AwardPicker).
           className={`flex-1 appearance-none rounded-hairline border px-2 py-2 text-left font-display text-[11px] font-bold uppercase tracking-wide ${
             currentTemplateId === opt.id
-              ? "border-accent bg-accent/10 text-ink"
+              ? "border-zone-alert bg-zone-alert/10 text-ink"
               : "border-ink/20 text-olive-dim hover:border-ink/40"
           }`}
         >
