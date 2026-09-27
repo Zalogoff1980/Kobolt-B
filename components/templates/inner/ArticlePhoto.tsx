@@ -2,7 +2,6 @@ import { Issue } from "@/lib/content/issue";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
-import { PullQuote } from "@/components/shared/PullQuote";
 import { EngravingTank } from "@/components/decorative/EngravingTank";
 
 /**
@@ -17,7 +16,6 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
     issue.pages[pageNumber].content.blocks
   );
   const photo = photos[0];
-  const hasBodyText = Boolean(lead) || paragraphs.length > 0;
 
   return (
     <InnerPageShell
@@ -53,13 +51,6 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               {p.text}
             </p>
           ))}
-          {quotes.length > 0 && !hasBodyText && (
-            <div className="space-y-[3mm]">
-              {quotes.map((q) => (
-                <PullQuote key={q.id} text={q.text} author={q.author} />
-              ))}
-            </div>
-          )}
         </div>
 
         <div>
@@ -72,29 +63,47 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
                 <EngravingTank className="h-[45%] w-[80%] text-olive/30" />
               </div>
             )}
+
+            {/* Цитата — врезкой прямо в тело фото, правый нижний угол
+                (QA: "к цитате применить правило быть в теле фотографии.
+                Правый нижний угол") — раньше шла отдельным блоком под
+                фото или в левой колонке; теперь фото всегда несёт
+                цитату на себе, вместо пустого места под ним. Плашка
+                полупрозрачная (белый с 80% прозрачностью, т.е. 20%
+                непрозрачности), текст тёмный — на светлой подложке
+                акцентный белый текст был бы нечитаем. Если под фото
+                уже есть подпись (caption), цитата поднята выше неё,
+                чтобы не наслаиваться. */}
+            {quotes.length > 0 && (
+              <div
+                className={`absolute right-[4mm] max-w-[65%] space-y-[2mm] ${
+                  photo?.caption ? "bottom-[14mm]" : "bottom-[4mm]"
+                }`}
+              >
+                {quotes.map((q) => (
+                  <div
+                    key={q.id}
+                    className="border-l-2 border-accent bg-white/20 px-[3mm] py-[2.5mm] backdrop-blur-sm"
+                  >
+                    <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
+                      {q.text}
+                    </p>
+                    {q.author && (
+                      <p className="mt-[1.5mm] font-body text-[11px] uppercase text-ink/80">
+                        {q.author}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
             {photo?.caption && (
               <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
                 <p className="font-body text-[11px] italic text-paper/90">{photo.caption}</p>
               </div>
             )}
           </div>
-
-          {/* Текстовый блок под фото (QA, скриншот: "в таком лэйауте
-              неуместное пустое место" — фото фиксированной высоты
-              150мм, а строка грида растягивается по более высокой
-              текстовой колонке слева, из-за чего под фото справа
-              оставалось пустое поле до конца страницы). Цитата теперь
-              размещается прямо здесь, а не отдельным полноширинным
-              блоком под всей раскладкой — так место под фото занято
-              содержанием, а не пустотой. Если цитаты нет, колонка
-              просто заканчивается на фото — ничего не выдумываем. */}
-          {quotes.length > 0 && hasBodyText && (
-            <div className="mt-[4mm] space-y-[3mm]">
-              {quotes.map((q) => (
-                <PullQuote key={q.id} text={q.text} author={q.author} />
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </InnerPageShell>
