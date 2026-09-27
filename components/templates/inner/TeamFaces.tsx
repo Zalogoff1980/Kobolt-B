@@ -142,22 +142,37 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                         колонку). */}
                     {p.awardIds && p.awardIds.length > 0 && (
                       <div className={p.personRole || p.personBio ? "mt-[2mm]" : ""}>
-                        <p className="font-display text-[8px] font-bold uppercase tracking-wide text-olive">
+                        {/* "Награждён:" — тот же шрифт/размер, что и
+                            заголовок "День в истории:" на обложке (QA,
+                            со скриншотом первой страницы для сравнения:
+                            "тем же шрифтом и размером") — было
+                            text-[8px], стало text-[15px] leading-none,
+                            тот же text-olive. */}
+                        <p className="font-display text-[15px] font-bold uppercase leading-none tracking-wide text-olive">
                           Награждён:
                         </p>
-                        <div className="mt-[1.5mm] flex items-start justify-between gap-[2mm]">
+                        {/* Разделительные линии между наградами (QA,
+                            скриншот-разметка) — divide-x рисует тонкую
+                            вертикальную границу между соседними
+                            колонками автоматически, никаких лишних
+                            обёрток. Подпись увеличена (QA: "названия
+                            наград крупнее") — было text-[7.5px]. */}
+                        <div className="mt-[1.5mm] flex items-start justify-between divide-x divide-ink/20">
                           {p.awardIds.map((awardId) => {
                             const award = awardById(awardId);
                             if (!award) return null;
                             return (
-                              <div key={awardId} className="flex flex-1 flex-col items-center text-center">
+                              <div
+                                key={awardId}
+                                className="flex flex-1 flex-col items-center px-[2mm] text-center first:pl-0 last:pr-0"
+                              >
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                   src={award.src}
                                   alt=""
                                   className="h-[32mm] w-[17mm] flex-shrink-0 object-contain"
                                 />
-                                <span className="mt-[1mm] font-body text-[7.5px] leading-snug text-ink/90">
+                                <span className="mt-[1mm] font-body text-[10px] leading-snug text-ink/90">
                                   {award.label}
                                 </span>
                               </div>
