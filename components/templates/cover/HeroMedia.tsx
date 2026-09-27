@@ -35,7 +35,7 @@ export function HeroMedia({
   quotes?: HeroQuote[];
 }) {
   const hasSideColumn = Boolean(
-    headline || subtitle || (paragraphs && paragraphs.length > 0) || (quotes && quotes.length > 0)
+    headline || subtitle || (paragraphs && paragraphs.length > 0)
   );
 
   return (
@@ -60,6 +60,39 @@ export function HeroMedia({
             <EngravingTank className="h-[55%] w-[80%] text-olive/30" />
           </div>
         )}
+        {/* Цитата — врезкой в тело фото, правый нижний угол (QA:
+            "к цитате применить правило быть в теле фотографии. Правый
+            нижний угол" — раньше шла отдельным блоком в текстовой
+            колонке справа). Плашка полупрозрачная (белый с 80%
+            прозрачностью, т.е. 20% непрозрачности), текст тёмный — на
+            светлой подложке акцентный тёмный текст читается, а не
+            наоборот. Если есть подпись под фото (caption), цитата
+            поднята выше неё, чтобы не наслаиваться. */}
+        {quotes && quotes.length > 0 && (
+          <div
+            className={`absolute right-[4mm] max-w-[65%] space-y-[2mm] ${
+              photo?.caption ? "bottom-[14mm]" : "bottom-[4mm]"
+            }`}
+          >
+            {quotes.map((quote) => (
+              <div
+                key={quote.id}
+                data-zone="quote"
+                className="border-l-2 border-accent bg-white/20 px-[3mm] py-[2.5mm] backdrop-blur-sm"
+              >
+                <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
+                  {quote.text}
+                </p>
+                {quote.author && (
+                  <p className="mt-[1.5mm] font-body text-[11px] uppercase text-ink/80">
+                    {quote.author}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
         {photo?.caption && (
           <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
             <p className="font-body text-[11px] italic text-paper/90">{photo.caption}</p>
@@ -114,33 +147,6 @@ export function HeroMedia({
                 <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.6] text-ink/90">
                   {p.text}
                 </p>
-              ))}
-            </div>
-          )}
-
-          {quotes && quotes.length > 0 && (
-            <div
-              className={`space-y-[3mm] ${
-                headline || subtitle || (paragraphs && paragraphs.length > 0) ? "mt-[6mm]" : ""
-              }`}
-            >
-              {quotes.map((quote) => (
-                // Кавычка убрана (QA: "убрать в нём кавычки") — акцентная
-                // левая линия border-accent уже маркирует блок как цитату.
-                <div
-                  key={quote.id}
-                  data-zone="quote"
-                  className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]"
-                >
-                  <p className="font-display text-[19px] font-bold uppercase leading-snug">
-                    {quote.text}
-                  </p>
-                  {quote.author && (
-                    <p className="mt-[1.5mm] font-body text-[11px] uppercase text-olive-dim">
-                      {quote.author}
-                    </p>
-                  )}
-                </div>
               ))}
             </div>
           )}
