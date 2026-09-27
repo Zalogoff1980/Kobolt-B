@@ -2,7 +2,6 @@ import { Issue } from "@/lib/content/issue";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
-import { PullQuote } from "@/components/shared/PullQuote";
 import { awardById } from "@/components/decorative/awards/registry";
 
 /** Высота портретов зависит от их числа (1–3, как задано ТЗ шага 5) —
@@ -50,8 +49,10 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
   );
   const faces = photos.slice(0, 3);
   const heightMm = photoHeightMm(faces.length);
-  const hasBelowPhotos =
-    Boolean(lead) || paragraphs.length > 0 || achievements.length > 0 || quotes.length > 0;
+  // quotes (общая цитата страницы) больше не рендерится здесь отдельным
+  // блоком — теперь она врезкой поверх фото первого человека (см. ниже),
+  // поэтому в этот флаг больше не входит.
+  const hasBelowPhotos = Boolean(lead) || paragraphs.length > 0 || achievements.length > 0;
 
   return (
     <InnerPageShell
@@ -71,7 +72,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
             className="mt-[4mm] grid flex-shrink-0 gap-[5mm]"
             style={{ gridTemplateColumns: `repeat(${faces.length}, 1fr)` }}
           >
-            {faces.map((p) => (
+            {faces.map((p, i) => (
               <div key={p.id} className="flex flex-col">
                 {/* Имя/звание — НАД фото (QA-референс), а не подписью
                     под ним, как было раньше. Одна строка может занимать
@@ -85,29 +86,57 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                   </p>
                 )}
 
-                {/* Фото + короткая цитата человека рядом (QA-референс:
-                    речь человека вынесена в сторону от портрета, а не
-                    общим page-level quote-блоком). Если цитаты нет —
-                    фото просто занимает всю ширину строки. */}
+                {/* Фото во всю ширину строки, цитата(ы) — врезкой ПОВЕРХ
+                    фото, правый нижний угол (QA: "саму цитату выполнить
+                    поверх фото, с теми же настройками как цитата на 1
+                    странице шаблон боевой листок" — то же оформление,
+                    что и у HeroMedia: border-l-2 border-accent,
+                    непрозрачная bg-paper плашка, font-display uppercase
+                    bold 19px, без кавычек). Раньше личная цитата шла
+                    РЯДОМ с фото отдельной колонкой (более ранний
+                    QA-референс) — этот шаг заменяет то решение оверлеем,
+                    как на обложке.
+
+                    Общая цитата страницы (quotes, редактируется отдельно
+                    от полей человека — именно её показывал QA на
+                    скриншоте) якорится к ПЕРВОМУ фото (i === 0): у неё
+                    нет привязки к конкретному человеку, а первое фото —
+                    единственный однозначный якорь, когда людей 2-3.
+                    Если на этом же фото есть ещё и personQuote — обе
+                    плашки просто складываются в один стек (space-y),
+                    как HeroMedia уже делает при нескольких цитатах. */}
                 <div
-                  className={`flex gap-[2.5mm] ${p.personName ? "mt-[2mm]" : ""}`}
+                  className={`relative overflow-hidden bg-olive/10 ${p.personName ? "mt-[2mm]" : ""}`}
                   style={{ height: `${heightMm}mm` }}
                 >
-                  <div
-                    className={`overflow-hidden bg-olive/10 ${p.personQuote ? "flex-[1.3]" : "flex-1"}`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={p.src}
-                      alt={p.personName ?? p.caption ?? ""}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  {p.personQuote && (
-                    <div className="flex flex-1 items-center">
-                      <p className="font-body text-[10px] italic leading-snug text-ink/80">
-                        «{p.personQuote}»
-                      </p>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.src}
+                    alt={p.personName ?? p.caption ?? ""}
+                    className="h-full w-full object-cover"
+                  />
+                  {(p.personQuote || (i === 0 && quotes.length > 0)) && (
+                    <div className="absolute bottom-[2mm] right-[2mm] max-w-[65%] space-y-[2mm]">
+                      {p.personQuote && (
+                        <div data-zone="quote" className="border-l-2 border-accent bg-paper px-[3mm] py-[2.5mm]">
+                          <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
+                            {p.personQuote}
+                          </p>
+                        </div>
+                      )}
+                      {i === 0 &&
+                        quotes.map((q) => (
+                          <div key={q.id} data-zone="quote" className="border-l-2 border-accent bg-paper px-[3mm] py-[2.5mm]">
+                            <p className="font-display text-[19px] font-bold uppercase leading-snug text-ink">
+                              {q.text}
+                            </p>
+                            {q.author && (
+                              <p className="mt-[1.5mm] font-body text-[11px] uppercase text-ink/80">
+                                {q.author}
+                              </p>
+                            )}
+                          </div>
+                        ))}
                     </div>
                   )}
                 </div>
@@ -202,11 +231,9 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                 уже её (QA: "можно ли текст выровнять по ширине
                 изображения" — портрет(ы) занимают всю ширину контентной
                 колонки через grid выше, а текст был искусственно сужен
-                до 140мм, оставляя лишний воздух справа). Цитата
-                (PullQuote) намеренно остаётся у́же — тот же приём
-                акцентной узкой колонки для цитаты используется во всех
-                внутренних шаблонах (ArticlePhoto/ThemePhoto/
-                PhotoGridText), это не текст статьи. */}
+                до 140мм, оставляя лишний воздух справа). Цитата страницы
+                сюда больше не относится — она теперь оверлеем поверх
+                первого фото выше, не в этом текстовом блоке. */}
             {lead && (
               <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
                 {lead.text}
@@ -261,18 +288,6 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {quotes.length > 0 && (
-              <div
-                className={`max-w-[110mm] space-y-[3mm] ${
-                  lead || paragraphs.length > 0 || achievements.length > 0 ? "mt-[4mm]" : ""
-                }`}
-              >
-                {quotes.map((q) => (
-                  <PullQuote key={q.id} text={q.text} author={q.author} />
-                ))}
               </div>
             )}
           </div>
