@@ -65,6 +65,10 @@ export type PageSections = {
     caption: string;
     personName: string;
     personRole: string;
+    /** Короткая цитата и описание конкретного человека — карточка
+     *  "Лица батальона" (макет-референс, сентябрь 2026). */
+    personQuote: string;
+    personBio: string;
     /** Награды (id из реестра components/decorative/awards/registry.tsx),
      *  выбранные для этого человека — страница "Лица батальона". */
     awardIds: string[];
@@ -123,6 +127,8 @@ export function blocksToSections(
         caption: p.caption ?? "",
         personName: p.personName ?? "",
         personRole: p.personRole ?? "",
+        personQuote: p.personQuote ?? "",
+        personBio: p.personBio ?? "",
         awardIds: p.awardIds ?? [],
       })),
       quotes: g.quotes.map((q) => ({ id: q.id, text: q.text, author: q.author ?? "" })),
@@ -165,6 +171,8 @@ export function blocksToSections(
         caption: b.caption ?? "",
         personName: b.personName ?? "",
         personRole: b.personRole ?? "",
+        personQuote: b.personQuote ?? "",
+        personBio: b.personBio ?? "",
         awardIds: b.awardIds ?? [],
       });
     if (b.type === "text" && (!b.variant || b.variant === "paragraph")) {
@@ -220,6 +228,8 @@ export function sectionsToBlocks(
       caption: p.caption.trim() || undefined,
       personName: p.personName.trim() || undefined,
       personRole: p.personRole.trim() || undefined,
+      personQuote: p.personQuote.trim() || undefined,
+      personBio: p.personBio.trim() || undefined,
       awardIds: p.awardIds.length > 0 ? p.awardIds : undefined,
     });
   }

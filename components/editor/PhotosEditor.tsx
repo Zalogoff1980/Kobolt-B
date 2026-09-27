@@ -3,7 +3,7 @@
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
 import { fileToDataUrl } from "@/lib/editor/fileToDataUrl";
-import { TextInput, SmallButton, SectionHeading, Field } from "./fields";
+import { TextInput, TextArea, SmallButton, SectionHeading, Field } from "./fields";
 import { AwardPicker } from "./AwardPicker";
 
 type Photo = PageSections["photos"][number];
@@ -40,7 +40,16 @@ export function PhotosEditor({
     const src = await fileToDataUrl(file);
     onChange([
       ...photos,
-      { id: createBlockId(), src, caption: "", personName: "", personRole: "", awardIds: [] },
+      {
+        id: createBlockId(),
+        src,
+        caption: "",
+        personName: "",
+        personRole: "",
+        personQuote: "",
+        personBio: "",
+        awardIds: [],
+      },
     ]);
   }
   async function replaceFromFile(id: string, file: File) {
@@ -99,6 +108,29 @@ export function PhotosEditor({
                   value={p.personRole}
                   onChange={(e) => update(p.id, { personRole: e.target.value })}
                   placeholder="Командир танка, позывной «Сокол»"
+                />
+              </Field>
+              {/* Цитата и описание — карточка "Лица батальона" по
+                  макету-референсу (QA, сентябрь 2026): короткая реплика
+                  человека рядом с фото и абзац-био под ролью. Оба поля
+                  привязаны именно к этому человеку, а не к общим полям
+                  "Основной текст"/абзацы страницы. */}
+              <Field label="Короткая цитата">
+                <TextArea
+                  data-testid="photo-person-quote-input"
+                  rows={2}
+                  value={p.personQuote}
+                  onChange={(e) => update(p.id, { personQuote: e.target.value })}
+                  placeholder="«Главное — не техника, а люди…»"
+                />
+              </Field>
+              <Field label="Описание">
+                <TextArea
+                  data-testid="photo-person-bio-input"
+                  rows={2}
+                  value={p.personBio}
+                  onChange={(e) => update(p.id, { personBio: e.target.value })}
+                  placeholder="Провёл множество боевых задач, отличается хладнокровием…"
                 />
               </Field>
               <AwardPicker

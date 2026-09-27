@@ -8,19 +8,35 @@ import { awardById } from "@/components/decorative/awards/registry";
 /** Высота портретов зависит от их числа (1–3, как задано ТЗ шага 5) —
  *  но, в отличие от пейзажных фото других страниц, кадр держится
  *  крупным при любом количестве: люди — главный визуальный элемент
- *  страницы, а не иллюстрация к тексту. */
+ *  страницы, а не иллюстрация к тексту. Значения уменьшены относительно
+ *  прежних (было 140/115/95) — карточка человека (QA-референс,
+ *  сентябрь 2026) теперь несёт больше своего контента (имя над фото,
+ *  роль/био/награды под ним), фото должно оставить им место. */
 function photoHeightMm(count: number): number {
-  if (count <= 1) return 140;
-  if (count === 2) return 115;
-  return 95;
+  if (count <= 1) return 115;
+  if (count === 2) return 95;
+  return 80;
 }
 
 /**
- * Страница 4, Template B — "Команда" (ТЗ шаг 5): 2–3 портрета с
- * подписью-именем под каждым, общий текст, список достижений/наград
- * (если есть), при необходимости цитата. Как и в Template A — если
- * фото нет вовсе, ряд портретов просто не рендерится: гравюрная
- * заглушка здесь неуместна (это страница о конкретных людях).
+ * Страница 4, Template B — "Команда" (ТЗ шаг 5): 2–3 карточки людей,
+ * общий текст, список достижений/наград (если есть), при необходимости
+ * цитата. Как и в Template A — если фото нет вовсе, ряд портретов
+ * просто не рендерится: гравюрная заглушка здесь неуместна (это
+ * страница о конкретных людях).
+ *
+ * Карточка человека переработана под макет-референс (QA, сентябрь
+ * 2026, инфографика "Лица батальона"): имя/звание НАД фото, короткая
+ * цитата человека РЯДОМ с фото (а не общий page-level quote-блок), под
+ * фото — короткая роль жирным ("Командир танка."), абзац-био и список
+ * наград со значками. Реплика/био/награды хранятся прямо на photo-блоке
+ * (personQuote/personBio/awardIds) — они принадлежат конкретному
+ * человеку, а не общим полям страницы.
+ *
+ * Остальная часть страницы (заголовок/подзаголовок, общий лид/абзацы,
+ * достижения, общая цитата) НЕ тронута этим шагом — QA выбрал
+ * ограниченный объём переработки ("только карточки людей"), эти поля
+ * по-прежнему рендерятся одним общим блоком ниже, как раньше.
  *
  * Текст раньше шёл через CSS columns-2 с авто-балансом браузера — тот
  * же баг, что и в PhotoGridText/ThemePhoto (QA: "непонятно, к какой
@@ -52,50 +68,90 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
         {faces.length > 0 && (
           <div
             data-zone="photo"
-            className="mt-[4mm] grid flex-shrink-0 gap-[4mm]"
+            className="mt-[4mm] grid flex-shrink-0 gap-[5mm]"
             style={{ gridTemplateColumns: `repeat(${faces.length}, 1fr)` }}
           >
             {faces.map((p) => (
-              <div key={p.id}>
-                <div className="overflow-hidden bg-olive/10" style={{ height: `${heightMm}mm` }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.src} alt={p.personName ?? p.caption ?? ""} className="h-full w-full object-cover" />
+              <div key={p.id} className="flex flex-col">
+                {/* Имя/звание — НАД фото (QA-референс), а не подписью
+                    под ним, как было раньше. Одна строка может занимать
+                    несколько строк текста (звание + фамилия + имя +
+                    отчество вводятся одним полем), высота фото ниже не
+                    подстраивается под неё — карточка просто немного
+                    ужимает высоту оставшегося текста. */}
+                {p.personName && (
+                  <p className="font-display text-[10px] font-bold uppercase leading-tight text-ink">
+                    {p.personName}
+                  </p>
+                )}
+
+                {/* Фото + короткая цитата человека рядом (QA-референс:
+                    речь человека вынесена в сторону от портрета, а не
+                    общим page-level quote-блоком). Если цитаты нет —
+                    фото просто занимает всю ширину строки. */}
+                <div
+                  className={`flex gap-[2.5mm] ${p.personName ? "mt-[2mm]" : ""}`}
+                  style={{ height: `${heightMm}mm` }}
+                >
+                  <div
+                    className={`overflow-hidden bg-olive/10 ${p.personQuote ? "flex-[1.3]" : "flex-1"}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p.src}
+                      alt={p.personName ?? p.caption ?? ""}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  {p.personQuote && (
+                    <div className="flex flex-1 items-center">
+                      <p className="font-body text-[10px] italic leading-snug text-ink/80">
+                        «{p.personQuote}»
+                      </p>
+                    </div>
+                  )}
                 </div>
-                {(p.personName || p.personRole || (p.awardIds && p.awardIds.length > 0)) && (
-                  <div data-zone="caption" className="mt-[1.5mm]">
-                    {p.personName && (
-                      <p className="font-display text-[9px] font-bold uppercase leading-tight">
-                        {p.personName}
-                      </p>
-                    )}
+
+                {(p.personRole || p.personBio || (p.awardIds && p.awardIds.length > 0)) && (
+                  <div data-zone="caption" className="mt-[2mm]">
                     {p.personRole && (
-                      <p className="mt-[0.5mm] font-body text-[11px] uppercase tracking-wide text-olive-dim">
-                        {p.personRole}
+                      <p className="font-display text-[10px] font-bold text-ink">{p.personRole}.</p>
+                    )}
+                    {p.personBio && (
+                      <p className="mt-[1mm] font-body text-[9px] leading-snug text-ink/90">
+                        {p.personBio}
                       </p>
                     )}
-                    {/* Награды — ряд мелких значков под именем/должностью
-                        (QA: "предусмотрена часть с наградами... в теле
+
+                    {/* Награды — значок + название, списком (QA:
+                        "предусмотрена часть с наградами... в теле
                         редактора можно будет вставлять те награды,
                         которыми кто-то награждён"). Неизвестные/ещё не
                         существующие id молча пропускаются — на случай,
                         если награда была выбрана, а потом убрана из
                         реестра. */}
                     {p.awardIds && p.awardIds.length > 0 && (
-                      <div className="mt-[1mm] flex flex-wrap gap-[1mm]">
-                        {p.awardIds.map((awardId) => {
-                          const award = awardById(awardId);
-                          if (!award) return null;
-                          return (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              key={awardId}
-                              src={award.src}
-                              alt={award.label}
-                              title={award.label}
-                              className="h-[6mm] w-[6mm] object-contain"
-                            />
-                          );
-                        })}
+                      <div className={p.personRole || p.personBio ? "mt-[2mm]" : ""}>
+                        <p className="font-display text-[8px] font-bold uppercase tracking-wide text-olive">
+                          Награждён:
+                        </p>
+                        <ul className="mt-[1mm] space-y-[1mm]">
+                          {p.awardIds.map((awardId) => {
+                            const award = awardById(awardId);
+                            if (!award) return null;
+                            return (
+                              <li key={awardId} className="flex items-center gap-[1.5mm]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={award.src}
+                                  alt=""
+                                  className="h-[5mm] w-[5mm] flex-shrink-0 object-contain"
+                                />
+                                <span className="font-body text-[8px] text-ink/90">{award.label}</span>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
                     )}
                   </div>
