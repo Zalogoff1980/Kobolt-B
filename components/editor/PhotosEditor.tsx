@@ -4,6 +4,7 @@ import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
 import { fileToDataUrl } from "@/lib/editor/fileToDataUrl";
 import { TextInput, SmallButton, SectionHeading, Field } from "./fields";
+import { AwardPicker } from "./AwardPicker";
 
 type Photo = PageSections["photos"][number];
 
@@ -39,7 +40,7 @@ export function PhotosEditor({
     const src = await fileToDataUrl(file);
     onChange([
       ...photos,
-      { id: createBlockId(), src, caption: "", personName: "", personRole: "" },
+      { id: createBlockId(), src, caption: "", personName: "", personRole: "", awardIds: [] },
     ]);
   }
   async function replaceFromFile(id: string, file: File) {
@@ -100,6 +101,10 @@ export function PhotosEditor({
                   placeholder="Командир танка, позывной «Сокол»"
                 />
               </Field>
+              <AwardPicker
+                selectedIds={p.awardIds}
+                onChange={(awardIds) => update(p.id, { awardIds })}
+              />
             </>
           )}
         </div>

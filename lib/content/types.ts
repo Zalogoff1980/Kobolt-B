@@ -47,6 +47,14 @@ export type ContentBlock =
        *  батальона"). Опционально и не используется другими страницами. */
       personName?: string;
       personRole?: string;
+      /** Награды человека на фото — id из реестра наград (см.
+       *  components/decorative/awards/registry.tsx), а не свободный
+       *  текст: те же значки показываются одинаково на всех фото, где
+       *  выбраны, поэтому библиотека изображений — единственный
+       *  источник истины, как и у фоновых гравюр (PRIORITY 6). Как и
+       *  personName/personRole, используется только страницей "Лица
+       *  батальона" — остальные шаблоны это поле просто не читают. */
+      awardIds?: string[];
     }
   | { id: BlockId; type: "quote"; text: string; author?: string }
   | {

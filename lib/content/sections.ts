@@ -65,6 +65,9 @@ export type PageSections = {
     caption: string;
     personName: string;
     personRole: string;
+    /** Награды (id из реестра components/decorative/awards/registry.tsx),
+     *  выбранные для этого человека — страница "Лица батальона". */
+    awardIds: string[];
   }[];
   /** Цитаты страницы — сколько угодно (QA: "дать возможность добавлять
    *  такой блок сколько нужно"; раньше — не больше одной, все шаблоны
@@ -120,6 +123,7 @@ export function blocksToSections(
         caption: p.caption ?? "",
         personName: p.personName ?? "",
         personRole: p.personRole ?? "",
+        awardIds: p.awardIds ?? [],
       })),
       quotes: g.quotes.map((q) => ({ id: q.id, text: q.text, author: q.author ?? "" })),
     };
@@ -161,6 +165,7 @@ export function blocksToSections(
         caption: b.caption ?? "",
         personName: b.personName ?? "",
         personRole: b.personRole ?? "",
+        awardIds: b.awardIds ?? [],
       });
     if (b.type === "text" && (!b.variant || b.variant === "paragraph")) {
       paragraphs.push({ id: b.id, text: b.text });
@@ -215,6 +220,7 @@ export function sectionsToBlocks(
       caption: p.caption.trim() || undefined,
       personName: p.personName.trim() || undefined,
       personRole: p.personRole.trim() || undefined,
+      awardIds: p.awardIds.length > 0 ? p.awardIds : undefined,
     });
   }
   // lead — только для внутренних страниц (titleLevel===1); обложка

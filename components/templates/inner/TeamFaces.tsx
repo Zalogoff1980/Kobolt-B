@@ -3,6 +3,7 @@ import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
 import { PullQuote } from "@/components/shared/PullQuote";
+import { awardById } from "@/components/decorative/awards/registry";
 
 /** Высота портретов зависит от их числа (1–3, как задано ТЗ шага 5) —
  *  но, в отличие от пейзажных фото других страниц, кадр держится
@@ -60,7 +61,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.src} alt={p.personName ?? p.caption ?? ""} className="h-full w-full object-cover" />
                 </div>
-                {(p.personName || p.personRole) && (
+                {(p.personName || p.personRole || (p.awardIds && p.awardIds.length > 0)) && (
                   <div data-zone="caption" className="mt-[1.5mm]">
                     {p.personName && (
                       <p className="font-display text-[9px] font-bold uppercase leading-tight">
@@ -71,6 +72,31 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                       <p className="mt-[0.5mm] font-body text-[11px] uppercase tracking-wide text-olive-dim">
                         {p.personRole}
                       </p>
+                    )}
+                    {/* Награды — ряд мелких значков под именем/должностью
+                        (QA: "предусмотрена часть с наградами... в теле
+                        редактора можно будет вставлять те награды,
+                        которыми кто-то награждён"). Неизвестные/ещё не
+                        существующие id молча пропускаются — на случай,
+                        если награда была выбрана, а потом убрана из
+                        реестра. */}
+                    {p.awardIds && p.awardIds.length > 0 && (
+                      <div className="mt-[1mm] flex flex-wrap gap-[1mm]">
+                        {p.awardIds.map((awardId) => {
+                          const award = awardById(awardId);
+                          if (!award) return null;
+                          return (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              key={awardId}
+                              src={award.src}
+                              alt={award.label}
+                              title={award.label}
+                              className="h-[6mm] w-[6mm] object-contain"
+                            />
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 )}
