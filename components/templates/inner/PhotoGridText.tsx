@@ -105,7 +105,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                     data-zone="caption"
                     className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]"
                   >
-                    <span className="font-body text-[6.5px] italic text-paper/90">
+                    <span className="font-body text-[11px] italic text-paper/90">
                       {photoLeft.caption}
                     </span>
                   </figcaption>
@@ -114,7 +114,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
 
               <div className="mt-[4mm] flex flex-1 flex-col justify-center">
                 {lead && (
-                  <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">
+                  <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
                     {lead.text}
                   </p>
                 )}
@@ -150,7 +150,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                 />
                 {photoRight.caption && (
                   <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
-                    <span className="font-body text-[6.5px] italic text-paper/90">
+                    <span className="font-body text-[11px] italic text-paper/90">
                       {photoRight.caption}
                     </span>
                   </figcaption>
@@ -203,7 +203,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                   <img src={p.src} alt={p.caption ?? ""} className="h-full w-full object-cover" />
                   {p.caption && (
                     <figcaption data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
-                      <span className="font-body text-[6.5px] italic text-paper/90">{p.caption}</span>
+                      <span className="font-body text-[11px] italic text-paper/90">{p.caption}</span>
                     </figcaption>
                   )}
                 </figure>
@@ -223,7 +223,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             пространстве — если текста мало, он не прилипает к верху. */}
         <div className="mt-[4mm] flex flex-1 flex-col justify-center">
           {lead && (
-            <p data-zone="lead" className="max-w-[130mm] font-body text-[18px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" className="max-w-[130mm] font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}

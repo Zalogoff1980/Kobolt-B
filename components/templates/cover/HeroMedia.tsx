@@ -54,7 +54,7 @@ export function HeroMedia({
         )}
         {photo?.caption && (
           <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
-            <p className="font-body text-[7.5px] italic text-paper/90">{photo.caption}</p>
+            <p className="font-body text-[11px] italic text-paper/90">{photo.caption}</p>
           </div>
         )}
       </div>
@@ -86,7 +86,7 @@ export function HeroMedia({
           {subtitle && (
             <p
               data-zone="h2"
-              className={`font-display text-[10px] font-bold uppercase leading-[1.6] tracking-wide text-olive-dim ${
+              className={`font-display text-[13px] font-bold uppercase leading-[1.6] tracking-wide text-olive-dim ${
                 headline ? "mt-[4mm]" : ""
               }`}
             >
@@ -118,11 +118,11 @@ export function HeroMedia({
                   data-zone="quote"
                   className="border-l-2 border-accent bg-olive/5 px-[3mm] py-[2.5mm]"
                 >
-                  <p className="font-display text-[9px] font-bold uppercase leading-snug">
+                  <p className="font-display text-[19px] font-bold uppercase leading-snug">
                     {quote.text}
                   </p>
                   {quote.author && (
-                    <p className="mt-[1.5mm] font-body text-[6.5px] uppercase text-olive-dim">
+                    <p className="mt-[1.5mm] font-body text-[11px] uppercase text-olive-dim">
                       {quote.author}
                     </p>
                   )}

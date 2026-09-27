@@ -109,7 +109,7 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
               <p className="font-display text-[9.5px] font-bold uppercase leading-tight text-ink">
                 {entry.title ?? "Материал ещё не добавлен"}
               </p>
-              <span className="flex-shrink-0 font-display text-[7px] font-bold uppercase text-accent">
+              <span className="flex-shrink-0 font-display text-[13px] font-bold uppercase text-accent">
                 Стр. {entry.pageNumber}
               </span>
             </div>

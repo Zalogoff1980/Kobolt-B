@@ -49,7 +49,7 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
                     Материал ещё не добавлен
                   </p>
                 )}
-                <p className="mt-[1mm] font-display text-[7px] font-bold uppercase text-olive-dim">
+                <p className="mt-[1mm] font-display text-[13px] font-bold uppercase text-olive-dim">
                   Стр. {entry.pageNumber}
                 </p>
                 {entry.previewText && (

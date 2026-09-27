@@ -42,7 +42,7 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
         {/* Основной текст/лид — отдельное семантическое поле, крупнее
             и жирнее обычных абзацев. */}
         {lead && (
-          <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">{lead.text}</p>
+          <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">{lead.text}</p>
         )}
         {paragraphs.map((p) => (
           <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.6] text-ink/90">
@@ -87,14 +87,14 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
                   </p>
                 )}
                 {photo.personRole && (
-                  <p className="mt-[0.5mm] font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
+                  <p className="mt-[0.5mm] font-body text-[11px] uppercase tracking-wide text-olive-dim">
                     {photo.personRole}
                   </p>
                 )}
               </div>
             )}
             {photo.caption && (
-              <p className="mt-[1.5mm] font-body text-[7px] italic text-olive-dim">{photo.caption}</p>
+              <p className="mt-[1.5mm] font-body text-[11px] italic text-olive-dim">{photo.caption}</p>
             )}
           </div>
 

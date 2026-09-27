@@ -49,7 +49,7 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
           {/* Основной текст/лид — отдельное семантическое поле,
               крупнее и жирнее обычных абзацев. */}
           {lead && (
-            <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
@@ -75,7 +75,7 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
                 <img src={p.src} alt={p.caption ?? ""} className="h-full w-full object-cover" />
                 {p.caption && (
                   <figcaption data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
-                    <span className="font-body text-[6.5px] italic text-paper/90">{p.caption}</span>
+                    <span className="font-body text-[11px] italic text-paper/90">{p.caption}</span>
                   </figcaption>
                 )}
               </figure>

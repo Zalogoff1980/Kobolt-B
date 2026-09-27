@@ -48,14 +48,14 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
           )}
           {photo?.caption && (
             <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
-              <p className="font-body text-[7px] italic text-paper/90">{photo.caption}</p>
+              <p className="font-body text-[11px] italic text-paper/90">{photo.caption}</p>
             </div>
           )}
         </div>
 
         <div className="mt-[4mm] flex flex-1 flex-col justify-center">
           {lead && (
-            <p data-zone="lead" className="max-w-[130mm] font-body text-[18px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" className="max-w-[130mm] font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}

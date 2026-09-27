@@ -68,7 +68,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                       </p>
                     )}
                     {p.personRole && (
-                      <p className="mt-[0.5mm] font-body text-[6.5px] uppercase tracking-wide text-olive-dim">
+                      <p className="mt-[0.5mm] font-body text-[11px] uppercase tracking-wide text-olive-dim">
                         {p.personRole}
                       </p>
                     )}
@@ -99,7 +99,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                 внутренних шаблонах (ArticlePhoto/ThemePhoto/
                 PhotoGridText), это не текст статьи. */}
             {lead && (
-              <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">
+              <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
                 {lead.text}
               </p>
             )}

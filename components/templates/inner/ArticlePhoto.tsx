@@ -44,7 +44,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
               Отступ от заголовка — тот же space-y-[3mm], что и между
               остальными элементами колонки. */}
           {lead && (
-            <p data-zone="lead" className="font-body text-[18px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
@@ -74,7 +74,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
             )}
             {photo?.caption && (
               <div data-zone="caption" className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[3mm] py-[2mm]">
-                <p className="font-body text-[7px] italic text-paper/90">{photo.caption}</p>
+                <p className="font-body text-[11px] italic text-paper/90">{photo.caption}</p>
               </div>
             )}
           </div>
