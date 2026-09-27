@@ -229,9 +229,20 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                 "Новости" на обложке, вместо голого margin-top.
                 Заголовок "Достижения:" тем же шрифтом/размером, что и
                 "Награждён:" у наград выше (QA: "тем же шрифтом что
-                Награждён"); сама строка достижения увеличена до 16px
-                (QA: "шрифт покрупней, 12pt" — 12pt ≈ 16px, тот же
-                кегль, что и у обычного абзаца статьи). */}
+                Награждён").
+
+                Каждое достижение — карточка "как цитата, но без
+                кавычек" (QA): та же левая акцентная линия, что и у
+                PullQuote (border-l-2 border-accent), но со своей
+                заливкой — bg-paper/80 (цвет фона страницы, 80%
+                непрозрачности — QA: "подложка цвета фона с
+                прозрачностью 80"), а не олива PullQuote и без
+                уппercase/жирного цитатного начертания (текст
+                достижения — обычный, 16px). В строку, не столбиком
+                (QA: "в строку, в ширину фото, 4 штуки чтоб можно
+                было заложить") — flex-wrap с basis≈45мм даёт 4 карточки
+                на ширину фото (~186мм / 4), при большем числе —
+                перенос на следующую строку, а не сжатие. */}
             {achievements.length > 0 && (
               <div
                 data-zone="achievement"
@@ -240,14 +251,16 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                 <p className="font-display text-[15px] font-bold uppercase leading-none tracking-wide text-olive">
                   Достижения:
                 </p>
-                <ul className="mt-[2mm] space-y-[2mm]">
+                <div className="mt-[2mm] flex flex-wrap gap-[2mm]">
                   {achievements.map((a) => (
-                    <li key={a.id} className="flex items-baseline gap-[2mm] font-body text-[16px] leading-snug text-ink/90">
-                      <span className="text-accent">—</span>
-                      <span>{a.text}</span>
-                    </li>
+                    <div
+                      key={a.id}
+                      className="min-w-0 flex-1 basis-[45mm] border-l-2 border-accent bg-paper/80 px-[3mm] py-[2mm]"
+                    >
+                      <p className="font-body text-[16px] leading-snug text-ink/90">{a.text}</p>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 
