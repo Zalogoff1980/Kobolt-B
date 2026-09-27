@@ -123,47 +123,47 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                       </p>
                     )}
 
-                    {/* Награды — значок + название, списком (QA:
-                        "предусмотрена часть с наградами... в теле
-                        редактора можно будет вставлять те награды,
-                        которыми кто-то награждён"). Неизвестные/ещё не
+                    {/* Награды — значок + название, В СТРОКУ, а не
+                        столбиком (QA: "мелко и в столбик, лучше крупно
+                        и в строку, ориентировочно чтобы все шесть
+                        уместились в ширину фото"). Неизвестные/ещё не
                         существующие id молча пропускаются — на случай,
                         если award была выбрана, а потом убрана из
                         реестра.
 
-                        Размер значка увеличен (QA: "укрупнить, до сих
-                        пор мелко") — было h-[5mm] w-[5mm]. Картинки
-                        наград портретные, узкие орденские ленты
-                        (реальное соотношение сторон ~420×800px,
-                        ширина вдвое меньше высоты); в квадратном 5×5мм
-                        боксе object-contain вписывал их по высоте,
-                        оставляя всего ~2.7мм реальной ширины — отсюда
-                        и жалоба "тонкие полоски". Бокс теперь сам
-                        повторяет пропорции ленты (7.5мм×14мм), а не
-                        квадрат, поэтому значок использует всю
-                        отведённую площадь, а не только её часть. */}
+                        Каждая награда — своя колонка (flex-1, поровну
+                        делят ширину фото сверху), значок над подписью,
+                        а не рядом с ней в строке: горизонтальный список
+                        "иконка+текст" при 6 наградах в одну строку не
+                        уместился бы по ширине. Значок крупнее прежнего
+                        (17×32мм против 7.5×14мм) — при делении на 6
+                        колонок это всё ещё укладывается в ширину фото
+                        (~186мм контентной колонки / 6 ≈ 31мм на
+                        колонку). */}
                     {p.awardIds && p.awardIds.length > 0 && (
                       <div className={p.personRole || p.personBio ? "mt-[2mm]" : ""}>
                         <p className="font-display text-[8px] font-bold uppercase tracking-wide text-olive">
                           Награждён:
                         </p>
-                        <ul className="mt-[1.5mm] space-y-[2mm]">
+                        <div className="mt-[1.5mm] flex items-start justify-between gap-[2mm]">
                           {p.awardIds.map((awardId) => {
                             const award = awardById(awardId);
                             if (!award) return null;
                             return (
-                              <li key={awardId} className="flex items-center gap-[2.5mm]">
+                              <div key={awardId} className="flex flex-1 flex-col items-center text-center">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                   src={award.src}
                                   alt=""
-                                  className="h-[14mm] w-[7.5mm] flex-shrink-0 object-contain"
+                                  className="h-[32mm] w-[17mm] flex-shrink-0 object-contain"
                                 />
-                                <span className="font-body text-[9px] text-ink/90">{award.label}</span>
-                              </li>
+                                <span className="mt-[1mm] font-body text-[7.5px] leading-snug text-ink/90">
+                                  {award.label}
+                                </span>
+                              </div>
                             );
                           })}
-                        </ul>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -208,14 +208,19 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
               </div>
             )}
 
+            {/* Размер строки увеличен (QA: "строчка с достижениями...
+                очень мелко") — было text-[8px], тот же кегль, что и
+                мелкие технические подписи (например, подпись под
+                значком награды), а не читаемый текст уровня остальной
+                статьи. */}
             {achievements.length > 0 && (
               <div
                 data-zone="achievement"
                 className={lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}
               >
-                <ul className="space-y-[1.5mm]">
+                <ul className="space-y-[2mm]">
                   {achievements.map((a) => (
-                    <li key={a.id} className="flex items-baseline gap-[2mm] font-body text-[8px] text-ink/90">
+                    <li key={a.id} className="flex items-baseline gap-[2mm] font-body text-[13px] leading-snug text-ink/90">
                       <span className="text-accent">—</span>
                       <span>{a.text}</span>
                     </li>
