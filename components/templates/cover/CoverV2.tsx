@@ -81,7 +81,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             умолчанию, 1px 25%-непрозрачности) на фоновой гравюре и
             текстуре бумаги оказалась практически незаметна (QA: "не
             вижу дивайдер"). */}
-        <EditorialRule variant="double" className="mt-[3mm]" />
+        <EditorialRule variant="double" className="mt-[2mm]" />
 
         {/* Шапка — крупнее, чем у cover-v1: заголовок издания несёт
             основной визуальный вес страницы (по макету). Заголовок
@@ -106,7 +106,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             НЕЗАВИСИМО — герб держится на разумном mt-[8mm] (близко к
             исходному), а совпадение по высоте ищем только через
             отступ заголовка ниже. */}
-        <div className="mt-[6mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
+        <div className="mt-[4mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
           <Emblem
             imageSrc="/emblems/emblem-tank-corps.png"
             label="Танковые войска"
@@ -161,7 +161,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
               </span>
             </div>
 
-            <p className="mt-[2.5mm] font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
+            <p className="mt-[1.5mm] font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
               Внутреннее издание танкового батальона
             </p>
           </div>
@@ -193,7 +193,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             страницы, без изменения отступов друг между другом. */}
         <EditorialRule variant="double" className="mt-[-0.65mm]" />
 
-        <div className="mt-[2mm]">
+        <div className="mt-[1mm]">
           <HeroMedia
             photo={heroPhoto ? { src: heroPhoto.src, caption: heroPhoto.caption } : undefined}
             headline={
@@ -207,7 +207,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
           />
         </div>
 
-        <EditorialRule className="mt-[2mm]" />
+        <EditorialRule className="mt-[1mm]" />
 
         {/* "В номере" | "Новости" — та же пропорция колонок, что и у
             cover-v1 (см. CoverV1.tsx), применена и здесь. Раньше
@@ -221,7 +221,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             друг под другом, высота этой секции равна высоте более
             высокого из двух блоков, а не их сумме — то же решение,
             что уже сработало у cover-v1. */}
-        <div className="mt-[2mm] flex flex-1 gap-[3mm]">
+        <div className="mt-[1mm] flex flex-1 gap-[3mm]">
           <div className="flex-[2.1]">
             <ContentsGrid issue={issue} />
           </div>
@@ -237,7 +237,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
           </div>
         </div>
 
-        <p className="mt-[2mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
+        <p className="mt-[1mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
           {CLOSING_LINE}
         </p>
 
