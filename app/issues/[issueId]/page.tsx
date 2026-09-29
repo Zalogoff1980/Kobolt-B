@@ -240,6 +240,8 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
           overflowingPages={overflowingPages}
           inView={mobileInView}
           onJump={jumpTo}
+          currentTemplateId={issue.pages[activePage].templateId}
+          onTemplateChange={handleTemplateChange}
         />
 
         {/* EDITOR SIDEBAR */}
@@ -300,7 +302,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
         </aside>
 
         {/* A4 PREVIEW — целиком масштабируется, пропорция страницы не меняется */}
-        <div ref={previewColRef} className="flex-1 bg-stage p-6 lg:overflow-auto">
+        <div ref={previewColRef} className="flex-1 scroll-mt-12 bg-stage p-6 lg:scroll-mt-0 lg:overflow-auto">
           <p className="mb-2 text-center text-xs text-paper/60">
             Нажмите на блок страницы — откроется его поле в форме
           </p>

@@ -1,5 +1,8 @@
 "use client";
 
+import { TEMPLATE_OPTIONS } from "@/lib/content/templateOptions";
+import { CardButton } from "./EditorCard";
+
 /**
  * Липкая панель редактора для телефона (< lg). На узком экране форма
  * стоит над страницей, и после правки поля страницу приходится долго
@@ -13,6 +16,12 @@
  * на экране. Ничего не скрывает (форма и превью остаются в DOM и
  * видимы), поэтому раскладка и тесты на широкой раскладке не меняются.
  *
+ * Когда на экране страница (а карточка «Шаблон страницы» из формы
+ * уже прокручена вверх), под панелью «залипает» узкая строка выбора
+ * шаблона — его можно менять, не пролистывая обратно к форме. Пока
+ * оператор наверху и видит саму карточку, строка не показывается и
+ * поведение прежнее.
+ *
  * На десктопе (lg и шире) панель не показывается — там форма и
  * страница и так рядом.
  */
@@ -22,6 +31,8 @@ export function MobileEditorBar({
   overflowingPages,
   inView,
   onJump,
+  currentTemplateId,
+  onTemplateChange,
 }: {
   activePage: 1 | 2 | 3 | 4;
   onSelectPage: (page: 1 | 2 | 3 | 4) => void;
@@ -29,12 +40,17 @@ export function MobileEditorBar({
   /** Какая часть экрана сейчас в основном на виду. */
   inView: "form" | "page";
   onJump: (target: "form" | "page") => void;
+  currentTemplateId: string | null;
+  onTemplateChange: (templateId: string) => void;
 }) {
+  const templateOptions = TEMPLATE_OPTIONS[activePage];
+  const showTemplates = inView === "page" && templateOptions.length > 1;
   return (
     <div
       data-testid="mobile-editor-bar"
-      className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-ink/15 bg-chrome px-3 py-2 lg:hidden"
+      className="sticky top-0 z-20 border-b border-ink/15 bg-chrome lg:hidden"
     >
+     <div className="flex items-center justify-between gap-2 px-3 py-2">
       <div className="flex gap-1" role="tablist" aria-label="Страницы выпуска">
         {([1, 2, 3, 4] as const).map((n) => {
           const isActive = n === activePage;
@@ -47,7 +63,7 @@ export function MobileEditorBar({
               aria-selected={isActive}
               data-testid={`mobile-page-tab-${n}`}
               onClick={() => onSelectPage(n)}
-              className={`relative min-h-[40px] min-w-[40px] appearance-none rounded-hairline border px-2 font-display text-sm font-bold ${
+              className={`relative min-h-[40px] min-w-[40px] appearance-none rounded-control border px-2 font-display text-sm font-bold ${
                 isActive
                   ? "border-zone-alert bg-zone-alert/10 text-ink"
                   : "border-ink/20 text-olive-dim"
@@ -67,7 +83,7 @@ export function MobileEditorBar({
         })}
       </div>
 
-      <div className="flex overflow-hidden rounded-hairline border border-ink/20 text-xs">
+      <div className="flex overflow-hidden rounded-control border border-ink/20 text-xs">
         {(
           [
             ["form", "Форма"],
@@ -88,6 +104,27 @@ export function MobileEditorBar({
           </button>
         ))}
       </div>
+     </div>
+
+      {showTemplates && (
+        <div
+          data-testid="mobile-template-row"
+          className="flex items-center gap-2 border-t border-ink/10 px-3 py-1.5"
+        >
+          <span className="flex-shrink-0 font-body text-xs font-semibold text-olive">Шаблон</span>
+          {templateOptions.map((opt) => (
+            <CardButton
+              key={opt.id}
+              onClick={() => onTemplateChange(opt.id)}
+              data-testid={`mobile-template-option-${opt.id}`}
+              selected={currentTemplateId === opt.id}
+              className="flex-1"
+            >
+              {opt.label}
+            </CardButton>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
