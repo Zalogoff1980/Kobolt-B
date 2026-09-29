@@ -2,7 +2,7 @@
 
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
-import { TextInput, SmallButton, SectionHeading } from "./fields";
+import { TextInput, SmallButton, FormSection } from "./fields";
 
 type Birthday = PageSections["birthdays"][number];
 
@@ -31,8 +31,13 @@ export function BirthdaysEditor({
   }
 
   return (
-    <div className="space-y-2">
-      <SectionHeading zone="birthdays">Наши именинники</SectionHeading>
+    <FormSection
+      id="birthdays"
+      title="Наши именинники"
+      zone="birthdays"
+      filled={birthdays.some((b) => b.name.trim() !== "")}
+      summary={birthdays.length > 0 ? `${birthdays.length} шт.` : undefined}
+    >
       {birthdays.map((b) => (
         <div
           key={b.id}
@@ -70,6 +75,6 @@ export function BirthdaysEditor({
       <SmallButton data-testid="birthday-add-button" onClick={add}>
         + Добавить именинника
       </SmallButton>
-    </div>
+    </FormSection>
   );
 }

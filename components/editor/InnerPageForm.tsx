@@ -2,7 +2,7 @@
 
 import { PageSections } from "@/lib/content/sections";
 import { photoConfigFor } from "@/lib/content/templateOptions";
-import { TextInput, TextArea, Field, SectionHeading } from "./fields";
+import { TextInput, TextArea, Field, FormSection, FormSectionsToolbar } from "./fields";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { AchievementsEditor } from "./AchievementsEditor";
@@ -30,8 +30,13 @@ export function InnerPageForm({
 
   return (
     <div className="space-y-5">
-      <div className="space-y-2">
-        <SectionHeading>Заголовок</SectionHeading>
+      <FormSectionsToolbar />
+
+      <FormSection
+        id="title"
+        title="Заголовок"
+        filled={sections.title.trim() !== "" || sections.subtitle.trim() !== ""}
+      >
         <Field label="Заголовок" zone="h1">
           <TextInput
             data-testid="field-title"
@@ -46,10 +51,9 @@ export function InnerPageForm({
             onChange={(e) => onChange({ ...sections, subtitle: e.target.value })}
           />
         </Field>
-      </div>
+      </FormSection>
 
-      <div className="space-y-2">
-        <SectionHeading zone="lead">Основной текст</SectionHeading>
+      <FormSection id="lead" title="Основной текст" zone="lead" filled={sections.lead.trim() !== ""}>
         <Field label="Вводный абзац (лид)">
           <TextArea
             data-testid="field-lead"
@@ -59,7 +63,7 @@ export function InnerPageForm({
             placeholder="Короткий вводный абзац сразу после заголовка…"
           />
         </Field>
-      </div>
+      </FormSection>
 
       <PhotosEditor
         photos={sections.photos}

@@ -2,7 +2,7 @@
 
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
-import { TextArea, SmallButton, SectionHeading } from "./fields";
+import { TextArea, SmallButton, FormSection } from "./fields";
 
 type Paragraph = PageSections["paragraphs"][number];
 
@@ -42,8 +42,14 @@ export function ParagraphsEditor({
   }
 
   return (
-    <div className="space-y-3">
-      <SectionHeading zone="paragraph">Текст статьи</SectionHeading>
+    <FormSection
+      id="paragraphs"
+      title="Текст статьи"
+      zone="paragraph"
+      filled={paragraphs.some((p) => p.text.trim() !== "")}
+      summary={paragraphs.length > 0 ? `${paragraphs.length} шт.` : undefined}
+      className="space-y-3"
+    >
       {paragraphs.map((p, i) => (
         <div key={p.id} data-testid="paragraph-item" data-block-id={p.id} className="space-y-1">
           <TextArea
@@ -73,6 +79,6 @@ export function ParagraphsEditor({
       <SmallButton data-testid="paragraph-add" onClick={add}>
         + Добавить текст
       </SmallButton>
-    </div>
+    </FormSection>
   );
 }

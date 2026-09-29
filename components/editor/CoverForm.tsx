@@ -2,7 +2,7 @@
 
 import { Issue } from "@/lib/content/issue";
 import { PageSections } from "@/lib/content/sections";
-import { TextInput, TextArea, Field, SectionHeading } from "./fields";
+import { TextInput, TextArea, Field, FormSection, FormSectionsToolbar } from "./fields";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { QuoteEditor } from "./QuoteEditor";
@@ -38,9 +38,10 @@ export function CoverForm({
 }) {
   return (
     <div className="space-y-5">
-      <div>
-        <SectionHeading>Выпуск</SectionHeading>
-        <div className="mt-2 grid grid-cols-2 gap-2">
+      <FormSectionsToolbar />
+
+      <FormSection id="issue-meta" title="Выпуск">
+        <div className="grid grid-cols-2 gap-2">
           <Field label="Номер выпуска">
             <TextInput
               value={issue.number}
@@ -55,10 +56,13 @@ export function CoverForm({
             />
           </Field>
         </div>
-      </div>
+      </FormSection>
 
-      <div className="space-y-2">
-        <SectionHeading>Главный материал обложки</SectionHeading>
+      <FormSection
+        id="cover-title"
+        title="Главный материал обложки"
+        filled={sections.title.trim() !== "" || sections.subtitle.trim() !== ""}
+      >
         <Field label="Главный заголовок (hero)" zone="h1">
           <TextInput
             data-testid="field-title"
@@ -74,7 +78,7 @@ export function CoverForm({
             onChange={(e) => onSectionsChange({ ...sections, subtitle: e.target.value })}
           />
         </Field>
-      </div>
+      </FormSection>
 
       <PhotosEditor
         photos={sections.photos}
@@ -105,8 +109,7 @@ export function CoverForm({
           заметки. Не часть sections/PageContent — отдельное поле
           выпуска (см. Issue.coverNews), поэтому меняется через
           onIssueMetaChange, а не onSectionsChange. */}
-      <div className="space-y-2">
-        <SectionHeading zone="news">Новости</SectionHeading>
+      <FormSection id="news" title="Новости" zone="news" filled={(issue.coverNews ?? "").trim() !== ""}>
         <TextArea
           data-testid="field-cover-news"
           value={issue.coverNews ?? ""}
@@ -114,7 +117,7 @@ export function CoverForm({
           rows={5}
           placeholder={"Каждая строка — отдельная новость.\nНапример:\nБатальон занял 1-е место на учениях.\nПрибыло новое пополнение техники."}
         />
-      </div>
+      </FormSection>
 
       {/* Блок "День в истории" — только у шаблона "Боевой листок"
           (cover-v2, см. ContentsGrid.tsx): заменяет собой список "В
@@ -125,8 +128,12 @@ export function CoverForm({
           cover-v2), так же как coverNews не зависит от текущего
           шаблона обложки — значение сохраняется в Issue независимо от
           того, какой шаблон сейчас активен. */}
-      <div className="space-y-2">
-        <SectionHeading zone="dayInHistory">День в истории</SectionHeading>
+      <FormSection
+        id="dayInHistory"
+        title="День в истории"
+        zone="dayInHistory"
+        filled={(issue.dayInHistory ?? "").trim() !== ""}
+      >
         <TextArea
           data-testid="field-day-in-history"
           value={issue.dayInHistory ?? ""}
@@ -134,7 +141,7 @@ export function CoverForm({
           rows={5}
           placeholder={"Каждая строка — отдельный факт (используется в шаблоне «Боевой листок»).\nНапример:\nВ этот день в 1943 году началась Курская битва."}
         />
-      </div>
+      </FormSection>
     </div>
   );
 }

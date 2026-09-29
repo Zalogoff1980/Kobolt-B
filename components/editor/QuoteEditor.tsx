@@ -2,7 +2,7 @@
 
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
-import { TextInput, TextArea, SmallButton, SectionHeading, Field } from "./fields";
+import { TextInput, TextArea, SmallButton, FormSection, Field } from "./fields";
 
 type Quote = PageSections["quotes"][number];
 
@@ -29,8 +29,13 @@ export function QuoteEditor({
   }
 
   return (
-    <div className="space-y-2">
-      <SectionHeading zone="quote">Цитаты</SectionHeading>
+    <FormSection
+      id="quotes"
+      title="Цитаты"
+      zone="quote"
+      filled={quotes.some((q) => q.text.trim() !== "")}
+      summary={quotes.length > 0 ? `${quotes.length} шт.` : undefined}
+    >
       {quotes.map((q) => (
         <div
           key={q.id}
@@ -61,6 +66,6 @@ export function QuoteEditor({
       <SmallButton data-testid="add-quote-button" onClick={add}>
         + Добавить цитату
       </SmallButton>
-    </div>
+    </FormSection>
   );
 }

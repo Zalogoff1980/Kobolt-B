@@ -2,7 +2,7 @@
 
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
-import { TextInput, SmallButton, SectionHeading } from "./fields";
+import { TextInput, SmallButton, FormSection } from "./fields";
 
 type Achievement = PageSections["achievements"][number];
 
@@ -27,8 +27,13 @@ export function AchievementsEditor({
   }
 
   return (
-    <div className="space-y-2">
-      <SectionHeading zone="achievement">Достижения и награды</SectionHeading>
+    <FormSection
+      id="achievements"
+      title="Достижения и награды"
+      zone="achievement"
+      filled={achievements.some((a) => a.text.trim() !== "")}
+      summary={achievements.length > 0 ? `${achievements.length} шт.` : undefined}
+    >
       {achievements.map((a) => (
         <div key={a.id} data-testid="achievement-item" data-block-id={a.id} className="flex gap-1">
           <TextInput
@@ -45,6 +50,6 @@ export function AchievementsEditor({
       <SmallButton data-testid="achievement-add" onClick={add}>
         + Добавить строку
       </SmallButton>
-    </div>
+    </FormSection>
   );
 }

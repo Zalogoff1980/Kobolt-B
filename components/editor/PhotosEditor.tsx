@@ -3,7 +3,7 @@
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
 import { fileToDataUrl } from "@/lib/editor/fileToDataUrl";
-import { TextInput, TextArea, SmallButton, SectionHeading, Field } from "./fields";
+import { TextInput, TextArea, SmallButton, FormSection, Field } from "./fields";
 import { AwardPicker } from "./AwardPicker";
 
 type Photo = PageSections["photos"][number];
@@ -60,8 +60,14 @@ export function PhotosEditor({
   const atMax = maxCount !== undefined && photos.length >= maxCount;
 
   return (
-    <div className="space-y-3">
-      <SectionHeading zone="photo">Фотографии</SectionHeading>
+    <FormSection
+      id="photos"
+      title="Фотографии"
+      zone="photo"
+      filled={photos.length > 0}
+      summary={photos.length > 0 ? `${photos.length} шт.` : undefined}
+      className="space-y-3"
+    >
       {photos.map((p) => (
         <div key={p.id} data-testid="photo-item" data-block-id={p.id} className="space-y-1.5 rounded-container border border-ink/10 p-2">
           <div className="flex items-center gap-2">
@@ -167,6 +173,6 @@ export function PhotosEditor({
           {photos.length} / {maxCount}
         </span>
       )}
-    </div>
+    </FormSection>
   );
 }

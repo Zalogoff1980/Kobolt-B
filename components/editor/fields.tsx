@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from "react";
 import { ZONE_LABELS } from "./guides/ContentZoneOverlay";
 
 /** Общие примитивы полей редактора — единообразный минималистичный
@@ -32,7 +32,10 @@ export function Field({
   children: ReactNode;
 }) {
   return (
-    <label className="block">
+    // data-form-zone — метка "этому полю соответствует блок страницы с
+    // таким data-zone": по ней клик по блоку в превью находит поле
+    // (см. handlePreviewClick в app/issues/[issueId]/page.tsx).
+    <label className="block" data-form-zone={zone}>
       <span className="font-display text-[10px] font-bold uppercase tracking-wide text-olive">
         {label}
         {zone && <ZoneTag zone={zone} />}
@@ -82,5 +85,135 @@ export function SectionHeading({ children, zone }: { children: ReactNode; zone?:
       {children}
       {zone && <ZoneTag zone={zone} />}
     </h3>
+  );
+}
+
+
+/* ---------- Свёртываемые секции формы ---------- */
+
+/** Состояние свёрнутости живёт НАД формами (в редакторе выпуска), а не
+ *  внутри каждой секции: так выбор оператора ("это уже заполнил —
+ *  свернул") переживает переключение страниц, а "Свернуть все /
+ *  Развернуть все" достаёт сразу все секции, не зная их списка.
+ *  Модель: по умолчанию все секции развёрнуты; overrides — точечные
+ *  исключения поверх общего значения `allCollapsed`. */
+type FormSectionsState = {
+  isCollapsed: (id: string) => boolean;
+  toggle: (id: string) => void;
+  setAll: (collapsed: boolean) => void;
+};
+
+const FormSectionsContext = createContext<FormSectionsState>({
+  isCollapsed: () => false,
+  toggle: () => {},
+  setAll: () => {},
+});
+
+export function FormSectionsProvider({ children }: { children: ReactNode }) {
+  const [allCollapsed, setAllCollapsed] = useState(false);
+  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
+
+  const isCollapsed = useCallback(
+    (id: string) => overrides[id] ?? allCollapsed,
+    [overrides, allCollapsed]
+  );
+  const toggle = useCallback(
+    (id: string) => setOverrides((o) => ({ ...o, [id]: !(o[id] ?? allCollapsed) })),
+    [allCollapsed]
+  );
+  const setAll = useCallback((collapsed: boolean) => {
+    setAllCollapsed(collapsed);
+    setOverrides({});
+  }, []);
+
+  const value = useMemo(() => ({ isCollapsed, toggle, setAll }), [isCollapsed, toggle, setAll]);
+  return <FormSectionsContext.Provider value={value}>{children}</FormSectionsContext.Provider>;
+}
+
+/** Секция формы со сворачиванием. Заголовок — кнопка на всю ширину
+ *  (удобно попадать пальцем), справа — статус: "✓" если секция
+ *  заполнена и "○" если пуста, плюс короткая сводка ("2 шт."), чтобы
+ *  и в свёрнутом виде было видно, что в ней есть. */
+export function FormSection({
+  id,
+  title,
+  zone,
+  filled,
+  summary,
+  children,
+  className = "space-y-2",
+}: {
+  id: string;
+  title: string;
+  /** data-zone соответствующего блока страницы (см. ContentZoneOverlay). */
+  zone?: string;
+  /** Есть ли в секции хоть что-то введённое; undefined — статус не показываем. */
+  filled?: boolean;
+  summary?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  const { isCollapsed, toggle } = useContext(FormSectionsContext);
+  const collapsed = isCollapsed(id);
+
+  return (
+    <section data-form-section={id} data-form-zone={zone} data-collapsed={collapsed}>
+      <h3 className="border-b border-ink/10">
+        <button
+          type="button"
+          onClick={() => toggle(id)}
+          aria-expanded={!collapsed}
+          data-testid={`section-toggle-${id}`}
+          className="flex min-h-[40px] w-full appearance-none items-center gap-2 py-1 text-left font-display text-xs font-bold uppercase tracking-wide text-ink"
+        >
+          <span aria-hidden className="w-3 flex-shrink-0 text-olive-dim">
+            {collapsed ? "▸" : "▾"}
+          </span>
+          <span className="flex items-center">
+            {title}
+            {zone && <ZoneTag zone={zone} />}
+          </span>
+          {filled !== undefined && (
+            <span
+              className={`ml-auto flex-shrink-0 font-body text-[11px] font-normal normal-case tracking-normal ${
+                filled ? "text-olive" : "text-olive-dim/70"
+              }`}
+            >
+              {summary ? `${summary} ` : ""}
+              {filled ? "✓" : "○"}
+            </span>
+          )}
+        </button>
+      </h3>
+      <div hidden={collapsed} className={`mt-2 ${className}`}>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+/** "Свернуть все · Развернуть все" — вверху формы: на телефоне форма
+ *  длинная, и оператору проще свернуть всё и раскрыть только нужное. */
+export function FormSectionsToolbar() {
+  const { setAll } = useContext(FormSectionsContext);
+  return (
+    <div className="flex items-center justify-end gap-3 text-[11px] text-olive-dim">
+      <button
+        type="button"
+        data-testid="sections-collapse-all"
+        onClick={() => setAll(true)}
+        className="appearance-none underline"
+      >
+        Свернуть все
+      </button>
+      <button
+        type="button"
+        data-testid="sections-expand-all"
+        onClick={() => setAll(false)}
+        className="appearance-none underline"
+      >
+        Развернуть все
+      </button>
+    </div>
   );
 }

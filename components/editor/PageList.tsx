@@ -24,10 +24,15 @@ export function PageList({
   issue,
   activePage,
   onSelect,
+  overflowingPages = [],
 }: {
   issue: Issue;
   activePage: 1 | 2 | 3 | 4;
   onSelect: (page: 1 | 2 | 3 | 4) => void;
+  /** Номера страниц, где контент физически не помещается в лист
+   *  (HiddenOverflowProbe) — у таких страниц в списке значок ⚠, чтобы
+   *  оператор видел проблему, не открывая каждую страницу. */
+  overflowingPages?: number[];
 }) {
   return (
     <ul className="space-y-1">
@@ -37,6 +42,7 @@ export function PageList({
           TEMPLATE_OPTIONS[n].find((t) => t.id === page.templateId)?.label ??
           (page.templateId ? page.templateId : "шаблон не выбран");
         const isActive = n === activePage;
+        const overflows = overflowingPages.includes(n);
         return (
           <li key={n}>
             <button
@@ -52,7 +58,7 @@ export function PageList({
               }`}
             >
               <PageThumbnail issue={issue} pageNumber={n} />
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p
                   data-testid={`page-title-${n}`}
                   className="font-display text-xs font-bold uppercase tracking-wide text-ink"
@@ -60,6 +66,14 @@ export function PageList({
                   {String(n).padStart(2, "0")} — {pageTitle(issue, n)}
                 </p>
                 <p className="mt-0.5 truncate text-[11px] text-olive-dim">{templateLabel}</p>
+                {overflows && (
+                  <p
+                    data-testid={`page-overflow-${n}`}
+                    className="mt-0.5 text-[11px] font-bold text-zone-alert"
+                  >
+                    ⚠ Не помещается на странице
+                  </p>
+                )}
               </div>
             </button>
           </li>
