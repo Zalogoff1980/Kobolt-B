@@ -49,6 +49,9 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
   );
   const faces = photos.slice(0, 3);
   const heightMm = photoHeightMm(faces.length);
+  // Нижний предел сжатия кадра (см. комментарий у сетки портретов) — не
+  // ниже 60мм (или heightMm, если он сам меньше, как при 3 портретах).
+  const minHeightMm = Math.min(60, heightMm);
   // quotes (общая цитата страницы) больше не рендерится здесь отдельным
   // блоком — теперь она врезкой поверх фото первого человека (см. ниже),
   // поэтому в этот флаг больше не входит.
@@ -61,19 +64,36 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
     >
-      <div className="flex h-full flex-col">
+      <div className="flex h-full min-h-0 flex-col">
         <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
         {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
-            для всех внутренних шаблонов) — было 5мм. */}
+            для всех внутренних шаблонов) — было 5мм.
+
+            Обрез внизу стр. 4 (QA, PDF выпуска №8: карточки "Достижения"
+            уходили за нижний край листа, нижняя двойная линейка не
+            видна): портрет имел жёсткую высоту (115мм), а над и под ним
+            — блоки фиксированного размера (имя, роль, награды 32мм +
+            подписи, достижения), так что при 4 наградах и 4 достижениях
+            сумма не помещалась в область между шапкой и нижней линейкой
+            (~10–12мм избытка). Теперь сетка портретов — единственный
+            сжимаемый элемент колонки (min-h-0 + shrink, а единственная
+            строка сетки minmax(0,1fr) следует за её высотой), а сам
+            кадр — flex-элемент с базой heightMm и нижним пределом
+            minHeightMm: при нехватке места сжимается фото, а не
+            обрезается низ страницы. Когда места хватает, поведение то
+            же, что и раньше (кадр остаётся heightMm). */}
         {faces.length > 0 && (
           <div
             data-zone="photo"
-            className="mt-[4mm] grid flex-shrink-0 gap-[5mm]"
-            style={{ gridTemplateColumns: `repeat(${faces.length}, 1fr)` }}
+            className="mt-[4mm] grid min-h-0 flex-shrink gap-[5mm]"
+            style={{
+              gridTemplateColumns: `repeat(${faces.length}, 1fr)`,
+              gridTemplateRows: "minmax(0, 1fr)",
+            }}
           >
             {faces.map((p, i) => (
-              <div key={p.id} className="flex flex-col">
+              <div key={p.id} className="flex min-h-0 flex-col">
                 {/* Имя/звание — НАД фото (QA-референс), а не подписью
                     под ним, как было раньше. Одна строка может занимать
                     несколько строк текста (звание + фамилия + имя +
@@ -81,7 +101,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                     подстраивается под неё — карточка просто немного
                     ужимает высоту оставшегося текста. */}
                 {p.personName && (
-                  <p className="font-display text-[10px] font-bold uppercase leading-tight text-ink">
+                  <p className="flex-shrink-0 font-display text-[10px] font-bold uppercase leading-tight text-ink">
                     {p.personName}
                   </p>
                 )}
@@ -106,8 +126,8 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                     плашки просто складываются в один стек (space-y),
                     как HeroMedia уже делает при нескольких цитатах. */}
                 <div
-                  className={`relative overflow-hidden bg-olive/10 ${p.personName ? "mt-[2mm]" : ""}`}
-                  style={{ height: `${heightMm}mm` }}
+                  className={`relative min-h-0 overflow-hidden bg-olive/10 ${p.personName ? "mt-[2mm]" : ""}`}
+                  style={{ flex: `0 1 ${heightMm}mm`, minHeight: `${minHeightMm}mm` }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -142,7 +162,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
                 </div>
 
                 {(p.personRole || p.personBio || (p.awardIds && p.awardIds.length > 0)) && (
-                  <div data-zone="caption" className="mt-[2mm]">
+                  <div data-zone="caption" className="mt-[2mm] flex-shrink-0">
                     {p.personRole && (
                       <p className="font-display text-[10px] font-bold text-ink">{p.personRole}.</p>
                     )}
