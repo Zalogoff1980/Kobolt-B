@@ -11,7 +11,7 @@ export const TEMPLATE_OPTIONS: Record<1 | 2 | 3 | 4, { id: string; label: string
   ],
   3: [
     { id: "theme-photo-v1", label: "Большое фото + текст" },
-    { id: "theme-text-photos-v1", label: "Текст + 2–3 фото" },
+    { id: "theme-text-photos-v1", label: "Текст + 2–4 фото" },
   ],
   4: [
     { id: "person-feature-v1", label: "Лицо" },
@@ -31,7 +31,7 @@ export function photoConfigFor(
   if (pageNumber === 2 && templateId === "article-photo-v1") return { maxCount: 1, showPersonFields: false };
   if (pageNumber === 2 && templateId === "photo-grid-v1") return { maxCount: undefined, showPersonFields: false };
   if (pageNumber === 3 && templateId === "theme-photo-v1") return { maxCount: 1, showPersonFields: false };
-  if (pageNumber === 3 && templateId === "theme-text-photos-v1") return { maxCount: 3, showPersonFields: false };
+  if (pageNumber === 3 && templateId === "theme-text-photos-v1") return { maxCount: 4, showPersonFields: false };
   if (pageNumber === 4 && templateId === "person-feature-v1") return { maxCount: 1, showPersonFields: true };
   if (pageNumber === 4 && templateId === "team-faces-v1") return { maxCount: 3, showPersonFields: true };
   return { maxCount: undefined, showPersonFields: false };

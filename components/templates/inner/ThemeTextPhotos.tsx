@@ -9,7 +9,7 @@ const RAIL_MAX_HEIGHT_MM = 180;
 const RAIL_GAP_MM = 3;
 
 /** Высота каждого кадра в вертикальной "плёнке" зависит от того,
- *  сколько их — 1, 2 или 3 (ТЗ шаг 4 ограничивает шаблон именно этим
+ *  сколько их — 1, 2, 3 или 4 (шаблон рассчитан именно на этот
  *  диапазоном) — в рамках общего бюджета высоты, а не тянется на всю
  *  страницу независимо от количества. */
 function railPhotoHeight(count: number): number {
@@ -18,17 +18,17 @@ function railPhotoHeight(count: number): number {
 }
 
 /**
- * Страница 3, Template B — "текст + 2–3 фотографии" (ТЗ шаг 4).
+ * Страница 3, Template B — "текст + 2–4 фотографии" (ТЗ шаг 4, позже расширено до 4).
  * Композиция отличается и от Template A этой же страницы (баннер
  * сверху), и от Template B страницы 2 (сетка фото сверху, текст
  * снизу): здесь текст — основная widescreen-колонка слева, фото идут
- * узкой вертикальной "плёнкой"-рубрикой справа, максимум три кадра.
+ * узкой вертикальной "плёнкой"-рубрикой справа, максимум четыре кадра.
  */
 export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumber: 3 }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber].content.blocks
   );
-  const railPhotos = photos.slice(0, 3);
+  const railPhotos = photos.slice(0, 4);
   const photoHeight = railPhotoHeight(railPhotos.length);
 
   return (
