@@ -125,6 +125,14 @@ export function MobileEditorBar({
           ))}
         </div>
       )}
+
+      {/* Затухающий край под панелью: контент уходит под неё плавно, а не
+          обрезается по линии — видно, что редактор прокручен вверх. */}
+      <div
+        aria-hidden
+        data-testid="mobile-bar-fade"
+        className="pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-chrome/90 to-transparent"
+      />
     </div>
   );
 }
