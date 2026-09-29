@@ -80,7 +80,17 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
                   <span className="flex-shrink-0 font-display text-[18px] font-bold leading-none text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <p className="font-body text-[8px] leading-snug text-ink/90">{text}</p>
+                  {/* line-clamp — без него длинный текст "День в
+                      истории" (свободный ввод оператора, ничем не
+                      ограничен) может раздуть высоту этого блока
+                      настолько, что вместе с "Новости" справа страница
+                      1 вылезает за 297мм и обрезается (найдено при
+                      разборе реального PDF-файла: "Новости" без
+                      ограничения растягивались на ~140мм при
+                      реальном тексте выпуска вместо расчётных ~55мм).
+                      3 строки — тот же порядок кегля/переносов, что
+                      был у большинства пунктов и раньше на глаз. */}
+                  <p className="line-clamp-3 font-body text-[8px] leading-snug text-ink/90">{text}</p>
                 </div>
               </li>
             ))}
