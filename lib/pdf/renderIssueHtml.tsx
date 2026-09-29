@@ -3,6 +3,7 @@ import { A4Page } from "@/components/canvas/A4Page";
 import { buildTailwindCssForHtml } from "./buildTailwindCss";
 import { getEmbeddedFontCss } from "./googleFonts";
 import { inlineEngravingImages } from "./inlineStaticImages";
+import { PREFLIGHT_CSS } from "./preflightCss";
 
 /**
  * Единственное место, которое превращает Issue в HTML-документ для
@@ -57,10 +58,14 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
 <head>
 <meta charset="utf-8" />
 <style>
+  /* Сброс стилей элементов (p, h1–h3, ul/li, img, border-style…) — та
+     же база, что Tailwind preflight в живом превью (см. preflightCss.ts,
+     почему это копия строкой, а не плагин Tailwind). Идёт ПЕРВЫМ, чтобы
+     всё ниже (печатные правила, Tailwind-утилиты) его переопределяло. */
+  ${PREFLIGHT_CSS}
+
   /* Минимальный печатный reset для самого документа (рамка страницы,
-     поля html/body). Сброс стилей элементов (p, h1–h3, ul/li, img…) —
-     это Tailwind preflight, он включён в buildTailwindCss.ts и идёт
-     ниже, так что PDF получает тот же reset, что и живое превью. */
+     поля html/body). */
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   img { max-width: none; }
