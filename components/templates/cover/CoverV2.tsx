@@ -133,7 +133,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
                 какого-либо margin-хака. */}
             <h1 className="font-display uppercase tracking-tight">
               <span
-                className="block text-[90px] font-bold leading-[0.8] text-ink"
+                className="cover-h1-trim block text-[90px] font-bold leading-[0.8] text-ink"
                 style={{ textBoxTrim: "trim-start", textBoxEdge: "cap alphabetic" } as CSSProperties}
               >
                 Танковый

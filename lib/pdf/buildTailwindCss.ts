@@ -72,6 +72,19 @@ export async function buildTailwindCssForHtml(html: string): Promise<string> {
       transparent 1px,
       transparent 3px
     );
+}
+/* Тот же фолбэк, что и в styles/globals.css (см. комментарий там) —
+   text-box-trim, которым в CoverV2 обрезан ascent-запас над "Танковый",
+   может не поддерживаться Chromium'ом, печатающим PDF, даже когда
+   поддержан браузером живого превью: без фолбэка это раздувало высоту
+   страницы 1 настолько, что нижняя часть (в т.ч. новый нижний дивайдер)
+   обрезалась.  Custom-CSS здесь не сканируется Tailwind JIT-движком из
+   разметки (он видит только имена классов) — поэтому дублируется явно,
+   как и .kobolt-page выше. */
+@supports not (text-box-trim: trim-start) {
+  .cover-h1-trim {
+    margin-top: -6mm;
+  }
 }`;
 
   const result = await postcss([tailwindcss(config), autoprefixer]).process(source, {
