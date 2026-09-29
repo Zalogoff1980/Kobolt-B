@@ -106,7 +106,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             НЕЗАВИСИМО — герб держится на разумном mt-[8mm] (близко к
             исходному), а совпадение по высоте ищем только через
             отступ заголовка ниже. */}
-        <div className="mt-[8mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
+        <div className="mt-[6mm] grid grid-cols-[33mm_1fr_33mm] items-start gap-[7mm]">
           <Emblem
             imageSrc="/emblems/emblem-tank-corps.png"
             label="Танковые войска"
@@ -207,7 +207,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
           />
         </div>
 
-        <EditorialRule className="mt-[4mm]" />
+        <EditorialRule className="mt-[2mm]" />
 
         {/* "В номере" | "Новости" — та же пропорция колонок, что и у
             cover-v1 (см. CoverV1.tsx), применена и здесь. Раньше
@@ -221,7 +221,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
             друг под другом, высота этой секции равна высоте более
             высокого из двух блоков, а не их сумме — то же решение,
             что уже сработало у cover-v1. */}
-        <div className="mt-[4mm] flex flex-1 gap-[3mm]">
+        <div className="mt-[2mm] flex flex-1 gap-[3mm]">
           <div className="flex-[2.1]">
             <ContentsGrid issue={issue} />
           </div>

@@ -48,9 +48,15 @@ export function HeroMedia({
     // высоте более высокого из двух — фото или колонки, — и соседний
     // блок ниже просто сдвигается вниз, а не перекрывается.
     <div className="flex gap-[3mm]">
+      {/* Высота уменьшена с 96мм до 85мм (QA: реальный PDF-файл замерен
+          напрямую через pdftoppm — низа страницы 1 не хватало ~15мм
+          после ограничения "Новости"/"День в истории" line-clamp'ом;
+          самый крупный и безопасный резерв места на этой странице —
+          именно фото, у него нет содержательного текста, который
+          могло бы обрезать). */}
       <div
         data-zone="photo"
-        className={`relative h-[96mm] overflow-hidden bg-olive/10 ${hasSideColumn ? "flex-[2.1]" : "flex-1"}`}
+        className={`relative h-[85mm] overflow-hidden bg-olive/10 ${hasSideColumn ? "flex-[2.1]" : "flex-1"}`}
       >
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
