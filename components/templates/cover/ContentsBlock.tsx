@@ -33,7 +33,9 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
 
       <ul className="mt-[3mm] space-y-[3mm]">
         {entries.map((entry, i) => (
-          <li key={entry.pageNumber}>
+          // data-page-link — метка для редактора: клик по записи ведёт на
+          // эту страницу (см. handlePreviewClick). Инертна в PDF и превью.
+          <li key={entry.pageNumber} data-page-link={entry.pageNumber}>
             {i > 0 && <EditorialRule className="mb-[3mm]" />}
             <div className="flex items-start gap-[3mm]">
               <span className="font-display text-[20px] font-bold leading-none text-accent">

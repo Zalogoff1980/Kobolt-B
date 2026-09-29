@@ -73,13 +73,14 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  /** Клик по блоку на странице → раскрыть его секцию в форме,
-   *  прокрутить к полю, поставить курсор и коротко подсветить. */
-  function handlePreviewClick(e: React.MouseEvent<HTMLDivElement>) {
-    const clicked = (e.target as HTMLElement).closest<HTMLElement>("[data-zone]");
-    const zone = clicked?.dataset.zone;
+  /** Раскрыть в форме поле, соответствующее зоне страницы: раскрыть
+   *  секцию, прокрутить к полю, поставить курсор и коротко подсветить.
+   *  `clicked` — нажатый блок на странице (нужен, чтобы у повторяющихся
+   *  блоков вести к полю с тем же порядковым номером); null — просто к
+   *  первому полю зоны. */
+  function revealZone(zone: string, clicked: HTMLElement | null) {
     const aside = asideRef.current;
-    if (!clicked || !zone || !aside) return;
+    if (!aside) return;
 
     const formZone = FORM_ZONE_ALIASES[zone] ?? zone;
     const target = aside.querySelector<HTMLElement>(`[data-form-zone="${formZone}"]`);
@@ -96,7 +97,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     // полю, что по счёту соответствует нажатому блоку на странице.
     const fields = Array.from(target.querySelectorAll<HTMLElement>(FOCUSABLE_FIELDS));
     let field: HTMLElement | undefined = target.matches(FOCUSABLE_FIELDS) ? target : fields[0];
-    if (zone === "paragraph" || zone === "achievement") {
+    if (clicked && (zone === "paragraph" || zone === "achievement")) {
       const previewRoot = previewRootRef.current;
       const sameZone = previewRoot
         ? Array.from(previewRoot.querySelectorAll<HTMLElement>(`[data-zone="${zone}"]`))
@@ -114,6 +115,30 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
       scrollTarget.classList.add(...flash);
       window.setTimeout(() => scrollTarget.classList.remove(...flash), 1400);
     }, 60);
+  }
+
+  /** Клик по странице: блок с зоной ведёт к своему полю формы, а
+   *  карточка в блоке "В номере" на обложке — на страницу 2–4, которую
+   *  она показывает (своей секции в форме обложки у неё нет). */
+  function handlePreviewClick(e: React.MouseEvent<HTMLDivElement>) {
+    const el = e.target as HTMLElement;
+
+    const link = el.closest<HTMLElement>("[data-page-link]");
+    if (link) {
+      const n = Number(link.dataset.pageLink);
+      if (n === 1 || n === 2 || n === 3 || n === 4) {
+        setActivePage(n);
+        // Форма выбранной страницы отрисуется на следующем кадре —
+        // после этого ставим курсор в её заголовок.
+        window.setTimeout(() => revealZone("h1", null), 120);
+      }
+      return;
+    }
+
+    const clicked = el.closest<HTMLElement>("[data-zone]");
+    const zone = clicked?.dataset.zone;
+    if (!clicked || !zone) return;
+    revealZone(zone, clicked);
   }
 
   async function persist(next: Issue) {
@@ -287,7 +312,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             <div
               ref={previewRootRef}
               onClick={handlePreviewClick}
-              className="relative [&_[data-zone]]:cursor-pointer"
+              className="relative [&_[data-page-link]]:cursor-pointer [&_[data-zone]]:cursor-pointer"
             >
               <A4Page issue={issue} pageNumber={activePage} />
               <ContentZoneOverlay containerRef={previewRootRef} />

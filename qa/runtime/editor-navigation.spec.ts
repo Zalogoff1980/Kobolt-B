@@ -55,6 +55,19 @@ test.describe("editor navigation", () => {
     assertNoConsoleErrors(errors);
   });
 
+  test("clicking a card in the cover's contents block opens that page and focuses its title", async ({ page }) => {
+    const errors = attachConsoleGuard(page);
+    const issueId = await createIssueViaUI(page, { number: "TEST-NAV-4", date: "2025-04-04" });
+
+    await page.locator('[data-testid="a4-preview"] [data-page-link="2"]').first().click();
+
+    await expect(page.locator('[data-testid="page-item-2"]')).toHaveAttribute("data-active", "true");
+    await expect(page.locator('[data-testid="field-title"]')).toBeFocused();
+
+    await deleteIssueViaUI(page, issueId);
+    assertNoConsoleErrors(errors);
+  });
+
   test("a page whose content does not fit is marked in the page list", async ({ page }) => {
     const errors = attachConsoleGuard(page);
     const issueId = await createIssueViaUI(page, { number: "TEST-NAV-3", date: "2025-04-03" });

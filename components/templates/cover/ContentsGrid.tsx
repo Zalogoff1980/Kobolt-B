@@ -117,7 +117,13 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
             началу своей колонки, как и "Новости" справа. */}
         <div className="grid grid-cols-2 gap-[4mm]">
           {entries.map((entry, i) => (
-            <div key={entry.pageNumber} className={isLastOdd(i) ? "col-span-2" : ""}>
+            // data-page-link — метка для редактора: клик по карточке ведёт на
+            // эту страницу (см. handlePreviewClick). Инертна в PDF и превью.
+            <div
+              key={entry.pageNumber}
+              data-page-link={entry.pageNumber}
+              className={isLastOdd(i) ? "col-span-2" : ""}
+            >
               <div className="h-[28mm] overflow-hidden bg-olive/10">
                 {entry.thumbnailSrc && (
                   // eslint-disable-next-line @next/next/no-img-element
