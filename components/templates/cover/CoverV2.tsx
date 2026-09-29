@@ -186,7 +186,12 @@ export function CoverV2({ issue }: { issue: Issue }) {
           <IssueMeta number={issue.number} date={issue.date} />
         </div>
 
-        <EditorialRule variant="double" className="mt-[2mm]" />
+        {/* Всё, что ниже плашки "Боевой листок", подтянуто вверх на 10px
+            (QA: "подтянуть все что ниже Боевой листок вверх на 10 px") —
+            10px = 2.65мм, снят с отступа перед этим дивайдером, дальше
+            по потоку сдвигается вместе с ним весь оставшийся контент
+            страницы, без изменения отступов друг между другом. */}
+        <EditorialRule variant="double" className="mt-[-0.65mm]" />
 
         <div className="mt-[2mm]">
           <HeroMedia
