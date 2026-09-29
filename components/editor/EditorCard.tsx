@@ -18,7 +18,7 @@ export function EditorCard({
   return (
     <section
       data-testid={testId}
-      className="overflow-hidden rounded-panel border border-ink/15 bg-white/70 shadow-[0_1px_2px_rgba(22,21,17,0.06)]"
+      className="overflow-hidden rounded-panel border border-ink/15 bg-paper shadow-[0_1px_2px_rgba(22,21,17,0.06)]"
     >
       <h3 className="border-b border-ink/10 px-4 py-3 font-body text-[15px] font-bold text-ink">
         {title}
@@ -46,7 +46,7 @@ export function CardButton({
       className={`h-8 appearance-none rounded-control border px-3 font-body text-xs font-semibold ${
         selected
           ? "border-ink bg-ink text-paper"
-          : "border-ink/20 bg-white/60 text-ink hover:border-ink/40 hover:bg-white"
+          : "border-ink/20 bg-paper text-ink hover:border-ink/40 hover:bg-chrome/60"
       } ${className}`}
     >
       {children}
