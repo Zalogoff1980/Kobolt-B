@@ -37,7 +37,7 @@ export function CoverForm({
   onSectionsChange: (next: PageSections) => void;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <FormSectionsToolbar />
 
       <FormSection id="issue-meta" title="Выпуск">

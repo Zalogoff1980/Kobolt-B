@@ -83,7 +83,7 @@ export function DownloadPdfButton({
         onClick={handleClick}
         disabled={state === "loading"}
         data-testid="download-pdf-button"
-        className="rounded-hairline border border-ink/20 bg-ink px-3 py-1.5 text-xs text-paper hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60"
+        className="h-8 appearance-none rounded-control border border-ink bg-ink px-3 font-body text-xs font-semibold text-paper hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60"
       >
         {state === "loading" ? "Формируем PDF…" : "Скачать PDF"}
       </button>

@@ -41,7 +41,7 @@ export function QuoteEditor({
           key={q.id}
           data-testid="quote-item"
           data-block-id={q.id}
-          className="space-y-1.5 rounded-container border border-ink/10 p-2"
+          className="space-y-1.5 rounded-control border border-ink/10 bg-chrome/25 p-3"
         >
           <Field label="Текст цитаты">
             <TextArea

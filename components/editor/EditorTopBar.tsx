@@ -27,7 +27,7 @@ export function EditorTopBar({
   return (
     <div className="flex flex-col gap-1 border-b border-ink/15 bg-chrome px-4 py-3">
       <div className="flex items-center justify-between">
-        <Link href="/" className="text-xs text-olive-dim underline">
+        <Link href="/" className="text-xs font-semibold text-olive-dim underline">
           Выпуски
         </Link>
         <span data-testid="save-status" className="text-xs text-olive-dim">

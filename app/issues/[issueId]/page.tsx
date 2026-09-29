@@ -257,7 +257,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
           {overflowingPages.includes(activePage) && (
             <div
               data-testid="active-page-overflow-notice"
-              className="mt-4 rounded-container border border-zone-alert bg-zone-alert/10 p-3 text-xs text-ink"
+              className="mt-4 rounded-panel border border-zone-alert bg-zone-alert/10 p-3 text-xs text-ink"
             >
               <p className="font-bold">⚠ Страница {activePage}: материал не помещается</p>
               <p className="mt-1">{OVERFLOW_MESSAGE}</p>
@@ -280,7 +280,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             />
           </div>
 
-          <div className="mt-4 border-t border-ink/10 pt-4">
+          <div className="mt-4">
             {activePage === 1 ? (
               <CoverForm
                 issue={issue}

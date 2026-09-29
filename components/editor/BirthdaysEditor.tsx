@@ -43,7 +43,7 @@ export function BirthdaysEditor({
           key={b.id}
           data-testid="birthday-item"
           data-block-id={b.id}
-          className="space-y-1.5 rounded-container border border-ink/10 p-2"
+          className="space-y-1.5 rounded-control border border-ink/10 bg-chrome/25 p-3"
         >
           <div className="flex gap-1.5">
             <TextInput

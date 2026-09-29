@@ -33,7 +33,7 @@ export function AwardPicker({
 
   return (
     <div>
-      <p className="mb-1.5 font-display text-[10px] font-bold uppercase tracking-wide text-olive-dim">
+      <p className="mb-1.5 font-body text-xs font-semibold text-olive">
         Награды
       </p>
       <div className="flex flex-wrap gap-2">
@@ -49,10 +49,10 @@ export function AwardPicker({
               // Выделение выбранной награды — было border-accent
               // (красный), QA: "активные зоны... выделение красным
               // заменить" — единый спокойный "zone-alert".
-              className={`flex items-center gap-1.5 rounded-hairline border px-2 py-1.5 text-left font-display text-[11px] font-bold uppercase tracking-wide ${
+              className={`flex items-center gap-1.5 rounded-control border px-3 py-1.5 text-left font-body text-xs font-semibold ${
                 selected
-                  ? "border-zone-alert bg-zone-alert/10 text-ink"
-                  : "border-ink/20 text-olive-dim hover:border-ink/40"
+                  ? "border-ink bg-ink text-paper"
+                  : "border-ink/20 bg-paper text-ink hover:border-ink/40 hover:bg-chrome/60"
               }`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

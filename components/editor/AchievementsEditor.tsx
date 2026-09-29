@@ -35,7 +35,7 @@ export function AchievementsEditor({
       summary={achievements.length > 0 ? `${achievements.length} шт.` : undefined}
     >
       {achievements.map((a) => (
-        <div key={a.id} data-testid="achievement-item" data-block-id={a.id} className="flex gap-1">
+        <div key={a.id} data-testid="achievement-item" data-block-id={a.id} className="flex gap-2">
           <TextInput
             data-testid="achievement-input"
             value={a.text}

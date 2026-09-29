@@ -4,6 +4,7 @@ import { Issue } from "@/lib/content/issue";
 import { blocksToSections } from "@/lib/content/sections";
 import { TEMPLATE_OPTIONS, PAGE_DEFAULT_LABEL } from "@/lib/content/templateOptions";
 import { PageThumbnail } from "./PageThumbnail";
+import { EditorCard } from "./EditorCard";
 
 const PAGE_NUMBERS = [1, 2, 3, 4] as const;
 
@@ -35,7 +36,8 @@ export function PageList({
   overflowingPages?: number[];
 }) {
   return (
-    <ul className="space-y-1">
+    <EditorCard title="Страницы">
+    <ul className="space-y-1.5">
       {PAGE_NUMBERS.map((n) => {
         const page = issue.pages[n];
         const templateLabel =
@@ -53,8 +55,8 @@ export function PageList({
               // (фирменный красный), QA: "активные зоны... выделение
               // красным заменить" — тот же спокойный "zone-alert", что
               // и в ContentZoneOverlay, а не оставшийся кое-где красный.
-              className={`flex w-full items-center gap-3 rounded-card border px-2 py-2 text-left ${
-                isActive ? "border-zone-alert bg-zone-alert/5" : "border-transparent hover:border-ink/15"
+              className={`flex w-full items-center gap-3 rounded-control border px-2 py-2 text-left ${
+                isActive ? "border-zone-alert bg-zone-alert/5" : "border-ink/10 hover:border-ink/30 hover:bg-chrome/40"
               }`}
             >
               <PageThumbnail issue={issue} pageNumber={n} />
@@ -80,5 +82,6 @@ export function PageList({
         );
       })}
     </ul>
+    </EditorCard>
   );
 }

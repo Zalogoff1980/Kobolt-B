@@ -51,7 +51,7 @@ export function ParagraphsEditor({
       className="space-y-3"
     >
       {paragraphs.map((p, i) => (
-        <div key={p.id} data-testid="paragraph-item" data-block-id={p.id} className="space-y-1">
+        <div key={p.id} data-testid="paragraph-item" data-block-id={p.id} className="space-y-2 rounded-control border border-ink/10 bg-chrome/25 p-3">
           <TextArea
             data-testid="paragraph-textarea"
             value={p.text}
@@ -59,7 +59,7 @@ export function ParagraphsEditor({
             rows={3}
             placeholder="Текст…"
           />
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             <SmallButton data-testid="paragraph-move-up" onClick={() => move(i, -1)} disabled={i === 0}>
               ↑
             </SmallButton>

@@ -69,11 +69,11 @@ export function PhotosEditor({
       className="space-y-3"
     >
       {photos.map((p) => (
-        <div key={p.id} data-testid="photo-item" data-block-id={p.id} className="space-y-1.5 rounded-container border border-ink/10 p-2">
+        <div key={p.id} data-testid="photo-item" data-block-id={p.id} className="space-y-2 rounded-control border border-ink/10 bg-chrome/25 p-3">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.src} alt="" data-testid="photo-preview-image" className="h-12 w-16 flex-shrink-0 object-cover" />
-            <label className="text-xs text-olive-dim underline">
+            <img src={p.src} alt="" data-testid="photo-preview-image" className="h-12 w-16 flex-shrink-0 rounded-hairline object-cover" />
+            <label className="cursor-pointer text-xs font-semibold text-olive-dim underline">
               Заменить
               <input
                 type="file"
@@ -150,8 +150,8 @@ export function PhotosEditor({
 
       <label
         data-testid="photo-upload-label"
-        className={`inline-block rounded-hairline border px-2 py-1 text-xs ${
-          atMax ? "cursor-not-allowed border-ink/10 text-ink/30" : "cursor-pointer border-ink/20 text-olive-dim hover:border-ink/40"
+        className={`inline-flex h-8 items-center rounded-control border px-3 font-body text-xs font-semibold ${
+          atMax ? "cursor-not-allowed border-ink/10 text-ink/30" : "cursor-pointer border-ink/20 bg-paper text-ink hover:border-ink/40 hover:bg-chrome/60"
         }`}
       >
         + Добавить фото

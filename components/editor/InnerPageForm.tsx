@@ -29,7 +29,7 @@ export function InnerPageForm({
   const showBirthdays = templateId === "photo-grid-v1";
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <FormSectionsToolbar />
 
       <FormSection
