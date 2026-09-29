@@ -33,9 +33,37 @@ const FONT_CSS_URL =
 const CHROME_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 
+// Раньше — один fetch без таймаута и без повторных попыток: сетевая
+// заминка на Vercel (или холодный DNS-резолв к fonts.googleapis.com/
+// fonts.gstatic.com) молча ловилась общим catch() в getEmbeddedFontCss
+// и откатывала PDF на системный fallback-шрифт (Arial Narrow/Arial) —
+// у него совсем другие метрики (шире Oswald), из-за чего мелкий текст
+// (7.5-9.5px в "День в истории"/"Новости") переносится на бОльшее
+// число строк и раздувает высоту страницы 1 за 297мм (QA: "ПДФ до сих
+// пор выдает обрезанный первый лист", после того как страница
+// прекрасно помещалась в живом превью с теми же данными). Несколько
+// попыток с таймаутом снижают шанс одной случайной сетевой заминки
+// сорвать загрузку шрифтов молча.
+async function fetchWithRetry(url: string, init: RequestInit, attempts = 3): Promise<Response> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      clearTimeout(timeout);
+      lastErr = err;
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+}
+
 async function fetchText(url: string): Promise<string> {
-  const res = await fetch(url, { headers: { "User-Agent": CHROME_UA } });
-  if (!res.ok) throw new Error(`Font CSS fetch failed: ${res.status} ${url}`);
+  const res = await fetchWithRetry(url, { headers: { "User-Agent": CHROME_UA } });
   return res.text();
 }
 
@@ -47,8 +75,7 @@ async function inlineFontFaceUrls(css: string): Promise<string> {
 
   const replacements = await Promise.all(
     urls.map(async (url) => {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Font file fetch failed: ${res.status} ${url}`);
+      const res = await fetchWithRetry(url, {});
       const buf = Buffer.from(await res.arrayBuffer());
       const contentType = url.endsWith(".woff2") ? "font/woff2" : "font/woff";
       return [url, `data:${contentType};base64,${buf.toString("base64")}`] as const;

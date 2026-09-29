@@ -52,6 +52,19 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
     getEmbeddedFontCss(),
   ]);
 
+  // Диагностика (временно, QA: "ПДФ до сих пор выдает обрезанный
+  // первый лист" — после того как та же страница отлично помещалась в
+  // живом превью): если встраивание шрифтов не удалось, PDF молча
+  // печатается системным fallback-шрифтом (Arial Narrow/Arial — они
+  // шире Oswald/PT Sans), из-за чего мелкий текст переносится на
+  // больше строк и раздувает страницу 1 за 297мм — то есть выглядит
+  // как ошибка вёрстки, хотя причина в шрифтах. Явный красный маркер
+  // в самом PDF сразу покажет, действительно ли сейчас произошёл этот
+  // откат — снять после диагностики.
+  const fontFallbackWarning = fontCss
+    ? ""
+    : `<div style="position:fixed;top:0;left:0;z-index:9999;background:#c00;color:#fff;font:bold 10px sans-serif;padding:2mm 4mm;">ШРИФТЫ НЕ ЗАГРУЖЕНЫ — PDF печатается fallback-шрифтом (диагностика)</div>`;
+
   return `<!doctype html>
 <html lang="ru">
 <head>
@@ -76,6 +89,7 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
 </style>
 </head>
 <body>
+${fontFallbackWarning}
 ${pagesMarkup}
 </body>
 </html>`;
