@@ -237,14 +237,14 @@ export function CoverV2({ issue }: { issue: Issue }) {
           </div>
         </div>
 
-        <p className="mt-[1mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
+        <p className="mt-[0.5mm] text-right font-body text-[7.5px] italic leading-snug text-olive-dim">
           {CLOSING_LINE}
         </p>
 
         {/* Дивайдер внизу страницы (QA: "выполни дивайдер снизу каждой
             страницы. Такой же как сверху") — та же двойная линейка,
             что открывает шапку сверху. */}
-        <EditorialRule variant="double" className="mt-[2mm]" />
+        <EditorialRule variant="double" className="mt-[1mm]" />
       </div>
     </PageFrame>
   );
