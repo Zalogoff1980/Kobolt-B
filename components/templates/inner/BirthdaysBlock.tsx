@@ -19,11 +19,11 @@ type Birthday = Extract<ContentBlock, { type: "birthday" }>;
  * обложке (единый язык заголовков блоков по всему изданию). Если
  * список пуст — нейтральная заглушка, а не пустое место без объяснения.
  */
-export function BirthdaysBlock({ entries }: { entries: Birthday[] }) {
+export function BirthdaysBlock({ entries, wide = false }: { entries: Birthday[]; wide?: boolean }) {
   const items = entries.filter((b) => b.name.trim().length > 0);
 
   return (
-    <div data-zone="birthdays" className="flex h-full flex-col">
+    <div data-zone="birthdays" className={wide ? "flex flex-col" : "flex h-full flex-col"}>
       <div className="bg-olive px-[3mm] py-[1.5mm]">
         <span className="font-display text-[10px] font-bold uppercase tracking-wide text-paper">
           Наши именинники
@@ -31,9 +31,9 @@ export function BirthdaysBlock({ entries }: { entries: Birthday[] }) {
       </div>
 
       {items.length > 0 ? (
-        <ul className="mt-[3mm] space-y-[3mm]">
+        <ul className={wide ? "mt-[3mm] grid grid-cols-3 gap-x-[5mm] gap-y-[3mm]" : "mt-[3mm] space-y-[3mm]"}>
           {items.map((b, i) => (
-            <li key={b.id} className={i > 0 ? "border-t border-ink/15 pt-[3mm]" : ""}>
+            <li key={b.id} className={!wide && i > 0 ? "border-t border-ink/15 pt-[3mm]" : ""}>
               <div className="flex items-baseline justify-between gap-[2mm]">
                 <p className="font-display text-[9px] font-bold uppercase leading-tight text-ink">
                   {b.name}

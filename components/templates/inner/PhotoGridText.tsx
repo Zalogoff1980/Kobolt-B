@@ -79,105 +79,70 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
         <div className="flex h-full flex-col">
           <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
 
-          {/* Левая колонка — ровно ширина первого фото (текст под ним
-              выровнен по этой же ширине, а не растянут на всю страницу,
-              как раньше); правая — ширина второго фото, на всю
-              оставшуюся высоту страницы занята "Наши именинники" (QA:
-              "справа на всю высоту по ширине второго фото"). Обе
-              колонки — одна grid-строка с теми же gap-[3mm], что и у
-              исходной сетки фото, поэтому ширины колонок совпадают 1:1
-              с шириной фото над ними. */}
-          <div className="mt-[4mm] grid flex-1 grid-cols-2 gap-[3mm]">
-            <div className="flex flex-col">
+          {/* Два фото в ряд, ниже — текст на всю ширину страницы (QA:
+              "текст нужно на всю ширину"), а "Наши именинники" — внизу
+              страницы полосой на всю ширину, в несколько колонок (раньше
+              они занимали правую колонку под вторым фото, и текст был
+              зажат шириной одного фото). */}
+          <div className="mt-[4mm] grid flex-shrink-0 grid-cols-2 gap-[3mm]">
+            {[photoLeft, photoRight].map((ph, i) => (
               <figure
-                data-zone="photo"
-                className="relative flex-shrink-0 overflow-hidden bg-olive/10"
+                key={ph.id}
+                data-zone={i === 0 ? "photo" : undefined}
+                className="relative overflow-hidden bg-olive/10"
                 style={{ height: `${heightMm}mm` }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photoLeft.src}
-                  alt={photoLeft.caption ?? ""}
-                  className="h-full w-full object-cover"
-                />
-                {photoLeft.caption && (
+                <img src={ph.src} alt={ph.caption ?? ""} className="h-full w-full object-cover" />
+                {ph.caption && (
                   <figcaption
-                    data-zone="caption"
+                    data-zone={i === 0 ? "caption" : undefined}
                     className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]"
                   >
-                    <span className="font-body text-[11px] italic text-paper/90">
-                      {photoLeft.caption}
-                    </span>
+                    <span className="font-body text-[11px] italic text-paper/90">{ph.caption}</span>
                   </figcaption>
                 )}
               </figure>
+            ))}
+          </div>
 
-              {/* Порядок в этом шаблоне (QA: "сначала цитата потом
-                  текст") — цитата, затем лид/абзацы. Без justify-center
-                  (QA: "текстовый блок подтянуть выше, выровнять с Наши
-                  именинники") — блок начинается сразу после фото тем же
-                  отступом mt-[4mm], что и колонка "Наши именинники"
-                  справа, поэтому верх обоих блоков совпадает. */}
-              <div className="mt-[4mm] flex flex-1 flex-col">
-                {quotes.length > 0 && (
-                  <div className="space-y-[3mm]">
-                    {quotes.map((q) => (
-                      <PullQuote key={q.id} text={q.text} author={q.author} />
-                    ))}
-                  </div>
-                )}
-                {lead && (
-                  // Межстрочный интервал вводного абзаца уменьшен (QA:
-                  // "уменьшить межстрочное") — было leading-[1.6].
-                  <p
-                    data-zone="lead"
-                    className={`font-body text-[19px] font-bold leading-snug text-ink ${
-                      quotes.length > 0 ? "mt-[4mm]" : ""
-                    }`}
-                  >
-                    {lead.text}
-                  </p>
-                )}
-                {paragraphs.length > 0 && (
-                  <div
-                    className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${
-                      lead || quotes.length > 0 ? "mt-[3mm]" : ""
-                    }`}
-                  >
-                    {paragraphs.map((p) => (
-                      <p key={p.id} data-zone="paragraph" className="font-body">
-                        {p.text}
-                      </p>
-                    ))}
-                  </div>
-                )}
+          {/* Порядок (QA: "сначала цитата потом текст") — цитата, затем
+              лид/абзацы. */}
+          <div className="mt-[4mm] flex flex-col">
+            {quotes.length > 0 && (
+              <div className="space-y-[3mm]">
+                {quotes.map((q) => (
+                  <PullQuote key={q.id} text={q.text} author={q.author} />
+                ))}
               </div>
-            </div>
-
-            <div className="flex flex-col">
-              <figure
-                className="relative flex-shrink-0 overflow-hidden bg-olive/10"
-                style={{ height: `${heightMm}mm` }}
+            )}
+            {lead && (
+              <p
+                data-zone="lead"
+                className={`font-body text-[19px] font-bold leading-snug text-ink ${
+                  quotes.length > 0 ? "mt-[4mm]" : ""
+                }`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photoRight.src}
-                  alt={photoRight.caption ?? ""}
-                  className="h-full w-full object-cover"
-                />
-                {photoRight.caption && (
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-[2mm] py-[1.5mm]">
-                    <span className="font-body text-[11px] italic text-paper/90">
-                      {photoRight.caption}
-                    </span>
-                  </figcaption>
-                )}
-              </figure>
-
-              <div className="mt-[4mm] flex-1">
-                <BirthdaysBlock entries={birthdays} />
+                {lead.text}
+              </p>
+            )}
+            {paragraphs.length > 0 && (
+              <div
+                className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${
+                  lead || quotes.length > 0 ? "mt-[3mm]" : ""
+                }`}
+              >
+                {paragraphs.map((p) => (
+                  <p key={p.id} data-zone="paragraph" className="font-body">
+                    {p.text}
+                  </p>
+                ))}
               </div>
-            </div>
+            )}
+          </div>
+
+          <div className="mt-auto pt-[4mm]">
+            <BirthdaysBlock entries={birthdays} wide />
           </div>
         </div>
       </InnerPageShell>
@@ -240,13 +205,13 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             пространстве — если текста мало, он не прилипает к верху. */}
         <div className="mt-[4mm] flex flex-1 flex-col justify-center">
           {lead && (
-            <p data-zone="lead" className="max-w-[130mm] font-body text-[19px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
 
           {paragraphs.length > 0 && (
-            <div className={`max-w-[130mm] space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
+            <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
               {paragraphs.map((p) => (
                 <p key={p.id} data-zone="paragraph" className="font-body">
                   {p.text}
@@ -256,7 +221,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
           )}
 
           {quotes.length > 0 && (
-            <div className={`max-w-[110mm] space-y-[3mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
+            <div className={`space-y-[3mm] ${lead || paragraphs.length > 0 ? "mt-[4mm]" : ""}`}>
               {quotes.map((q) => (
                 <PullQuote key={q.id} text={q.text} author={q.author} />
               ))}
