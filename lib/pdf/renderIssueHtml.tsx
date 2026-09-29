@@ -57,9 +57,10 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
 <head>
 <meta charset="utf-8" />
 <style>
-  /* Минимальный печатный reset — вместо Tailwind preflight (preflight
-     отключён в buildTailwindCss.ts, чтобы не тянуть лишние правила,
-     не нужные для статического печатного документа). */
+  /* Минимальный печатный reset для самого документа (рамка страницы,
+     поля html/body). Сброс стилей элементов (p, h1–h3, ul/li, img…) —
+     это Tailwind preflight, он включён в buildTailwindCss.ts и идёт
+     ниже, так что PDF получает тот же reset, что и живое превью. */
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   img { max-width: none; }

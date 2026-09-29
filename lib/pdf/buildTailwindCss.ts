@@ -44,20 +44,25 @@ export async function buildTailwindCssForHtml(html: string): Promise<string> {
         },
       },
     },
-    corePlugins: {
-      // preflight (Tailwind base reset) is applied separately via the
-      // hand-written print base CSS in renderIssueHtml.ts, so it isn't
-      // duplicated here.
-      preflight: false,
-    },
+    // preflight ВКЛЮЧЁН (по умолчанию) — как и в самом приложении
+    // (styles/globals.css: `@tailwind base`). Раньше здесь стояло
+    // `corePlugins: { preflight: false }` с пояснением, что reset
+    // "применяется отдельно" печатным CSS из renderIssueHtml.tsx, — но
+    // тот сбрасывает только поля html/body и img, а не p/h1–h3/ul/li.
+    // В итоге в PDF (в отличие от превью) у каждого <p> и заголовка
+    // оставались браузерные поля по умолчанию (1em и т.п.), а у списков
+    // "Новости"/"День в истории" — отступ и маркеры-точки. Это и было
+    // причиной, по которой вёрстка в PDF была заметно выше, чем в
+    // превью, и низ страниц 1 и 4 обрезался, сколько бы миллиметров
+    // ни "срезали" подгонкой по PDF-замеру.
     plugins: [],
   };
 
   // Тот же .kobolt-page (бумажная фактура), что и styles/globals.css —
-  // preflight отключён, поэтому этот единственный не-utility класс,
-  // используемый разметкой (PageFrame), нужно продублировать здесь
-  // явно: JIT-сканирование content видит только utility-подобные
-  // имена классов, а не произвольные кастомные CSS-правила.
+  // этот единственный не-utility класс, используемый разметкой
+  // (PageFrame), нужно продублировать здесь явно: JIT-сканирование
+  // content видит только utility-подобные имена классов, а не
+  // произвольные кастомные CSS-правила.
   const source = `@tailwind base;
 @tailwind components;
 @tailwind utilities;
