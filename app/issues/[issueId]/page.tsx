@@ -239,7 +239,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             </div>
           )}
 
-          <div className="mt-4 border-t border-ink/10 pt-4">
+          <div className="mt-4">
             <TemplatePicker
               pageNumber={activePage}
               currentTemplateId={issue.pages[activePage].templateId}
@@ -247,7 +247,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             />
           </div>
 
-          <div className="mt-4 border-t border-ink/10 pt-4">
+          <div className="mt-4">
             <EngravingPicker
               pageNumber={activePage}
               currentEngravingId={issue.pages[activePage].backgroundEngravingId}
