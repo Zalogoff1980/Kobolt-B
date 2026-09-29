@@ -6,6 +6,7 @@ import { listIssues, deleteIssue } from "@/lib/db/issues";
 import { Issue } from "@/lib/content/issue";
 import { formatIssueDate } from "@/lib/content/format";
 import { PageThumbnail } from "@/components/editor/PageThumbnail";
+import { exportIssueToFile, importIssueFromFile } from "@/lib/db/issueFile";
 
 const PAGE_COUNT = 4; // формат выпуска фиксирован ТЗ: ровно 4 страницы
 
@@ -25,6 +26,18 @@ export default function HomePage() {
   useEffect(() => {
     reload();
   }, []);
+
+  const [importError, setImportError] = useState<string | null>(null);
+
+  async function handleImport(file: File) {
+    setImportError(null);
+    try {
+      await importIssueFromFile(file);
+      await reload();
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : String(err));
+    }
+  }
 
   async function confirmDelete() {
     if (!pendingDelete) return;
@@ -78,7 +91,7 @@ export default function HomePage() {
       </div>
 
       {/* Прокручиваемая область — своя, независимая от шапки выше (см.
-          комментарий там же). pb-28 сохраняет прежний зазор от
+          комментарий там же). pb-44 сохраняет прежний зазор от
           закреплённой снизу кнопки "Создать выпуск". */}
       <div className="flex-1 overflow-y-auto pb-28">
         <div className="mx-auto max-w-2xl px-8 pt-2">
@@ -102,7 +115,7 @@ export default function HomePage() {
                 key={issue.id}
                 data-testid="issue-row"
                 data-issue-id={issue.id}
-                className="flex items-center justify-between gap-3 py-3"
+                className="flex flex-wrap items-center justify-between gap-3 py-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   {/* Превью выпуска на начальном экране (QA: "превью
@@ -133,7 +146,7 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-shrink-0 gap-2">
+                <div className="ml-auto flex flex-shrink-0 gap-2">
                   <Link
                     href={`/issues/${issue.id}`}
                     data-testid="open-issue-link"
@@ -141,6 +154,13 @@ export default function HomePage() {
                   >
                     Открыть
                   </Link>
+                  <button
+                    onClick={() => exportIssueToFile(issue)}
+                    data-testid="export-issue-button"
+                    className="rounded-hairline border border-ink/20 px-3 py-1.5 text-xs text-ink hover:border-ink/40"
+                  >
+                    Экспорт
+                  </button>
                   <button
                     onClick={() => setPendingDelete(issue)}
                     data-testid="delete-issue-button"
@@ -161,6 +181,28 @@ export default function HomePage() {
           она была раньше). */}
       <div className="fixed inset-x-0 bottom-0 border-t border-ink/10 bg-paper/95 p-4 backdrop-blur-sm">
         <div className="mx-auto max-w-2xl">
+          {importError && (
+            <p data-testid="import-issue-error" className="mb-2 text-center text-xs text-accent">
+              {importError}
+            </p>
+          )}
+          <label
+            data-testid="import-issue-label"
+            className="mb-2 block cursor-pointer border border-ink/20 px-4 py-2 text-center text-xs font-bold text-ink hover:border-ink/40"
+          >
+            Импорт макета из файла
+            <input
+              type="file"
+              accept=".json,application/json"
+              data-testid="import-issue-input"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleImport(f);
+                e.target.value = "";
+              }}
+            />
+          </label>
           <Link
             href="/issues/new"
             data-testid="create-issue-link"
