@@ -33,9 +33,13 @@ export function NewsBlock({ rawText }: { rawText?: string | null }) {
           — здесь одна колонка, короткие заметки друг под другом с
           тонкой линейкой между ними, тот же акцентный номер, что и у
           записей "В номере" рядом. */}
-      <ul className="mt-[3mm] space-y-[2.5mm]">
+      {/* Расстояние между заметками уменьшено на треть (QA: "расстояние
+          между блоками новостей уменьшить на треть") — было 2.5мм у
+          space-y (margin между <li>) и у pt- (отступ от линии-разделителя
+          до текста), стало ~1.67мм у обоих. */}
+      <ul className="mt-[3mm] space-y-[1.67mm]">
         {items.map((text, i) => (
-          <li key={i} className={i > 0 ? "border-t border-ink/15 pt-[2.5mm]" : ""}>
+          <li key={i} className={i > 0 ? "border-t border-ink/15 pt-[1.67mm]" : ""}>
             <div className="flex items-start gap-[2mm]">
               <span className="flex-shrink-0 font-display text-[11px] font-bold leading-none text-accent">
                 {String(i + 1).padStart(2, "0")}

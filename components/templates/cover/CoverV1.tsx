@@ -103,7 +103,9 @@ export function CoverV1({ issue }: { issue: Issue }) {
             под фото, а новости идут дальше под текстовой колонкой (QA:
             "выровнять их по правому краю верхней картинки... справа, в
             освободившемся месте, вставить блок с новостями"). */}
-        <div className="mt-[4mm] flex flex-1 gap-[3mm]">
+        {/* Блоки "В номере"/"Новости" подняты вверх на 16px (QA: "поднять
+            вверх на 16 пкс") — 16px ≈ 4.23мм, снято с прежнего mt-[4mm]. */}
+        <div className="mt-[-0.23mm] flex flex-1 gap-[3mm]">
           <div className="flex-[2.1]">
             <ContentsBlock entries={contentsEntries} />
           </div>

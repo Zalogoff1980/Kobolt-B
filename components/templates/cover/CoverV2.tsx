@@ -221,7 +221,9 @@ export function CoverV2({ issue }: { issue: Issue }) {
             друг под другом, высота этой секции равна высоте более
             высокого из двух блоков, а не их сумме — то же решение,
             что уже сработало у cover-v1. */}
-        <div className="mt-[1mm] flex flex-1 gap-[3mm]">
+        {/* Блоки "В номере"/"Новости" подняты вверх на 16px (QA: "поднять
+            вверх на 16 пкс") — 16px ≈ 4.23мм, снято с прежнего mt-[1mm]. */}
+        <div className="mt-[-3.23mm] flex flex-1 gap-[3mm]">
           <div className="flex-[2.1]">
             <ContentsGrid issue={issue} />
           </div>
