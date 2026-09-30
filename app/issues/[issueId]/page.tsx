@@ -15,6 +15,7 @@ import { InnerPageForm } from "@/components/editor/InnerPageForm";
 import { ContentZoneOverlay, OVERFLOW_MESSAGE } from "@/components/editor/guides/ContentZoneOverlay";
 import { FormSectionsProvider } from "@/components/editor/fields";
 import { MobileEditorBar } from "@/components/editor/MobileEditorBar";
+import { PreviewPager } from "@/components/editor/PreviewPager";
 import { HiddenOverflowProbe } from "@/components/editor/guides/HiddenOverflowProbe";
 
 /** Блок страницы → зона формы: подпись к фото редактируется в секции
@@ -320,6 +321,11 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
               <ContentZoneOverlay containerRef={previewRootRef} />
             </div>
           </PagePreviewScaler>
+
+          {/* Смахивание под страницей (QA: "внизу можно было свайпом
+              листать, а не по номерам нажимать") — альтернатива кнопкам
+              1–4 в MobileEditorBar сверху, ближе к самой странице. */}
+          <PreviewPager activePage={activePage} onSelectPage={setActivePage} />
         </div>
       </div>
     </div>
