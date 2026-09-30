@@ -51,14 +51,14 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
                     Материал ещё не добавлен
                   </p>
                 )}
-                <p className="mt-[1mm] font-display text-[13px] font-bold uppercase text-olive-dim">
-                  Стр. {entry.pageNumber}
-                </p>
                 {entry.previewText && (
                   // QA (тест на вместительность): "шрифт в текстовом
                   // превью увеличить, и выводить по не менее 10 строк
                   // для теста" — было text-[7.5px] line-clamp-4.
-                  <p className="mt-[1.5mm] line-clamp-[10] font-body text-[9px] leading-snug text-ink/80">
+                  // "Стр. X" убран отсюда (QA: "после заголовка не надо
+                  // выводить номер стр. Это сделано левее") — номер
+                  // страницы уже есть слева, крупной цифрой.
+                  <p className="mt-[1mm] line-clamp-[10] font-body text-[9px] leading-snug text-ink/80">
                     {entry.previewText}
                   </p>
                 )}
