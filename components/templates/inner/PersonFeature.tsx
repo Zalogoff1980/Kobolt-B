@@ -50,14 +50,19 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
           </p>
         ))}
       </div>
+    </div>
+  );
 
-      {quotes.length > 0 && (
-        <div className="mt-[4mm] space-y-[3mm]">
-          {quotes.map((q) => (
-            <PullQuote key={q.id} text={q.text} author={q.author} />
-          ))}
-        </div>
-      )}
+  // Цитата — строго под фото и на всю его ширину (QA: "размещение
+  // цитаты строго под фото, и на всю ширину фото... не капсом, а
+  // обычным текстом"), а не в текстовой колонке справа, как раньше.
+  // Без фото ставить её физически не подо что, поэтому в безфотном
+  // режиме она остаётся частью текстового блока ниже.
+  const quotesBlock = quotes.length > 0 && (
+    <div className="mt-[3mm] space-y-[3mm]">
+      {quotes.map((q) => (
+        <PullQuote key={q.id} text={q.text} author={q.author} uppercase={false} />
+      ))}
     </div>
   );
 
@@ -96,12 +101,16 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
             {photo.caption && (
               <p className="mt-[1.5mm] font-body text-[11px] italic text-olive-dim">{photo.caption}</p>
             )}
+            {quotesBlock}
           </div>
 
           {textColumn}
         </div>
       ) : (
-        <div className="mt-[4mm]">{textColumn}</div>
+        <div className="mt-[4mm]">
+          {textColumn}
+          {quotesBlock}
+        </div>
       )}
     </InnerPageShell>
   );
