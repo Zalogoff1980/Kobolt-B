@@ -104,28 +104,38 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
       </div>
 
         {postcardPhoto && (
-          <>
+          <div className="mt-[4mm] flex min-h-0 flex-1 flex-col">
             {/* Дивайдер после нижнего фото рельсы — те же отступы, что
                 уже применяются к дивайдерам на внутренней странице
                 (InnerPageShell: variant="double", mt-[4mm]). */}
-            <EditorialRule variant="double" className="mt-[4mm]" />
+            <EditorialRule variant="double" />
 
-            {/* Открытка на всю ширину страницы, БЕЗ обрезания (QA: "без
-                обрезания, т.к. это будет готовая открытка") — в отличие
-                от остальных фото в этом шаблоне (и во всём приложении),
-                здесь намеренно НЕТ фиксированной высоты и object-cover:
-                контейнер просто следует естественным пропорциям
-                картинки на всю ширину колонки. */}
-            <div data-zone="photo" className="mt-[4mm]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={postcardPhoto.src} alt={postcardPhoto.caption ?? ""} className="block w-full h-auto" />
-              {postcardPhoto.caption && (
-                <p data-zone="caption" className="mt-[1.5mm] font-body text-[11px] italic text-ink/70">
-                  {postcardPhoto.caption}
-                </p>
-              )}
+            {/* Открытка БЕЗ обрезания (QA: "без обрезания, т.к. это
+                будет готовая открытка") — картинка сама решает, тянуться
+                ли на всю ширину колонки или ужиматься по высоте:
+                контейнер — flex-1/min-h-0, то есть берёт ровно то место,
+                что осталось на странице после текста/рельсы, а
+                object-contain внутри него вписывает картинку целиком, не
+                обрезая и не растягивая её сверх остатка (иначе при
+                длинном тексте статьи открытка распирала страницу вниз за
+                297мм — найдено QA по live-баннеру "Материала слишком
+                много..."). */}
+            <div className="mt-[4mm] flex min-h-0 flex-1 items-start justify-center overflow-hidden">
+              <div data-zone="photo" className="h-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={postcardPhoto.src}
+                  alt={postcardPhoto.caption ?? ""}
+                  className="block h-full max-h-full w-auto max-w-full object-contain"
+                />
+              </div>
             </div>
-          </>
+            {postcardPhoto.caption && (
+              <p data-zone="caption" className="mt-[1.5mm] text-center font-body text-[11px] italic text-ink/70">
+                {postcardPhoto.caption}
+              </p>
+            )}
+          </div>
         )}
       </div>
     </InnerPageShell>
