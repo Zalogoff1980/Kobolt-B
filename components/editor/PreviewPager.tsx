@@ -1,22 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
-
 const PAGES = [1, 2, 3, 4] as const;
-const SWIPE_THRESHOLD_PX = 40;
 
 /**
- * Полоса под превью страницы — смахивание влево/вправо переключает
- * страницу выпуска, без необходимости тянуться к кнопкам номеров
- * страниц вверху (QA: "смахивание страниц... чтобы прям внизу можно
- * было свайпом листать, а не по номерам нажимать"). Точки — текущая
- * позиция и запасной способ ткнуть в конкретную страницу пальцем/мышью;
- * стрелки — то же самое для тех, кто вообще не свайпает.
- *
- * touch-pan-y на обёртке — жест здесь ловит именно ГОРИЗОНТАЛЬНОЕ
- * движение сам (через onTouchMove/onTouchEnd), а браузерный вертикальный
- * скролл страницы редактора (overflow-y-auto у колонки превью) при этом
- * не блокируется.
+ * Точки-индикаторы + стрелки под превью страницы. Сам жест смахивания
+ * теперь ловится на ВСЁМ окне превью (см. page.tsx — QA: "свайп не
+ * снизу странички, а в целом в окне, неудобно снизу"), эта полоса —
+ * только видимый индикатор текущей страницы и запасной способ ткнуть
+ * в конкретную страницу пальцем/мышью, без какой-либо жестовой логики
+ * в себе самой.
  */
 export function PreviewPager({
   activePage,
@@ -25,57 +17,13 @@ export function PreviewPager({
   activePage: 1 | 2 | 3 | 4;
   onSelectPage: (page: 1 | 2 | 3 | 4) => void;
 }) {
-  const startX = useRef<number | null>(null);
-  const startY = useRef<number | null>(null);
-  const dragging = useRef(false);
-
   function go(delta: 1 | -1) {
     const next = activePage + delta;
     if (next >= 1 && next <= 4) onSelectPage(next as 1 | 2 | 3 | 4);
   }
 
-  function handleTouchStart(e: React.TouchEvent) {
-    const t = e.touches[0];
-    if (!t) return;
-    startX.current = t.clientX;
-    startY.current = t.clientY;
-    dragging.current = false;
-  }
-
-  function handleTouchMove(e: React.TouchEvent) {
-    const t = e.touches[0];
-    if (!t || startX.current === null || startY.current === null) return;
-    const dx = t.clientX - startX.current;
-    const dy = t.clientY - startY.current;
-    // Жест считается горизонтальным свайпом, только если движение по X
-    // заметно больше, чем по Y — иначе обычная вертикальная прокрутка
-    // пальцем по узкой полосе ошибочно считалась бы попыткой перелистнуть.
-    if (!dragging.current && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-      dragging.current = true;
-    }
-    if (dragging.current) e.preventDefault();
-  }
-
-  function handleTouchEnd(e: React.TouchEvent) {
-    const t = e.changedTouches[0];
-    if (dragging.current && t && startX.current !== null) {
-      const dx = t.clientX - startX.current;
-      if (dx <= -SWIPE_THRESHOLD_PX) go(1);
-      else if (dx >= SWIPE_THRESHOLD_PX) go(-1);
-    }
-    startX.current = null;
-    startY.current = null;
-    dragging.current = false;
-  }
-
   return (
-    <div
-      data-testid="preview-swipe-pager"
-      className="mt-3 select-none touch-pan-y"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div data-testid="preview-swipe-pager" className="mt-3 select-none">
       <div className="flex items-center justify-center gap-5">
         <button
           type="button"
@@ -117,7 +65,7 @@ export function PreviewPager({
         </button>
       </div>
       <p className="mt-1 text-center font-body text-[11px] text-paper/45">
-        Смахните здесь, чтобы перелистнуть страницу
+        Смахните в любом месте превью, чтобы перелистнуть страницу
       </p>
     </div>
   );

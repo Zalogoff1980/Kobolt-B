@@ -42,6 +42,12 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("saved");
   const [overflowingPages, setOverflowingPages] = useState<number[]>([]);
   const previewRootRef = useRef<HTMLDivElement>(null);
+  // Свайп по всему окну превью (QA: "свайп не снизу странички, а в
+  // целом в окне, неудобно снизу") — жест ловится на всей колонке
+  // превью, не только на узкой полосе PreviewPager под страницей.
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const swipeHorizontalRef = useRef(false);
+  const swipeHandledRef = useRef(false);
   // Форма (aside) и колонка превью — цели прокрутки для мобильной
   // панели и клика по блоку страницы.
   const asideRef = useRef<HTMLElement>(null);
@@ -72,6 +78,52 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
   function jumpTo(target: "form" | "page") {
     const el = target === "form" ? asideRef.current : previewColRef.current;
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  const SWIPE_THRESHOLD_PX = 50;
+
+  function handlePreviewTouchStart(e: React.TouchEvent) {
+    const t = e.touches[0];
+    if (!t) return;
+    swipeStartRef.current = { x: t.clientX, y: t.clientY };
+    swipeHorizontalRef.current = false;
+  }
+
+  function handlePreviewTouchMove(e: React.TouchEvent) {
+    const t = e.touches[0];
+    const start = swipeStartRef.current;
+    if (!t || !start) return;
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    // Жест считается горизонтальным свайпом только когда движение по X
+    // заметно больше, чем по Y — обычная вертикальная прокрутка длинной
+    // страницы (или пинч, хоть он и выключен глобально) не должна
+    // случайно листать страницы выпуска.
+    if (!swipeHorizontalRef.current && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      swipeHorizontalRef.current = true;
+    }
+    // touch-pan-y на контейнере уже оставляет горизонтальное движение
+    // браузеру не обработанным нативно — preventDefault здесь просто
+    // подстраховка, чтобы в процессе распознанного горизонтального
+    // свайпа страница точно не дёргалась вбок сама по себе.
+    if (swipeHorizontalRef.current && e.cancelable) e.preventDefault();
+  }
+
+  function handlePreviewTouchEnd(e: React.TouchEvent) {
+    const t = e.changedTouches[0];
+    const start = swipeStartRef.current;
+    if (swipeHorizontalRef.current && t && start) {
+      const dx = t.clientX - start.x;
+      if (dx <= -SWIPE_THRESHOLD_PX && activePage < 4) {
+        setActivePage((activePage + 1) as 1 | 2 | 3 | 4);
+        swipeHandledRef.current = true;
+      } else if (dx >= SWIPE_THRESHOLD_PX && activePage > 1) {
+        setActivePage((activePage - 1) as 1 | 2 | 3 | 4);
+        swipeHandledRef.current = true;
+      }
+    }
+    swipeStartRef.current = null;
+    swipeHorizontalRef.current = false;
   }
 
   /** Раскрыть в форме поле, соответствующее зоне страницы: раскрыть
@@ -122,6 +174,14 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
    *  карточка в блоке "В номере" на обложке — на страницу 2–4, которую
    *  она показывает (своей секции в форме обложки у неё нет). */
   function handlePreviewClick(e: React.MouseEvent<HTMLDivElement>) {
+    // Свайп, только что обработанный touch-хендлерами ниже, на тач-
+    // устройствах обычно всё равно порождает синтетический click —
+    // без этой проверки смахивание страницы попутно открывало бы поле
+    // формы под пальцем, как обычный тап по зоне.
+    if (swipeHandledRef.current) {
+      swipeHandledRef.current = false;
+      return;
+    }
     const el = e.target as HTMLElement;
 
     const link = el.closest<HTMLElement>("[data-page-link]");
@@ -302,8 +362,17 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
           </div>
         </aside>
 
-        {/* A4 PREVIEW — целиком масштабируется, пропорция страницы не меняется */}
-        <div ref={previewColRef} className="flex-1 scroll-mt-12 bg-stage p-6 lg:scroll-mt-0 lg:overflow-auto">
+        {/* A4 PREVIEW — целиком масштабируется, пропорция страницы не меняется.
+            touch-pan-y — вертикальная прокрутка колонки остаётся нативной,
+            а горизонтальные жесты (свайп между страницами, см. хендлеры
+            ниже) браузер не перехватывает сам. */}
+        <div
+          ref={previewColRef}
+          onTouchStart={handlePreviewTouchStart}
+          onTouchMove={handlePreviewTouchMove}
+          onTouchEnd={handlePreviewTouchEnd}
+          className="flex-1 scroll-mt-12 touch-pan-y bg-stage p-6 lg:scroll-mt-0 lg:overflow-auto"
+        >
           <p className="mb-2 text-center text-xs text-paper/60">
             Нажмите на блок страницы — откроется его поле в форме
           </p>
