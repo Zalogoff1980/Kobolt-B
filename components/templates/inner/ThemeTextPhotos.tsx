@@ -8,6 +8,11 @@ import { EditorialRule } from "@/components/shared/EditorialRule";
 
 const RAIL_MAX_HEIGHT_MM = 180;
 const RAIL_GAP_MM = 3;
+// QA: "уменьшить высоту фото в рельсе, каждое на 10 пикселей меньше" —
+// 10px @ 96dpi ≈ 2.65mm, вычитается из уже посчитанной высоты каждого
+// кадра (а не из общего бюджета), чтобы уменьшение было ровно по 10px
+// на кадр независимо от их числа.
+const RAIL_PHOTO_TRIM_MM = 2.65;
 
 /** Высота каждого кадра в вертикальной "плёнке" зависит от того,
  *  сколько их — 1, 2 или 3 (шаблон рассчитан именно на этот диапазон) —
@@ -15,7 +20,7 @@ const RAIL_GAP_MM = 3;
  *  независимо от количества. */
 function railPhotoHeight(count: number): number {
   const n = Math.max(1, count);
-  return Math.floor((RAIL_MAX_HEIGHT_MM - (n - 1) * RAIL_GAP_MM) / n);
+  return Math.floor((RAIL_MAX_HEIGHT_MM - (n - 1) * RAIL_GAP_MM) / n) - RAIL_PHOTO_TRIM_MM;
 }
 
 /**
