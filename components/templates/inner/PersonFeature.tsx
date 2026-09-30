@@ -61,7 +61,15 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
   const quotesBlock = quotes.length > 0 && (
     <div className="mt-[3mm] space-y-[3mm]">
       {quotes.map((q) => (
-        <PullQuote key={q.id} text={q.text} author={q.author} uppercase={false} />
+        <PullQuote
+          key={q.id}
+          text={q.text}
+          author={q.author}
+          uppercase={false}
+          bold={false}
+          sizePx={17}
+          leadingClassName="leading-normal"
+        />
       ))}
     </div>
   );
