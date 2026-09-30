@@ -131,11 +131,9 @@ export function CoverV2({ issue }: { issue: Issue }) {
                 этого верх бокса буквы = верх самой буквы, и items-start у
                 сетки уже сам по себе выравнивает его с верхом герба, без
                 какого-либо margin-хака. */}
-            {/* QA-эксперимент: "всё, что между гербами, увеличить в
-                размере" — было 90px/76px/17px/7.5px. */}
             <h1 className="font-display uppercase tracking-tight">
               <span
-                className="cover-h1-trim block text-[100px] font-bold leading-[0.8] text-ink"
+                className="cover-h1-trim block text-[90px] font-bold leading-[0.8] text-ink"
                 style={{ textBoxTrim: "trim-start", textBoxEdge: "cap alphabetic" } as CSSProperties}
               >
                 Танковый
@@ -147,7 +145,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
                   границей подложки") — иначе буквы упирались в край
                   оливкового фона. inline-block, а не block на всю
                   ширину, чтобы подложка облегала именно текст. */}
-              <span className="mt-[2mm] inline-block bg-olive px-[6mm] py-[2mm] text-[84px] font-bold leading-[0.85] text-paper">
+              <span className="mt-[2mm] inline-block bg-olive px-[6mm] py-[2mm] text-[76px] font-bold leading-[0.85] text-paper">
                 Батальон
               </span>
             </h1>
@@ -158,38 +156,34 @@ export function CoverV2({ issue }: { issue: Issue }) {
                 вместе с плашкой в общем потоке, отдельно её отступ не
                 трогаем — QA просил только этот один промежуток. */}
             <div className="mx-auto mt-[1.25mm] inline-block -rotate-1 bg-accent px-[5mm] py-[1.5mm]">
-              <span className="font-display text-[19px] font-bold uppercase tracking-wide text-paper">
+              <span className="font-display text-[17px] font-bold uppercase tracking-wide text-paper">
                 Боевой листок
               </span>
             </div>
 
-            <p className="mt-[1.5mm] font-body text-[8.5px] uppercase tracking-wide text-olive-dim">
+            <p className="mt-[1.5mm] font-body text-[7.5px] uppercase tracking-wide text-olive-dim">
               Внутреннее издание танкового батальона
             </p>
           </div>
 
-          {/* Правый герб + №/дата ПОД его подписью (QA-эксперимент:
-              "номер выпуска и дату выровнять по нижней границе подписи
-              к гербу") — раньше IssueMeta шёл отдельной строкой ниже
-              ВСЕЙ шапки (justify-end на всю ширину страницы), заметно
-              ниже герба. Теперь это часть той же колонки, что и герб:
-              items-start у родительской сетки не растягивает колонки
-              по высоте, так что IssueMeta встаёт вплотную сразу под
-              подписью герба, а не где-то в самом низу шапки. По
-              правому краю страницы это по-прежнему выходит само собой
-              — колонка герба и так последняя (правая) в сетке. */}
-          <div className="flex flex-col items-center">
-            <Emblem
-              imageSrc="/emblems/emblem-shavlinsky.png"
-              label="Шавлинский полк"
-              sublabel="Вместе к новым победам"
-              shape="shield"
-              sizeMm={33}
-            />
-            <div className="mt-[2mm] self-end">
-              <IssueMeta number={issue.number} date={issue.date} />
-            </div>
-          </div>
+          <Emblem
+            imageSrc="/emblems/emblem-shavlinsky.png"
+            label="Шавлинский полк"
+            sublabel="Вместе к новым победам"
+            shape="shield"
+            sizeMm={33}
+          />
+        </div>
+
+        {/* №/дата выпуска — по правому краю ВСЕЙ страницы (QA:
+            "сориентироваться по правому краю макета"), а не только
+            правого края центральной колонки шапки, как было раньше.
+            Отступы до сюда и дальше до hero-блока подтянуты (QA:
+            "весь блок нужно подтянуть повыше... снизу освободится
+            воздуха больше") — раньше между шапкой и фото было заметно
+            больше воздуха, чем между остальными блоками страницы. */}
+        <div className="mt-[1mm] flex justify-end">
+          <IssueMeta number={issue.number} date={issue.date} />
         </div>
 
         {/* Всё, что ниже плашки "Боевой листок", подтянуто вверх на 10px
