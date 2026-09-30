@@ -62,10 +62,25 @@ export async function POST(req: NextRequest) {
 
     browser = await launchPdfBrowser();
     const page = await browser.newPage();
-    // networkidle0 — дожидаемся, что все встроенные data:/base64 ресурсы
-    // (фото, шрифты) действительно применились к рендеру перед печатью,
-    // а не печатаем документ, у которого изображения ещё не отрисованы.
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    // Puppeteer's OWN default navigation timeout is 30000ms — completely
+    // independent of `export const maxDuration = 60` above, which only
+    // caps the serverless function itself. With real, large issues (4
+    // pages of embedded base64 photos + fonts to decode/layout) that
+    // 30s default was hit and aborted the export ("Navigation timeout of
+    // 30000 ms exceeded", reported live) well before the function's own
+    // 60s budget ran out. Raised to 55s here — leaves a few seconds of
+    // headroom under maxDuration for browser launch + page.pdf() + the
+    // HTTP response itself.
+    //
+    // waitUntil: "load" instead of the former "networkidle0" — every
+    // resource this document references (photos, webfonts, static
+    // engraving/emblem images) is ALREADY embedded as a data: URL by the
+    // time this HTML string exists (see renderIssueHtml.tsx/
+    // googleFonts.ts/inlineStaticImages.ts) — there is no real network
+    // activity to wait out, "load" (fires once images are decoded) is
+    // both sufficient and less prone to being kept open by an
+    // unrelated background connection than the network-idle heuristic.
+    await page.setContent(html, { waitUntil: "load", timeout: 55_000 });
 
     const pdfBuffer = await page.pdf({
       // puppeteer-core типизирует PDFOptions.format строго нижним
@@ -75,6 +90,7 @@ export async function POST(req: NextRequest) {
       printBackground: true,
       preferCSSPageSize: false,
       margin: { top: "0mm", right: "0mm", bottom: "0mm", left: "0mm" },
+      timeout: 55_000,
     });
 
     await browser.close();
