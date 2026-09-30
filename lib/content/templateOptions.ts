@@ -11,7 +11,7 @@ export const TEMPLATE_OPTIONS: Record<1 | 2 | 3 | 4, { id: string; label: string
   ],
   3: [
     { id: "theme-photo-v1", label: "Большое фото + текст" },
-    { id: "theme-text-photos-v1", label: "Текст + 2–4 фото" },
+    { id: "theme-text-photos-v1", label: "Текст + 2–4 фото + открытка" },
   ],
   4: [
     { id: "person-feature-v1", label: "Лицо" },
@@ -22,8 +22,10 @@ export const TEMPLATE_OPTIONS: Record<1 | 2 | 3 | 4, { id: string; label: string
 /** Сколько фото имеет смысл держать в редакторе для конкретного
  *  шаблона, и нужны ли поля имя/должность (страница 4). Значение
  *  информирует ТОЛЬКО интерфейс редактора (сколько слотов показать) —
- *  сам шаблон и так использует лишь photos[0] или photos.slice(0,3),
- *  так что это не меняет поведение рендера, только удобство ввода. */
+ *  сам шаблон и так использует лишь photos[0], photos.slice(0,3) или
+ *  photos.slice(0,4)/photos[4] (страница 3, "Текст + фото" — см.
+ *  ThemeTextPhotos), так что это не меняет поведение рендера, только
+ *  удобство ввода. */
 export function photoConfigFor(
   pageNumber: 1 | 2 | 3 | 4,
   templateId: string | null
@@ -31,7 +33,12 @@ export function photoConfigFor(
   if (pageNumber === 2 && templateId === "article-photo-v1") return { maxCount: 1, showPersonFields: false };
   if (pageNumber === 2 && templateId === "photo-grid-v1") return { maxCount: undefined, showPersonFields: false };
   if (pageNumber === 3 && templateId === "theme-photo-v1") return { maxCount: 1, showPersonFields: false };
-  if (pageNumber === 3 && templateId === "theme-text-photos-v1") return { maxCount: 4, showPersonFields: false };
+  // Рельса — до 4 кадров; 5-е фото — отдельная открытка на всю ширину
+  // под дивайдером, без обрезания (QA: "после дивайдера... фото на
+  // всю ширину страницы, без обрезания, т.к. это будет готовая
+  // открытка", photos[4] в ThemeTextPhotos) — ДОПОЛНИТЕЛЬНЫЙ слот
+  // сверх рельсы, а не переиспользование её последнего кадра.
+  if (pageNumber === 3 && templateId === "theme-text-photos-v1") return { maxCount: 5, showPersonFields: false };
   if (pageNumber === 4 && templateId === "person-feature-v1") return { maxCount: 1, showPersonFields: true };
   if (pageNumber === 4 && templateId === "team-faces-v1") return { maxCount: 3, showPersonFields: true };
   return { maxCount: undefined, showPersonFields: false };

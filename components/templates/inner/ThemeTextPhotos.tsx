@@ -4,6 +4,7 @@ import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
 import { PullQuote } from "@/components/shared/PullQuote";
 import { EngravingTank } from "@/components/decorative/EngravingTank";
+import { EditorialRule } from "@/components/shared/EditorialRule";
 
 const RAIL_MAX_HEIGHT_MM = 180;
 const RAIL_GAP_MM = 3;
@@ -30,6 +31,12 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
   );
   const railPhotos = photos.slice(0, 4);
   const photoHeight = railPhotoHeight(railPhotos.length);
+  // 5-е фото — отдельная открытка на всю ширину под дивайдером (QA:
+  // "после дивайдера нужно будет вставлять фото на всю ширину
+  // страницы, без обрезания, т.к. это будет готовая открытка") —
+  // ДОПОЛНИТЕЛЬНЫЙ слот сверх рельсы (которая уже расширена до 4 кадров
+  // отдельным изменением), а не переиспользование её 4-го кадра.
+  const postcardPhoto = photos[4];
 
   return (
     <InnerPageShell
@@ -38,12 +45,13 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
     >
-      {/* Заголовок теперь внутри строки с фото, не отдельным блоком
-          над ней — верх заголовка и верх фото-плёнки совпадают вровень,
-          как на утверждённом макете обложки (QA: "как в утверждённом
-          макете, так и на всех остальных"). Без своего mt- сверху:
-          отступ от шапки уже даёт InnerPageShell. */}
-      <div className="grid grid-cols-[1fr_58mm] items-start gap-[6mm]">
+      <div className="flex h-full flex-col">
+        {/* Заголовок теперь внутри строки с фото, не отдельным блоком
+            над ней — верх заголовка и верх фото-плёнки совпадают вровень,
+            как на утверждённом макете обложки (QA: "как в утверждённом
+            макете, так и на всех остальных"). Без своего mt- сверху:
+            отступ от шапки уже даёт InnerPageShell. */}
+        <div className="grid grid-cols-[1fr_58mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
           <ArticleTitle title={title?.text} subtitle={subtitle?.text} showIcon={false} />
           {/* Основной текст/лид — отдельное семантическое поле,
@@ -89,6 +97,32 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
             </div>
           )}
         </div>
+      </div>
+
+        {postcardPhoto && (
+          <>
+            {/* Дивайдер после нижнего фото рельсы — те же отступы, что
+                уже применяются к дивайдерам на внутренней странице
+                (InnerPageShell: variant="double", mt-[4mm]). */}
+            <EditorialRule variant="double" className="mt-[4mm]" />
+
+            {/* Открытка на всю ширину страницы, БЕЗ обрезания (QA: "без
+                обрезания, т.к. это будет готовая открытка") — в отличие
+                от остальных фото в этом шаблоне (и во всём приложении),
+                здесь намеренно НЕТ фиксированной высоты и object-cover:
+                контейнер просто следует естественным пропорциям
+                картинки на всю ширину колонки. */}
+            <div data-zone="photo" className="mt-[4mm]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={postcardPhoto.src} alt={postcardPhoto.caption ?? ""} className="block w-full h-auto" />
+              {postcardPhoto.caption && (
+                <p data-zone="caption" className="mt-[1.5mm] font-body text-[11px] italic text-ink/70">
+                  {postcardPhoto.caption}
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </InnerPageShell>
   );
