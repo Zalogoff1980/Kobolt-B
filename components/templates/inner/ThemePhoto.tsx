@@ -19,9 +19,9 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
  * относить текст"). Теперь одна колонка; если текста мало, блок
  * лид+абзацы+цитата центрируется в оставшемся под фото пространстве.
  */
-export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 }) {
+export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: number }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
-    issue.pages[pageNumber].content.blocks
+    issue.pages[pageNumber]!.content.blocks
   );
   const photo = photos[0];
 
@@ -30,7 +30,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 3 
       pageNumber={pageNumber}
       issueNumber={issue.number}
       issueDate={issue.date}
-      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       <div className="flex h-full flex-col">
         <ArticleTitle title={title?.text} subtitle={subtitle?.text} />

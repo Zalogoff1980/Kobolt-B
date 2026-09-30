@@ -17,7 +17,7 @@ import { PullQuote } from "@/components/shared/PullQuote";
  */
 export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
-    issue.pages[pageNumber].content.blocks
+    issue.pages[pageNumber]!.content.blocks
   );
   const photo = photos[0];
   // personName/personRole — поля самого фото-блока; без фото им просто
@@ -79,7 +79,7 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
       pageNumber={pageNumber}
       issueNumber={issue.number}
       issueDate={issue.date}
-      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       {!photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} />}
 

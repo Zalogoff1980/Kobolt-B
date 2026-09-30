@@ -24,6 +24,9 @@ export function HiddenOverflowProbe({
   onResult: (overflowingPages: number[]) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const pageNumbers = Object.keys(issue.pages)
+    .map(Number)
+    .sort((a, b) => a - b);
 
   useEffect(() => {
     const container = ref.current;
@@ -32,8 +35,14 @@ export function HiddenOverflowProbe({
     function measure() {
       const roots = Array.from(container!.querySelectorAll<HTMLElement>(".kobolt-page"));
       const overflowing: number[] = [];
+      // Индекс DOM-узла больше не равен номеру страницы, когда страниц
+      // может быть больше 4 (QA: "возможность добавить новую
+      // страницу... без жёсткого лимита") — сопоставляем результат
+      // измерения с фактическим списком номеров страниц по порядку.
       roots.forEach((root, i) => {
-        if (root.scrollHeight - root.clientHeight > 1) overflowing.push(i + 1);
+        const n = pageNumbers[i];
+        if (n === undefined) return;
+        if (root.scrollHeight - root.clientHeight > 1) overflowing.push(n);
       });
       onResult(overflowing);
     }
@@ -58,7 +67,7 @@ export function HiddenOverflowProbe({
       data-testid="hidden-overflow-probe"
       className="pointer-events-none fixed left-[-99999px] top-0 opacity-0"
     >
-      {([1, 2, 3, 4] as const).map((n) => (
+      {pageNumbers.map((n) => (
         <A4Page key={n} issue={issue} pageNumber={n} />
       ))}
     </div>

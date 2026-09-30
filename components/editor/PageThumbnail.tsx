@@ -17,7 +17,7 @@ export function PageThumbnail({
   widthPx = 64,
 }: {
   issue: Issue;
-  pageNumber: 1 | 2 | 3 | 4;
+  pageNumber: number;
   widthPx?: number;
 }) {
   const pageWidthPx = A4_WIDTH_MM * MM_TO_PX;

@@ -37,7 +37,7 @@ function firstOfType<T extends ContentBlock["type"]>(
  * закрывающая строка-девиз.
  */
 export function CoverV2({ issue }: { issue: Issue }) {
-  const coverBlocks = issue.pages[1].content.blocks;
+  const coverBlocks = issue.pages[1]!.content.blocks;
   const heroPhoto = firstOfType(coverBlocks, "photo");
   // Сколько угодно цитат (QA: "дать возможность добавлять такой блок
   // сколько нужно" — раньше читалась только первая, firstOfType).
@@ -58,7 +58,7 @@ export function CoverV2({ issue }: { issue: Issue }) {
   const { paragraphs } = groupPageBlocks(coverBlocks);
 
   return (
-    <PageFrame backgroundEngravingId={issue.pages[1].backgroundEngravingId}>
+    <PageFrame backgroundEngravingId={issue.pages[1]!.backgroundEngravingId}>
       <div className="relative flex h-full flex-col px-[var(--page-margin)] py-[6mm]">
         {/* Тег-лайн ПЕРЕД верхним дивайдером (QA: "сначала текстовая
             строка... а потом дивайдер, вот тогда блок будет цельным") —

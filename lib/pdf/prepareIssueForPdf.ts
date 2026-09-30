@@ -58,11 +58,15 @@ function shrinkDataUrl(src: string): Promise<string> {
 }
 
 export async function prepareIssueForPdf(issue: Issue): Promise<Issue> {
-  const pageNumbers: PageNumber[] = [1, 2, 3, 4];
+  // Любые добавленные сверх базовых 4 страницы (QA: "возможность
+  // добавить новую страницу... без жёсткого лимита") тоже должны
+  // пройти через сжатие фото — берём номера из фактических ключей
+  // issue.pages, а не из жёстко зашитого [1,2,3,4].
+  const pageNumbers: PageNumber[] = Object.keys(issue.pages).map(Number);
   const pages = { ...issue.pages };
 
   for (const n of pageNumbers) {
-    const page = pages[n];
+    const page = pages[n]!;
     const blocks = await Promise.all(
       page.content.blocks.map(async (block) => {
         if (block.type !== "photo") return block;

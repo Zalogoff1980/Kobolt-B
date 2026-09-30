@@ -33,10 +33,18 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
   // "SSR внутри Route Handler" (PDF/email-рендер и т.п.).
   const { renderToStaticMarkup } = await import("react-dom/server");
 
-  const rawPagesMarkup = ([1, 2, 3, 4] as const)
+  // Номера страниц берём из фактических ключей issue.pages, а не из
+  // жёстко зашитого [1,2,3,4] — выпуск может содержать добавленные
+  // сверх базовых 4 страницы (QA: "возможность добавить новую
+  // страницу... без жёсткого лимита").
+  const pageNumbers = Object.keys(issue.pages)
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  const rawPagesMarkup = pageNumbers
     .map((n, i) => {
       const inner = renderToStaticMarkup(<A4Page issue={issue} pageNumber={n} />);
-      const isLast = i === 3;
+      const isLast = i === pageNumbers.length - 1;
       return `<div class="pdf-page-wrap"${isLast ? "" : ' style="page-break-after: always;"'}>${inner}</div>`;
     })
     .join("\n");

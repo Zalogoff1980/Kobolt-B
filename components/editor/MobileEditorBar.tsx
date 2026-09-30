@@ -1,6 +1,6 @@
 "use client";
 
-import { TEMPLATE_OPTIONS } from "@/lib/content/templateOptions";
+import { templateOptionsFor } from "@/lib/content/templateOptions";
 import { CardButton } from "./EditorCard";
 
 /**
@@ -26,16 +26,25 @@ import { CardButton } from "./EditorCard";
  * страница и так рядом.
  */
 export function MobileEditorBar({
+  pages,
   activePage,
   onSelectPage,
+  onAddPage,
   overflowingPages,
   inView,
   onJump,
   currentTemplateId,
   onTemplateChange,
 }: {
-  activePage: 1 | 2 | 3 | 4;
-  onSelectPage: (page: 1 | 2 | 3 | 4) => void;
+  /** Номера страниц выпуска, в порядке отображения — берутся из
+   *  фактических ключей issue.pages (QA: "возможность добавить новую
+   *  страницу... без жёсткого лимита"), а не фиксированы на [1,2,3,4]. */
+  pages: number[];
+  activePage: number;
+  onSelectPage: (page: number) => void;
+  /** Добавить страницу в конец выпуска — рисует "+" вкладку в конце
+   *  ряда номеров. Если не передан, вкладка не рендерится. */
+  onAddPage?: () => void;
   overflowingPages: number[];
   /** Какая часть экрана сейчас в основном на виду. */
   inView: "form" | "page";
@@ -43,7 +52,7 @@ export function MobileEditorBar({
   currentTemplateId: string | null;
   onTemplateChange: (templateId: string) => void;
 }) {
-  const templateOptions = TEMPLATE_OPTIONS[activePage];
+  const templateOptions = templateOptionsFor(activePage);
   const showTemplates = inView === "page" && templateOptions.length > 1;
   return (
     <div
@@ -52,7 +61,7 @@ export function MobileEditorBar({
     >
      <div className="flex items-center justify-between gap-2 px-3 py-2">
       <div className="flex gap-1" role="tablist" aria-label="Страницы выпуска">
-        {([1, 2, 3, 4] as const).map((n) => {
+        {pages.map((n) => {
           const isActive = n === activePage;
           const overflows = overflowingPages.includes(n);
           return (
@@ -81,6 +90,17 @@ export function MobileEditorBar({
             </button>
           );
         })}
+        {onAddPage && (
+          <button
+            type="button"
+            data-testid="mobile-page-tab-add"
+            onClick={onAddPage}
+            aria-label="Добавить страницу"
+            className="flex min-h-[40px] min-w-[40px] appearance-none items-center justify-center rounded-control border border-dashed border-ink/25 font-display text-sm font-bold text-olive-dim"
+          >
+            +
+          </button>
+        )}
       </div>
 
       <div className="flex overflow-hidden rounded-control border border-ink/20 text-xs">

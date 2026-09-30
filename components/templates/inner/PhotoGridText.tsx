@@ -54,7 +54,7 @@ function gridLayout(count: number): { cols: number; heightMm: number } {
  */
 export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
   const { title, subtitle, lead, paragraphs, photos, quotes, birthdays } = groupPageBlocks(
-    issue.pages[pageNumber].content.blocks
+    issue.pages[pageNumber]!.content.blocks
   );
   const { cols, heightMm } = gridLayout(photos.length);
   const isTwoColumnLayout = photos.length === 2;
@@ -74,7 +74,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
         pageNumber={pageNumber}
         issueNumber={issue.number}
         issueDate={issue.date}
-        backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+        backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
       >
         <div className="flex h-full flex-col">
           <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
@@ -154,7 +154,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
       pageNumber={pageNumber}
       issueNumber={issue.number}
       issueDate={issue.date}
-      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       {/* Корневой блок — flex-column на всю высоту страницы: заголовок и
           фотогалерея сверху фиксированной высоты, текстовая секция ниже —

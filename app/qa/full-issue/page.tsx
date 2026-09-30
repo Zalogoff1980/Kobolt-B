@@ -17,7 +17,7 @@ function IssueRow({ label, issue }: { label: string; issue: Issue }) {
           <div key={n}>
             <p className="mb-1 text-xs uppercase text-paper/60">Стр. {n}</p>
             <PagePreviewScaler>
-              <A4Page issue={issue} pageNumber={n as 1 | 2 | 3 | 4} />
+              <A4Page issue={issue} pageNumber={n} />
             </PagePreviewScaler>
           </div>
         ))}

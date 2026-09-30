@@ -1,7 +1,5 @@
 "use client";
 
-const PAGES = [1, 2, 3, 4] as const;
-
 /**
  * Точки-индикаторы + стрелки под превью страницы. Сам жест смахивания
  * теперь ловится на ВСЁМ окне превью (см. page.tsx — QA: "свайп не
@@ -9,17 +7,27 @@ const PAGES = [1, 2, 3, 4] as const;
  * только видимый индикатор текущей страницы и запасной способ ткнуть
  * в конкретную страницу пальцем/мышью, без какой-либо жестовой логики
  * в себе самой.
+ *
+ * Список страниц передаётся снаружи (а не зашит как [1,2,3,4]) — выпуск
+ * может содержать добавленные оператором страницы сверх базовых 4 (QA:
+ * "возможность добавить новую страницу... без жёсткого лимита").
  */
 export function PreviewPager({
+  pages,
   activePage,
   onSelectPage,
 }: {
-  activePage: 1 | 2 | 3 | 4;
-  onSelectPage: (page: 1 | 2 | 3 | 4) => void;
+  pages: number[];
+  activePage: number;
+  onSelectPage: (page: number) => void;
 }) {
+  const index = pages.indexOf(activePage);
+  const isFirst = index <= 0;
+  const isLast = index === -1 || index === pages.length - 1;
+
   function go(delta: 1 | -1) {
-    const next = activePage + delta;
-    if (next >= 1 && next <= 4) onSelectPage(next as 1 | 2 | 3 | 4);
+    const next = index + delta;
+    if (next >= 0 && next < pages.length) onSelectPage(pages[next]!);
   }
 
   return (
@@ -30,14 +38,14 @@ export function PreviewPager({
           aria-label="Предыдущая страница"
           data-testid="preview-pager-prev"
           onClick={() => go(-1)}
-          disabled={activePage === 1}
+          disabled={isFirst}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-paper/25 text-lg text-paper/80 disabled:opacity-30"
         >
           ‹
         </button>
 
         <div className="flex gap-2.5" role="tablist" aria-label="Страницы выпуска">
-          {PAGES.map((n) => (
+          {pages.map((n) => (
             <button
               key={n}
               type="button"
@@ -58,7 +66,7 @@ export function PreviewPager({
           aria-label="Следующая страница"
           data-testid="preview-pager-next"
           onClick={() => go(1)}
-          disabled={activePage === 4}
+          disabled={isLast}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-paper/25 text-lg text-paper/80 disabled:opacity-30"
         >
           ›

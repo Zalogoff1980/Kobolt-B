@@ -22,7 +22,7 @@ function firstOfType<T extends ContentBlock["type"]>(
  * не содержит вёрстки — только раскладку блоков и вывод данных Issue.
  */
 export function CoverV1({ issue }: { issue: Issue }) {
-  const coverBlocks = issue.pages[1].content.blocks;
+  const coverBlocks = issue.pages[1]!.content.blocks;
   const heroPhoto = firstOfType(coverBlocks, "photo");
   // Сколько угодно цитат (QA: "дать возможность добавлять такой блок
   // сколько нужно" — раньше читалась только первая, firstOfType).
@@ -64,7 +64,7 @@ export function CoverV1({ issue }: { issue: Issue }) {
     });
 
   return (
-    <PageFrame backgroundEngravingId={issue.pages[1].backgroundEngravingId}>
+    <PageFrame backgroundEngravingId={issue.pages[1]!.backgroundEngravingId}>
       {/* Фоновая гравюрная иллюстрация (ТЗ п.11) — композиционный якорь
           нижней части страницы, когда материала мало (ТЗ п.4). Показываем
           её, только если фото уже занимает hero-блок: если фото ещё нет,

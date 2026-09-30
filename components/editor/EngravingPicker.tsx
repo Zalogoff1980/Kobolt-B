@@ -30,7 +30,7 @@ export function EngravingPicker({
   currentEngravingId: string | null | undefined;
   onChange: (engravingId: string | null) => void;
 }) {
-  const options = ENGRAVING_OPTIONS_BY_PAGE[pageNumber];
+  const options = ENGRAVING_OPTIONS_BY_PAGE[pageNumber] ?? [];
   if (options.length === 0) return null;
 
   const selected = options.find((o) => o.id === currentEngravingId);

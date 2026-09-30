@@ -24,9 +24,9 @@ export function A4Page({
   pageNumber,
 }: {
   issue: Issue;
-  pageNumber: 1 | 2 | 3 | 4;
+  pageNumber: number;
 }) {
-  const page = issue.pages[pageNumber];
+  const page = issue.pages[pageNumber]!;
 
   if (pageNumber === 1 && page.templateId === "cover-v1") {
     return <CoverV1 issue={issue} />;
@@ -59,6 +59,18 @@ export function A4Page({
   if (pageNumber === 4 && page.templateId === "team-faces-v1") {
     return <TeamFaces issue={issue} pageNumber={4} />;
   }
+
+  // Любая добавленная сверх фирменных 1–4 страница (QA: "возможность
+  // добавить новую страницу... без жёсткого лимита") — использует тот
+  // же набор шаблонов, что и страница 3 (см. templateOptionsFor).
+  if (pageNumber > 4 && page.templateId === "theme-photo-v1") {
+    return <ThemePhoto issue={issue} pageNumber={pageNumber} />;
+  }
+
+  if (pageNumber > 4 && page.templateId === "theme-text-photos-v1") {
+    return <ThemeTextPhotos issue={issue} pageNumber={pageNumber} />;
+  }
+
   return (
     <PageFrame>
       <div className="flex h-full items-center justify-center font-body text-olive-dim">

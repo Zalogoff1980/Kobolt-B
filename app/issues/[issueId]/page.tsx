@@ -3,12 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { getIssue, updateIssue } from "@/lib/db/issues";
 import { Issue } from "@/lib/content/issue";
+import { emptyPageContent } from "@/lib/content/types";
+import { isExtraPage } from "@/lib/content/templateOptions";
 import { PageSections, blocksToSections, sectionsToBlocks } from "@/lib/content/sections";
 import { A4Page } from "@/components/canvas/A4Page";
 import { PagePreviewScaler } from "@/components/canvas/PagePreviewScaler";
 import { EditorTopBar } from "@/components/editor/EditorTopBar";
 import { PageList } from "@/components/editor/PageList";
 import { TemplatePicker } from "@/components/editor/TemplatePicker";
+import { TemplateGallery } from "@/components/editor/TemplateGallery";
 import { EngravingPicker } from "@/components/editor/EngravingPicker";
 import { CoverForm } from "@/components/editor/CoverForm";
 import { InnerPageForm } from "@/components/editor/InnerPageForm";
@@ -32,13 +35,17 @@ const FOCUSABLE_FIELDS = "textarea, input:not([type=file]):not([type=date])";
  * `issue` (через persist), а Preview рендерит тот же `A4Page`, что и
  * везде в приложении — отдельной "версии дизайна для редактора" нет.
  * Issue.pages остаётся единственным источником истины: активная
- * страница — это просто число (1–4), секции для формы каждый раз
- * заново выводятся из issue.pages[activePage] через blocksToSections,
- * а не хранятся отдельно.
+ * страница — это просто число, секции для формы каждый раз заново
+ * выводятся из issue.pages[activePage] через blocksToSections, а не
+ * хранятся отдельно. Базовые страницы 1–4 присутствуют всегда, но
+ * оператор может добавлять новые страницы сверх них (QA: "возможность
+ * добавить новую страницу... без жёсткого лимита") — они используют
+ * тот же набор "внутренних" шаблонов, что и страница 3 (см.
+ * templateOptionsFor/A4Page.tsx).
  */
 export default function IssueEditorPage({ params }: { params: { issueId: string } }) {
   const [issue, setIssue] = useState<Issue | null | undefined>(undefined);
-  const [activePage, setActivePage] = useState<1 | 2 | 3 | 4>(1);
+  const [activePage, setActivePage] = useState<number>(1);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("saved");
   const [overflowingPages, setOverflowingPages] = useState<number[]>([]);
   const previewRootRef = useRef<HTMLDivElement>(null);
@@ -53,6 +60,12 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
   const asideRef = useRef<HTMLElement>(null);
   const previewColRef = useRef<HTMLDivElement>(null);
   const [mobileInView, setMobileInView] = useState<"form" | "page">("form");
+
+  // Номера страниц выпуска, по возрастанию — из фактических ключей
+  // issue.pages, а не жёстко зашитого [1,2,3,4] (QA: "возможность
+  // добавить новую страницу... без жёсткого лимита"). Пусто, пока issue
+  // ещё не загружен.
+  const pages = issue ? Object.keys(issue.pages).map(Number).sort((a, b) => a - b) : [];
 
   useEffect(() => {
     getIssue(params.issueId).then((found) => setIssue(found ?? null));
@@ -114,11 +127,14 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     const start = swipeStartRef.current;
     if (swipeHorizontalRef.current && t && start) {
       const dx = t.clientX - start.x;
-      if (dx <= -SWIPE_THRESHOLD_PX && activePage < 4) {
-        setActivePage((activePage + 1) as 1 | 2 | 3 | 4);
+      // Границы свайпа — по фактическому списку страниц, а не жёстко
+      // 1..4, чтобы пролистывание работало и на добавленные страницы.
+      const index = pages.indexOf(activePage);
+      if (dx <= -SWIPE_THRESHOLD_PX && index !== -1 && index < pages.length - 1) {
+        setActivePage(pages[index + 1]!);
         swipeHandledRef.current = true;
-      } else if (dx >= SWIPE_THRESHOLD_PX && activePage > 1) {
-        setActivePage((activePage - 1) as 1 | 2 | 3 | 4);
+      } else if (dx >= SWIPE_THRESHOLD_PX && index > 0) {
+        setActivePage(pages[index - 1]!);
         swipeHandledRef.current = true;
       }
     }
@@ -187,7 +203,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     const link = el.closest<HTMLElement>("[data-page-link]");
     if (link) {
       const n = Number(link.dataset.pageLink);
-      if (n === 1 || n === 2 || n === 3 || n === 4) {
+      if (Number.isInteger(n) && n >= 1) {
         setActivePage(n);
         // Форма выбранной страницы отрисуется на следующем кадре —
         // после этого ставим курсор в её заголовок.
@@ -224,7 +240,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     activePage === 1
       ? ({ titleLevel: 2, subtitleLevel: 3 } as const)
       : ({ titleLevel: 1, subtitleLevel: 2 } as const);
-  const sections = blocksToSections(issue.pages[activePage].content.blocks, levels);
+  const sections = blocksToSections(issue.pages[activePage]!.content.blocks, levels);
 
   function handleSectionsChange(next: PageSections) {
     const blocks = sectionsToBlocks(next, levels);
@@ -232,7 +248,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
       ...issue!,
       pages: {
         ...issue!.pages,
-        [activePage]: { ...issue!.pages[activePage], content: { pageNumber: activePage, blocks } },
+        [activePage]: { ...issue!.pages[activePage]!, content: { pageNumber: activePage, blocks } },
       },
     });
   }
@@ -242,7 +258,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
       ...issue!,
       pages: {
         ...issue!.pages,
-        [activePage]: { ...issue!.pages[activePage], templateId },
+        [activePage]: { ...issue!.pages[activePage]!, templateId },
       },
     });
   }
@@ -257,7 +273,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
       ...issue!,
       pages: {
         ...issue!.pages,
-        [activePage]: { ...issue!.pages[activePage], backgroundEngravingId: engravingId },
+        [activePage]: { ...issue!.pages[activePage]!, backgroundEngravingId: engravingId },
       },
     });
   }
@@ -269,6 +285,24 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     dayInHistory?: string | null;
   }) {
     persist({ ...issue!, ...patch });
+  }
+
+  /** Добавить новую страницу в конец выпуска — пустой контент, шаблон
+   *  не выбран (оператор выберет его через TemplateGallery — см. ниже,
+   *  сразу под списком страниц), без жёсткого лимита числа страниц
+   *  (QA: "возможность добавить новую страницу... 1. Пустая превью
+   *  страницы со знаком + в кружочке"). Новая страница сразу становится
+   *  активной, чтобы оператор увидел её и начал заполнять. */
+  function handleAddPage() {
+    const nextNumber = pages.length > 0 ? Math.max(...pages) + 1 : 5;
+    persist({
+      ...issue!,
+      pages: {
+        ...issue!.pages,
+        [nextNumber]: { content: emptyPageContent(nextNumber), templateId: null },
+      },
+    });
+    setActivePage(nextNumber);
   }
 
   return (
@@ -296,12 +330,14 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
       <div className="flex flex-1 scroll-pt-16 flex-col overflow-x-hidden overflow-y-auto lg:scroll-pt-0 lg:flex-row lg:overflow-hidden">
         {/* Только телефон: липкая панель "страницы 1–4 · Форма/Страница" */}
         <MobileEditorBar
+          pages={pages}
           activePage={activePage}
           onSelectPage={setActivePage}
+          onAddPage={handleAddPage}
           overflowingPages={overflowingPages}
           inView={mobileInView}
           onJump={jumpTo}
-          currentTemplateId={issue.pages[activePage].templateId}
+          currentTemplateId={issue.pages[activePage]!.templateId}
           onTemplateChange={handleTemplateChange}
         />
 
@@ -314,6 +350,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             issue={issue}
             activePage={activePage}
             onSelect={setActivePage}
+            onAddPage={handleAddPage}
             overflowingPages={overflowingPages}
           />
 
@@ -328,17 +365,29 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
           )}
 
           <div className="mt-4">
-            <TemplatePicker
-              pageNumber={activePage}
-              currentTemplateId={issue.pages[activePage].templateId}
-              onChange={handleTemplateChange}
-            />
+            {/* Добавленная страница без выбранного шаблона (QA, фишка
+                дня: "иконки шаблонов выполнить схематично согласно
+                проработанным лэйаутам") — крупная галерея со схемами
+                раскладки вместо обычных узких кнопок-ярлычков; везде
+                ещё (включая уже выбранный шаблон этой же страницы)
+                остаётся TemplatePicker — QA-уточнение: "только для
+                новой страницы", а не редизайн выбора шаблона
+                повсеместно. */}
+            {isExtraPage(activePage) && !issue.pages[activePage]!.templateId ? (
+              <TemplateGallery onSelect={handleTemplateChange} />
+            ) : (
+              <TemplatePicker
+                pageNumber={activePage}
+                currentTemplateId={issue.pages[activePage]!.templateId}
+                onChange={handleTemplateChange}
+              />
+            )}
           </div>
 
           <div className="mt-4">
             <EngravingPicker
               pageNumber={activePage}
-              currentEngravingId={issue.pages[activePage].backgroundEngravingId}
+              currentEngravingId={issue.pages[activePage]!.backgroundEngravingId}
               onChange={handleEngravingChange}
             />
           </div>
@@ -354,7 +403,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             ) : (
               <InnerPageForm
                 pageNumber={activePage}
-                templateId={issue.pages[activePage].templateId}
+                templateId={issue.pages[activePage]!.templateId}
                 sections={sections}
                 onChange={handleSectionsChange}
               />
@@ -394,7 +443,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
           {/* Смахивание под страницей (QA: "внизу можно было свайпом
               листать, а не по номерам нажимать") — альтернатива кнопкам
               1–4 в MobileEditorBar сверху, ближе к самой странице. */}
-          <PreviewPager activePage={activePage} onSelectPage={setActivePage} />
+          <PreviewPager pages={pages} activePage={activePage} onSelectPage={setActivePage} />
         </div>
       </div>
     </div>

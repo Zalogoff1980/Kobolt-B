@@ -14,7 +14,7 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
  */
 export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
-    issue.pages[pageNumber].content.blocks
+    issue.pages[pageNumber]!.content.blocks
   );
   const photo = photos[0];
 
@@ -23,7 +23,7 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
       pageNumber={pageNumber}
       issueNumber={issue.number}
       issueDate={issue.date}
-      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       {/* Заголовок теперь ВНУТРИ строки с фото (не отдельным полноширинным
           блоком над ней), чтобы верх заголовка и верх фото совпадали

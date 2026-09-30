@@ -45,7 +45,7 @@ function photoHeightMm(count: number): number {
  */
 export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }) {
   const { title, subtitle, lead, paragraphs, achievements, photos, quotes } = groupPageBlocks(
-    issue.pages[pageNumber].content.blocks
+    issue.pages[pageNumber]!.content.blocks
   );
   const faces = photos.slice(0, 3);
   const heightMm = photoHeightMm(faces.length);
@@ -62,7 +62,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }
       pageNumber={pageNumber}
       issueNumber={issue.number}
       issueDate={issue.date}
-      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       <div className="flex h-full min-h-0 flex-col">
         <ArticleTitle title={title?.text} subtitle={subtitle?.text} />

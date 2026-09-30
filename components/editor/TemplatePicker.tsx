@@ -1,6 +1,6 @@
 "use client";
 
-import { TEMPLATE_OPTIONS } from "@/lib/content/templateOptions";
+import { templateOptionsFor } from "@/lib/content/templateOptions";
 import { EditorCard, CardButton } from "./EditorCard";
 
 /**
@@ -19,11 +19,11 @@ export function TemplatePicker({
   currentTemplateId,
   onChange,
 }: {
-  pageNumber: 1 | 2 | 3 | 4;
+  pageNumber: number;
   currentTemplateId: string | null;
   onChange: (templateId: string) => void;
 }) {
-  const options = TEMPLATE_OPTIONS[pageNumber];
+  const options = templateOptionsFor(pageNumber);
   if (options.length <= 1) return null; // страница 1: единственный шаблон, выбирать нечего
 
   return (

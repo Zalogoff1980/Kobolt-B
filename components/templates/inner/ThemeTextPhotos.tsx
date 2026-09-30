@@ -34,9 +34,9 @@ function railPhotoHeight(count: number): number {
  * четыре вертикальных фото. Надо предусмотреть три вертикальных фото
  * и отдельный блок... открытка... Мы туда будем вставлять открытку").
  */
-export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumber: 3 }) {
+export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumber: number }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
-    issue.pages[pageNumber].content.blocks
+    issue.pages[pageNumber]!.content.blocks
   );
   const railPhotos = photos.slice(0, 3);
   const photoHeight = railPhotoHeight(railPhotos.length);
@@ -52,7 +52,7 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
       pageNumber={pageNumber}
       issueNumber={issue.number}
       issueDate={issue.date}
-      backgroundEngravingId={issue.pages[pageNumber].backgroundEngravingId}
+      backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       <div className="flex h-full flex-col">
         {/* Заголовок теперь внутри строки с фото, не отдельным блоком

@@ -19,7 +19,7 @@ export function InnerPageForm({
   sections,
   onChange,
 }: {
-  pageNumber: 2 | 3 | 4;
+  pageNumber: number;
   templateId: string | null;
   sections: PageSections;
   onChange: (next: PageSections) => void;

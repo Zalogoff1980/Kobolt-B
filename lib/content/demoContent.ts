@@ -29,7 +29,14 @@ const DEMO_PHOTO_SRC =
 export function withDemoContent(issue: Issue): Issue {
   return {
     ...issue,
+    // Сначала разворачиваем ВСЕ страницы выпуска (включая любые
+    // добавленные сверх фирменных 1-4 — QA: "возможность добавить
+    // новую страницу... без жёсткого лимита"), а затем переопределяем
+    // только 1 и 2 демо-контентом. Раньше здесь целиком собирался
+    // новый объект {1,2,3,4} — это молча стирало бы любые добавленные
+    // страницы 5+ при нажатии "Демо-контент".
     pages: {
+      ...issue.pages,
       1: {
         templateId: "cover-v1",
         content: {
@@ -56,7 +63,7 @@ export function withDemoContent(issue: Issue): Issue {
         },
       },
       2: {
-        templateId: issue.pages[2].templateId,
+        templateId: issue.pages[2]!.templateId,
         content: {
           pageNumber: 2,
           blocks: [
@@ -64,8 +71,6 @@ export function withDemoContent(issue: Issue): Issue {
           ],
         },
       },
-      3: issue.pages[3],
-      4: issue.pages[4],
     },
   };
 }
