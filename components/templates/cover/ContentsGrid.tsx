@@ -80,17 +80,13 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
                   <span className="flex-shrink-0 font-display text-[18px] font-bold leading-none text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  {/* line-clamp — без него длинный текст "День в
-                      истории" (свободный ввод оператора, ничем не
-                      ограничен) может раздуть высоту этого блока
-                      настолько, что вместе с "Новости" справа страница
-                      1 вылезает за 297мм и обрезается (найдено при
-                      разборе реального PDF-файла: "Новости" без
-                      ограничения растягивались на ~140мм при
-                      реальном тексте выпуска вместо расчётных ~55мм).
-                      3 строки — тот же порядок кегля/переносов, что
-                      был у большинства пунктов и раньше на глаз. */}
-                  <p className="line-clamp-3 font-body text-[8px] leading-snug text-ink/90">{text}</p>
+                  {/* QA (тест на вместительность): "шрифт в текстовом
+                      превью увеличить, и выводить по не менее 10 строк
+                      для теста" — было line-clamp-3, text-[8px] (см.
+                      историю ниже про риск переполнения страницы 1 в
+                      PDF при длинном тексте — сейчас сознательно
+                      проверяется тем же способом, что и у NewsBlock). */}
+                  <p className="line-clamp-[10] font-body text-[9.5px] leading-snug text-ink/90">{text}</p>
                 </div>
               </li>
             ))}
@@ -135,7 +131,7 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
                 )}
               </div>
               <div className="mt-[2mm] flex items-baseline justify-between gap-[2mm]">
-                <p className="font-display text-[9.5px] font-bold uppercase leading-tight text-ink">
+                <p className="font-display text-[11px] font-bold uppercase leading-tight text-ink">
                   {entry.title ?? "Материал ещё не добавлен"}
                 </p>
                 <span className="flex-shrink-0 font-display text-[13px] font-bold uppercase text-accent">
@@ -143,7 +139,7 @@ export function ContentsGrid({ issue }: { issue: Issue }) {
                 </span>
               </div>
               {entry.subtitle && (
-                <p className="mt-[0.5mm] font-body text-[7.5px] leading-snug text-olive-dim">
+                <p className="mt-[0.5mm] font-body text-[8.5px] leading-snug text-olive-dim">
                   {entry.subtitle}
                 </p>
               )}

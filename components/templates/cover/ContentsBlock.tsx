@@ -43,7 +43,7 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
               </span>
               <div className="flex-1">
                 {entry.title ? (
-                  <p className="font-display text-[10px] font-bold uppercase leading-tight">
+                  <p className="font-display text-[11px] font-bold uppercase leading-tight">
                     {entry.title}
                   </p>
                 ) : (
@@ -55,7 +55,10 @@ export function ContentsBlock({ entries }: { entries: ContentsEntry[] }) {
                   Стр. {entry.pageNumber}
                 </p>
                 {entry.previewText && (
-                  <p className="mt-[1.5mm] line-clamp-4 font-body text-[7.5px] leading-snug text-ink/80">
+                  // QA (тест на вместительность): "шрифт в текстовом
+                  // превью увеличить, и выводить по не менее 10 строк
+                  // для теста" — было text-[7.5px] line-clamp-4.
+                  <p className="mt-[1.5mm] line-clamp-[10] font-body text-[9px] leading-snug text-ink/80">
                     {entry.previewText}
                   </p>
                 )}
