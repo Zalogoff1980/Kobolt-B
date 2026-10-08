@@ -52,7 +52,7 @@ function gridLayout(count: number): { cols: number; heightMm: number } {
  * такого разделения физически нет, поэтому там остаётся прежняя
  * раскладка "сетка фото сверху, текст на всю ширину снизу".
  */
-export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
+export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber: number }) {
   const { title, subtitle, lead, paragraphs, photos, quotes, birthdays } = groupPageBlocks(
     issue.pages[pageNumber]!.content.blocks
   );

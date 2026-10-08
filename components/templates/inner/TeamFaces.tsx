@@ -43,7 +43,7 @@ function photoHeightMm(count: number): number {
  * блок лид+абзацы+достижения+цитата центрируется в оставшемся под
  * портретами пространстве, а не прилипает к верху.
  */
-export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }) {
+export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: number }) {
   const { title, subtitle, lead, paragraphs, achievements, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber]!.content.blocks
   );
