@@ -15,7 +15,7 @@ import { PullQuote } from "@/components/shared/PullQuote";
  * бы нелепо — в финальном режиме пустой слот просто не занимает места,
  * текст занимает всю ширину.
  */
-export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber: 4 }) {
+export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber: number }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber]!.content.blocks
   );

@@ -12,7 +12,7 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
  * (единый язык "материал ещё не выбран" по всему изданию). Если текста
  * нет — колонка остаётся пустой, ничего не подставляем.
  */
-export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 2 }) {
+export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: number }) {
   const { title, subtitle, lead, paragraphs, photos, quotes } = groupPageBlocks(
     issue.pages[pageNumber]!.content.blocks
   );

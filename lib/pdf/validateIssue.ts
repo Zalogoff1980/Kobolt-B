@@ -26,23 +26,18 @@ export function assertValidIssueShape(value: unknown): asserts value is Issue {
     throw new Error("Issue.pages must be an object");
   }
   const pages = issue.pages as Record<string, unknown>;
-  // Базовые 4 страницы обязательны всегда; любые добавленные сверх них
-  // (5, 6, …, QA: "возможность добавить новую страницу... без жёсткого
-  // лимита") проверяются той же формой ниже, по фактическим ключам
+  // Обязательна только обложка (страница 1): остальные страницы оператор
+  // может удалять, поэтому их число произвольно. Каждая присутствующая
+  // страница проверяется одной и той же формой, по фактическим ключам
   // объекта, а не по жёстко зашитому списку номеров.
-  for (const n of [1, 2, 3, 4]) {
-    const page = pages[String(n)];
-    if (!page || typeof page !== "object") {
-      throw new Error(`Issue.pages[${n}] is missing — a PDF export needs at least pages 1-4`);
-    }
-    const p = page as Record<string, unknown>;
-    if (!p.content || typeof p.content !== "object" || !Array.isArray((p.content as any).blocks)) {
-      throw new Error(`Issue.pages[${n}].content.blocks must be an array`);
-    }
+  if (!pages["1"] || typeof pages["1"] !== "object") {
+    throw new Error("Issue.pages[1] is missing — an issue needs at least a cover page");
   }
   for (const [key, page] of Object.entries(pages)) {
     const n = Number(key);
-    if (!Number.isInteger(n) || n <= 4) continue;
+    if (!Number.isInteger(n) || n < 1) {
+      throw new Error(`Issue.pages has an invalid page number: ${key}`);
+    }
     if (!page || typeof page !== "object") {
       throw new Error(`Issue.pages[${n}] must be an object`);
     }

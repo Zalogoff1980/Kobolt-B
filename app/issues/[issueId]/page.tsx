@@ -305,6 +305,44 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
     setActivePage(nextNumber);
   }
 
+  /** Удалить страницу (кроме обложки). Оставшиеся страницы
+   *  перенумеровываются подряд (1, 2, 3…) — в выпуске не должно быть
+   *  "дыр" вроде 1, 2, 4. Содержимое и шаблоны уцелевших страниц не
+   *  трогаются, меняется только их номер. Удаление необратимо (фото
+   *  лежат прямо в выпуске), поэтому сначала спрашиваем подтверждение. */
+  function handleDeletePage(n: number) {
+    if (n === 1 || !issue!.pages[n]) return;
+    const title = blocksToSections(issue!.pages[n]!.content.blocks, {
+      titleLevel: 1,
+      subtitleLevel: 2,
+    }).title.trim();
+    const label = title ? `страницу ${n} «${title}»` : `страницу ${n}`;
+    if (!window.confirm(`Удалить ${label}? Её текст и фото пропадут, вернуть их будет нельзя.`)) return;
+
+    const remaining = pages.filter((p) => p !== n);
+    const nextPages: Issue["pages"] = {};
+    remaining.forEach((oldNumber, index) => {
+      const newNumber = index + 1;
+      const state = issue!.pages[oldNumber]!;
+      nextPages[newNumber] = {
+        ...state,
+        content: { ...state.content, pageNumber: newNumber },
+      };
+    });
+
+    persist({ ...issue!, pages: nextPages });
+
+    // Куда смотреть после удаления: удалили открытую страницу — на ту,
+    // что встала на её место (или на последнюю); удалили страницу выше
+    // открытой — открытая сдвинулась на единицу вниз, следим за ней.
+    const lastNumber = remaining.length;
+    if (activePage === n) {
+      setActivePage(Math.min(n, lastNumber));
+    } else if (activePage > n) {
+      setActivePage(activePage - 1);
+    }
+  }
+
   return (
     <FormSectionsProvider>
     <div className="flex h-screen flex-col">
@@ -351,6 +389,7 @@ export default function IssueEditorPage({ params }: { params: { issueId: string 
             activePage={activePage}
             onSelect={setActivePage}
             onAddPage={handleAddPage}
+            onDeletePage={handleDeletePage}
             overflowingPages={overflowingPages}
           />
 

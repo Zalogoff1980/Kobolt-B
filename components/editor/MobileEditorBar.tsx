@@ -52,7 +52,7 @@ export function MobileEditorBar({
   currentTemplateId: string | null;
   onTemplateChange: (templateId: string) => void;
 }) {
-  const templateOptions = templateOptionsFor(activePage);
+  const templateOptions = templateOptionsFor(activePage, currentTemplateId);
   const showTemplates = inView === "page" && templateOptions.length > 1;
   return (
     <div

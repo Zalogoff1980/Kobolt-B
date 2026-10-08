@@ -28,6 +28,7 @@ export function PageList({
   activePage,
   onSelect,
   onAddPage,
+  onDeletePage,
   overflowingPages = [],
 }: {
   issue: Issue;
@@ -37,6 +38,10 @@ export function PageList({
    *  в конце списка (QA: "пустая превью страницы со знаком + в
    *  кружочке"). Если не передан, карточка добавления не рендерится. */
   onAddPage?: () => void;
+  /** Удалить страницу (кнопка у каждой страницы, кроме обложки —
+   *  обложка в выпуске обязательна). Подтверждение и перенумерацию
+   *  делает вызывающий код. Если не передан, кнопки удаления нет. */
+  onDeletePage?: (page: number) => void;
   /** Номера страниц, где контент физически не помещается в лист
    *  (HiddenOverflowProbe) — у таких страниц в списке значок ⚠, чтобы
    *  оператор видел проблему, не открывая каждую страницу. */
@@ -52,12 +57,12 @@ export function PageList({
       {pageNumbers.map((n) => {
         const page = issue.pages[n]!;
         const templateLabel =
-          templateOptionsFor(n).find((t) => t.id === page.templateId)?.label ??
+          templateOptionsFor(n, page.templateId).find((t) => t.id === page.templateId)?.label ??
           (page.templateId ? page.templateId : "шаблон не выбран");
         const isActive = n === activePage;
         const overflows = overflowingPages.includes(n);
         return (
-          <li key={n}>
+          <li key={n} className="flex items-stretch gap-1.5">
             <button
               onClick={() => onSelect(n)}
               data-testid={`page-item-${n}`}
@@ -66,7 +71,7 @@ export function PageList({
               // (фирменный красный), QA: "активные зоны... выделение
               // красным заменить" — тот же спокойный "zone-alert", что
               // и в ContentZoneOverlay, а не оставшийся кое-где красный.
-              className={`flex w-full items-center gap-3 rounded-control border px-2 py-2 text-left ${
+              className={`flex min-w-0 flex-1 items-center gap-3 rounded-control border px-2 py-2 text-left ${
                 isActive ? "border-zone-alert bg-zone-alert/5" : "border-ink/10 hover:border-ink/30 hover:bg-chrome/40"
               }`}
             >
@@ -89,6 +94,20 @@ export function PageList({
                 )}
               </div>
             </button>
+            {/* Отдельная кнопка рядом (а не внутри карточки страницы —
+                кнопка в кнопке недопустима). Обложку удалить нельзя. */}
+            {onDeletePage && n !== 1 && (
+              <button
+                type="button"
+                onClick={() => onDeletePage(n)}
+                data-testid={`page-delete-${n}`}
+                aria-label={`Удалить страницу ${n}`}
+                title="Удалить страницу"
+                className="flex min-w-[44px] flex-shrink-0 items-center justify-center rounded-control border border-ink/10 text-base text-olive-dim hover:border-zone-alert hover:bg-zone-alert/5 hover:text-zone-alert"
+              >
+                🗑
+              </button>
+            )}
           </li>
         );
       })}

@@ -38,9 +38,25 @@ export function isExtraPage(pageNumber: number): boolean {
 /** Варианты шаблона для страницы — обёртка над TEMPLATE_OPTIONS, что
  *  умеет и в добавленные страницы (5+): для них возвращает тот же
  *  список, что и для страницы 3. */
-export function templateOptionsFor(pageNumber: number): { id: string; label: string }[] {
-  if (isExtraPage(pageNumber)) return TEMPLATE_OPTIONS[3];
-  return TEMPLATE_OPTIONS[pageNumber as 1 | 2 | 3 | 4] ?? TEMPLATE_OPTIONS[3];
+export function templateOptionsFor(
+  pageNumber: number,
+  currentTemplateId?: string | null
+): { id: string; label: string }[] {
+  const base = isExtraPage(pageNumber)
+    ? TEMPLATE_OPTIONS[3]
+    : TEMPLATE_OPTIONS[pageNumber as 1 | 2 | 3 | 4] ?? TEMPLATE_OPTIONS[3];
+  // После удаления страницы остальные перенумеровываются, и страница
+  // может оказаться под номером, "чужим" для её шаблона (например,
+  // "Лица" вместо 4 стали страницей 3). Тогда показываем набор, к
+  // которому относится её текущий шаблон, чтобы выбранный шаблон не
+  // пропал из переключателя.
+  if (currentTemplateId && pageNumber > 1 && !base.some((t) => t.id === currentTemplateId)) {
+    const family = ([2, 3, 4] as const)
+      .map((n) => TEMPLATE_OPTIONS[n])
+      .find((options) => options.some((t) => t.id === currentTemplateId));
+    if (family) return family;
+  }
+  return base;
 }
 
 /** Сколько фото имеет смысл держать в редакторе для конкретного
@@ -54,21 +70,22 @@ export function photoConfigFor(
   pageNumber: number,
   templateId: string | null
 ): { maxCount?: number; showPersonFields: boolean } {
-  // "Тематическая" логика страницы 3 применяется и к любой добавленной
-  // странице (5+) — у неё те же templateId ("theme-photo-v1"/
-  // "theme-text-photos-v1"), просто под другим номером страницы.
-  const themeLike = pageNumber === 3 || isExtraPage(pageNumber);
-  if (pageNumber === 2 && templateId === "article-photo-v1") return { maxCount: 1, showPersonFields: false };
-  if (pageNumber === 2 && templateId === "photo-grid-v1") return { maxCount: undefined, showPersonFields: false };
-  if (themeLike && templateId === "theme-photo-v1") return { maxCount: 1, showPersonFields: false };
+  // Настройки зависят только от templateId (id шаблонов уникальны), а
+  // не от номера страницы: после удаления страницы номера сдвигаются, и
+  // шаблон может оказаться на другом номере. pageNumber оставлен в
+  // сигнатуре, чтобы не менять вызовы.
+  void pageNumber;
+  if (templateId === "article-photo-v1") return { maxCount: 1, showPersonFields: false };
+  if (templateId === "photo-grid-v1") return { maxCount: undefined, showPersonFields: false };
+  if (templateId === "theme-photo-v1") return { maxCount: 1, showPersonFields: false };
   // Рельса жёстко ограничена тремя кадрами; 4-е фото — отдельная
   // открытка на всю ширину под дивайдером, без обрезания (QA: "три
   // вертикальных фото и отдельный блок... открытка", photos[3] в
   // ThemeTextPhotos) — отдельный слот сверх рельсы, а не расширение
   // самой рельсы до 4 кадров.
-  if (themeLike && templateId === "theme-text-photos-v1") return { maxCount: 4, showPersonFields: false };
-  if (pageNumber === 4 && templateId === "person-feature-v1") return { maxCount: 1, showPersonFields: true };
-  if (pageNumber === 4 && templateId === "team-faces-v1") return { maxCount: 3, showPersonFields: true };
+  if (templateId === "theme-text-photos-v1") return { maxCount: 4, showPersonFields: false };
+  if (templateId === "person-feature-v1") return { maxCount: 1, showPersonFields: true };
+  if (templateId === "team-faces-v1") return { maxCount: 3, showPersonFields: true };
   return { maxCount: undefined, showPersonFields: false };
 }
 
