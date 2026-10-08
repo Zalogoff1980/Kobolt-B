@@ -36,39 +36,26 @@ export function A4Page({
     return <CoverV2 issue={issue} />;
   }
 
-  if (pageNumber === 2 && page.templateId === "article-photo-v1") {
-    return <ArticlePhoto issue={issue} pageNumber={2} />;
-  }
-
-  if (pageNumber === 2 && page.templateId === "photo-grid-v1") {
-    return <PhotoGridText issue={issue} pageNumber={2} />;
-  }
-
-  if (pageNumber === 3 && page.templateId === "theme-photo-v1") {
-    return <ThemePhoto issue={issue} pageNumber={3} />;
-  }
-
-  if (pageNumber === 3 && page.templateId === "theme-text-photos-v1") {
-    return <ThemeTextPhotos issue={issue} pageNumber={3} />;
-  }
-
-  if (pageNumber === 4 && page.templateId === "person-feature-v1") {
-    return <PersonFeature issue={issue} pageNumber={4} />;
-  }
-
-  if (pageNumber === 4 && page.templateId === "team-faces-v1") {
-    return <TeamFaces issue={issue} pageNumber={4} />;
-  }
-
-  // Любая добавленная сверх фирменных 1–4 страница (QA: "возможность
-  // добавить новую страницу... без жёсткого лимита") — использует тот
-  // же набор шаблонов, что и страница 3 (см. templateOptionsFor).
-  if (pageNumber > 4 && page.templateId === "theme-photo-v1") {
-    return <ThemePhoto issue={issue} pageNumber={pageNumber} />;
-  }
-
-  if (pageNumber > 4 && page.templateId === "theme-text-photos-v1") {
-    return <ThemeTextPhotos issue={issue} pageNumber={pageNumber} />;
+  // Внутренние страницы выбираются по templateId, а не по номеру: id
+  // шаблонов уникальны, а номер страницы может измениться, когда
+  // оператор удаляет страницу выше по списку (страницы перенумеровываются
+  // подряд) — страница "Лица" не должна терять вёрстку, оказавшись на
+  // месте 3. Обложка (страница 1) по-прежнему привязана к номеру.
+  if (pageNumber > 1) {
+    switch (page.templateId) {
+      case "article-photo-v1":
+        return <ArticlePhoto issue={issue} pageNumber={pageNumber} />;
+      case "photo-grid-v1":
+        return <PhotoGridText issue={issue} pageNumber={pageNumber} />;
+      case "theme-photo-v1":
+        return <ThemePhoto issue={issue} pageNumber={pageNumber} />;
+      case "theme-text-photos-v1":
+        return <ThemeTextPhotos issue={issue} pageNumber={pageNumber} />;
+      case "person-feature-v1":
+        return <PersonFeature issue={issue} pageNumber={pageNumber} />;
+      case "team-faces-v1":
+        return <TeamFaces issue={issue} pageNumber={pageNumber} />;
+    }
   }
 
   return (

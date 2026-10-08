@@ -8,7 +8,15 @@ import { formatIssueDate } from "@/lib/content/format";
 import { PageThumbnail } from "@/components/editor/PageThumbnail";
 import { exportIssueToFile, importIssueFromFile } from "@/lib/db/issueFile";
 
-const PAGE_COUNT = 4; // формат выпуска фиксирован ТЗ: ровно 4 страницы
+/** "1 страница", "2 страницы", "5 страниц" — число страниц выпуска
+ *  теперь меняется (страницы можно добавлять и удалять). */
+function pagesLabel(count: number): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${count} страница`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${count} страницы`;
+  return `${count} страниц`;
+}
 
 function formatUpdatedAt(iso: string): string {
   const d = new Date(iso);
@@ -142,7 +150,7 @@ export default function HomePage() {
                       Выпуск № {issue.number} — {formatIssueDate(issue.date)}
                     </p>
                     <p className="mt-0.5 text-xs text-olive-dim">
-                      {PAGE_COUNT} страницы · изменён {formatUpdatedAt(issue.updatedAt)}
+                      {pagesLabel(Object.keys(issue.pages).length)} · изменён {formatUpdatedAt(issue.updatedAt)}
                     </p>
                   </div>
                 </div>

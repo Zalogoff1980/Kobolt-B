@@ -23,7 +23,7 @@ export function TemplatePicker({
   currentTemplateId: string | null;
   onChange: (templateId: string) => void;
 }) {
-  const options = templateOptionsFor(pageNumber);
+  const options = templateOptionsFor(pageNumber, currentTemplateId);
   if (options.length <= 1) return null; // страница 1: единственный шаблон, выбирать нечего
 
   return (

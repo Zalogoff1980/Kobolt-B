@@ -43,10 +43,11 @@ function isIssueLike(v: unknown): v is Issue {
   if (!v || typeof v !== "object") return false;
   const i = v as Partial<Issue>;
   if (typeof i.number !== "string" || typeof i.date !== "string" || !i.pages) return false;
-  return ([1, 2, 3, 4] as const).every((n) => {
-    const p = (i.pages as Record<number, Issue["pages"][1] | undefined>)[n];
-    return !!p && Array.isArray(p.content?.blocks);
-  });
+  // Обложка обязательна; остальных страниц может быть сколько угодно
+  // (их можно удалять и добавлять) — проверяем каждую, что есть.
+  const pages = i.pages as Record<number, Issue["pages"][1] | undefined>;
+  if (!pages[1]) return false;
+  return Object.values(pages).every((p) => !!p && Array.isArray(p.content?.blocks));
 }
 
 /** Прочитать файл макета и сохранить как НОВЫЙ выпуск (новый id — уже
