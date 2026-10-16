@@ -1,4 +1,5 @@
 import { Issue } from "@/lib/content/issue";
+import { alignStyle } from "@/lib/content/types";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
@@ -62,16 +63,16 @@ export function ThemeTextPhotos({ issue, pageNumber }: { issue: Issue; pageNumbe
             отступ от шапки уже даёт InnerPageShell. */}
         <div className="grid grid-cols-[1fr_58mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
-          <ArticleTitle title={title?.text} subtitle={subtitle?.text} showIcon={false} />
+          <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} showIcon={false} />
           {/* Основной текст/лид — отдельное семантическое поле,
               крупнее и жирнее обычных абзацев. */}
           {lead && (
-            <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" style={alignStyle(lead.align)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.3] text-ink/90">
+            <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body text-[16px] leading-[1.3] text-ink/90">
               {p.text}
             </p>
           ))}

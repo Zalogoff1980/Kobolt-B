@@ -3,6 +3,7 @@
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
 import { TextArea, SmallButton, FormSection } from "./fields";
+import { AlignPicker } from "./AlignPicker";
 
 type Paragraph = PageSections["paragraphs"][number];
 
@@ -58,6 +59,11 @@ export function ParagraphsEditor({
             onChange={(e) => update(p.id, e.target.value)}
             rows={3}
             placeholder="Текст…"
+          />
+          <AlignPicker
+            testId="align-paragraph"
+            value={p.align}
+            onChange={(align) => onChange(paragraphs.map((x) => (x.id === p.id ? { ...x, align } : x)))}
           />
           <div className="flex gap-2">
             <SmallButton data-testid="paragraph-move-up" onClick={() => move(i, -1)} disabled={i === 0}>

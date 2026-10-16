@@ -3,6 +3,7 @@
 import { PageSections } from "@/lib/content/sections";
 import { photoConfigFor } from "@/lib/content/templateOptions";
 import { TextInput, TextArea, Field, FormSection, FormSectionsToolbar } from "./fields";
+import { AlignPicker } from "./AlignPicker";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { AchievementsEditor } from "./AchievementsEditor";
@@ -44,6 +45,11 @@ export function InnerPageForm({
             onChange={(e) => onChange({ ...sections, title: e.target.value })}
           />
         </Field>
+        <AlignPicker
+          testId="align-title"
+          value={sections.titleAlign}
+          onChange={(titleAlign) => onChange({ ...sections, titleAlign })}
+        />
         <Field label="Подзаголовок" zone="h2">
           <TextInput
             data-testid="field-subtitle"
@@ -51,6 +57,11 @@ export function InnerPageForm({
             onChange={(e) => onChange({ ...sections, subtitle: e.target.value })}
           />
         </Field>
+        <AlignPicker
+          testId="align-subtitle"
+          value={sections.subtitleAlign}
+          onChange={(subtitleAlign) => onChange({ ...sections, subtitleAlign })}
+        />
       </FormSection>
 
       <FormSection id="lead" title="Основной текст" zone="lead" filled={sections.lead.trim() !== ""}>
@@ -63,6 +74,11 @@ export function InnerPageForm({
             placeholder="Короткий вводный абзац сразу после заголовка…"
           />
         </Field>
+        <AlignPicker
+          testId="align-lead"
+          value={sections.leadAlign}
+          onChange={(leadAlign) => onChange({ ...sections, leadAlign })}
+        />
       </FormSection>
 
       <PhotosEditor

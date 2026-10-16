@@ -1,4 +1,5 @@
 import { Issue } from "@/lib/content/issue";
+import { alignStyle } from "@/lib/content/types";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
@@ -65,7 +66,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: num
       backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       <div className="flex h-full min-h-0 flex-col">
-        <ArticleTitle title={title?.text} subtitle={subtitle?.text} />
+        <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} />
 
         {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
             для всех внутренних шаблонов) — было 5мм.
@@ -255,7 +256,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: num
                 сюда больше не относится — она теперь оверлеем поверх
                 первого фото выше, не в этом текстовом блоке. */}
             {lead && (
-              <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">
+              <p data-zone="lead" style={alignStyle(lead.align)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
                 {lead.text}
               </p>
             )}
@@ -263,7 +264,7 @@ export function TeamFaces({ issue, pageNumber }: { issue: Issue; pageNumber: num
             {paragraphs.length > 0 && (
               <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
                 {paragraphs.map((p) => (
-                  <p key={p.id} data-zone="paragraph" className="font-body">
+                  <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body">
                     {p.text}
                   </p>
                 ))}

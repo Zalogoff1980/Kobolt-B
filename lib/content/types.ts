@@ -18,12 +18,32 @@ export function createBlockId(): BlockId {
   return crypto.randomUUID();
 }
 
+/** Выравнивание текста, как в Word: слева, по центру, справа, по ширине.
+ *  Нет значения (undefined) = как задумано шаблоном (слева). Это
+ *  свойство содержимого — выбор оператора, а не раскладки, поэтому
+ *  живёт в блоке и переживает смену шаблона страницы. */
+export type TextAlign = "left" | "center" | "right" | "justify";
+
+export const TEXT_ALIGN_OPTIONS: { id: TextAlign; label: string }[] = [
+  { id: "left", label: "По левому краю" },
+  { id: "center", label: "По центру" },
+  { id: "right", label: "По правому краю" },
+  { id: "justify", label: "По ширине" },
+];
+
+/** inline-стиль для шаблонов: ничего не меняет, пока выравнивание не
+ *  выбрано (старые выпуски выглядят как раньше). */
+export function alignStyle(align?: TextAlign): { textAlign: TextAlign } | undefined {
+  return align ? { textAlign: align } : undefined;
+}
+
 export type ContentBlock =
-  | { id: BlockId; type: "heading"; level: 1 | 2 | 3; text: string }
+  | { id: BlockId; type: "heading"; level: 1 | 2 | 3; text: string; align?: TextAlign }
   | {
       id: BlockId;
       type: "text";
       text: string;
+      align?: TextAlign;
       /** Семантическая роль текстового блока — не порядок в массиве,
        *  а явное поле, поэтому смысл текста не зависит от того, где
        *  блок физически лежит в blocks[] (найденная проблема:

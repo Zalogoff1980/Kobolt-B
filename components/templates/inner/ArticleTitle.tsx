@@ -1,4 +1,5 @@
 import { EngravingTank } from "@/components/decorative/EngravingTank";
+import { TextAlign, alignStyle } from "@/lib/content/types";
 
 /**
  * Заголовочный блок внутренней статьи: H1 + необязательный H2/H3.
@@ -9,10 +10,16 @@ import { EngravingTank } from "@/components/decorative/EngravingTank";
 export function ArticleTitle({
   title,
   subtitle,
+  titleAlign,
+  subtitleAlign,
   showIcon = true,
 }: {
   title?: string;
   subtitle?: string;
+  /** Выравнивание заголовка/подзаголовка, выбранное оператором (как в
+   *  Word). Не задано — как раньше. */
+  titleAlign?: TextAlign;
+  subtitleAlign?: TextAlign;
   /** Декоративная гравюра-иконка справа от заголовка рассчитана на
    *  заголовок во всю ширину страницы. Когда ArticleTitle встроен в
    *  узкую текстовую колонку рядом с фото (см. compact-раскладки ниже,
@@ -22,8 +29,10 @@ export function ArticleTitle({
    *  отключается через showIcon={false}. */
   showIcon?: boolean;
 }) {
+  // Рядом с гравюрой блок заголовков должен занимать всю свободную
+  // ширину, иначе выравнивание по центру/справа ничего не меняет.
   const heading = (
-    <div>
+    <div className={showIcon ? "min-w-0 flex-1" : undefined}>
       {title && (
         // Межстрочный интервал и отступ до h2 приведены к образцу
         // страницы 1 (QA: "образец 1 стр" — hero-заголовок обложки,
@@ -34,6 +43,7 @@ export function ArticleTitle({
         // заголовков h1/h2, а не только для обложки.
         <h1
           data-zone="h1"
+          style={alignStyle(titleAlign)}
           className="font-display text-[33px] font-bold uppercase leading-snug tracking-tight text-ink"
         >
           {title}
@@ -42,6 +52,7 @@ export function ArticleTitle({
       {subtitle && (
         <h2
           data-zone="h2"
+          style={alignStyle(subtitleAlign)}
           className="mt-[2mm] font-display text-[23px] font-bold uppercase leading-snug tracking-wide text-olive"
         >
           {subtitle}
