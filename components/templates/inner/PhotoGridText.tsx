@@ -1,5 +1,5 @@
 import { Issue } from "@/lib/content/issue";
-import { alignStyle } from "@/lib/content/types";
+import { textStyle } from "@/lib/content/types";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
@@ -78,7 +78,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
         backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
       >
         <div className="flex h-full flex-col">
-          <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} />
+          <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} titleFormat={title?.format} subtitleAlign={subtitle?.align} subtitleFormat={subtitle?.format} />
 
           {/* Два фото в ряд, ниже — текст на всю ширину страницы (QA:
               "текст нужно на всю ширину"), а "Наши именинники" — внизу
@@ -119,7 +119,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             )}
             {lead && (
               <p
-                data-zone="lead" style={alignStyle(lead.align)}
+                data-zone="lead" style={textStyle(lead.align, lead.format)}
                 className={`font-body text-[19px] font-bold leading-snug text-ink ${
                   quotes.length > 0 ? "mt-[4mm]" : ""
                 }`}
@@ -134,7 +134,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
                 }`}
               >
                 {paragraphs.map((p) => (
-                  <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body">
+                  <p key={p.id} data-zone="paragraph" style={textStyle(p.align, p.format)} className="font-body">
                     {p.text}
                   </p>
                 ))}
@@ -165,7 +165,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
           у текстовой секции считался бы от родителя целиком, не оставляя
           места под уже занятую заголовком/фото высоту. */}
       <div className="flex h-full flex-col">
-        <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} />
+        <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} titleFormat={title?.format} subtitleAlign={subtitle?.align} subtitleFormat={subtitle?.format} />
 
         {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
             для всех внутренних шаблонов) — было 5мм. */}
@@ -206,7 +206,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
             пространстве — если текста мало, он не прилипает к верху. */}
         <div className="mt-[4mm] flex flex-1 flex-col justify-center">
           {lead && (
-            <p data-zone="lead" style={alignStyle(lead.align)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" style={textStyle(lead.align, lead.format)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
@@ -214,7 +214,7 @@ export function PhotoGridText({ issue, pageNumber }: { issue: Issue; pageNumber:
           {paragraphs.length > 0 && (
             <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
               {paragraphs.map((p) => (
-                <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body">
+                <p key={p.id} data-zone="paragraph" style={textStyle(p.align, p.format)} className="font-body">
                   {p.text}
                 </p>
               ))}

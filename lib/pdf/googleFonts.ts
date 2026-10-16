@@ -21,11 +21,46 @@
  * загрузится заново, это нормально и ожидаемо).
  */
 
-let cache: string | null = null;
-let cachePromise: Promise<string> | null = null;
+import { Issue } from "@/lib/content/issue";
+import { FONT_OPTIONS, FontFamilyId } from "@/lib/content/fonts";
 
-const FONT_CSS_URL =
-  "https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=PT+Sans:wght@400;700&display=swap&subset=cyrillic,cyrillic-ext,latin";
+// Кеш по набору шрифтов: обычный выпуск (только Oswald + PT Sans) берёт
+// ровно тот же набор, что и раньше; дополнительные шрифты запрашиваются
+// только если оператор их реально выбрал в тексте.
+const cache = new Map<string, string>();
+const cachePromises = new Map<string, Promise<string>>();
+
+const BASE_FONT_SPECS = ["Oswald:wght@500;600;700", "PT+Sans:wght@400;700"];
+
+function fontCssUrl(extraSpecs: string[]): string {
+  const families = [...BASE_FONT_SPECS, ...extraSpecs].map((f) => `family=${f}`).join("&");
+  return `https://fonts.googleapis.com/css2?${families}&display=swap&subset=cyrillic,cyrillic-ext,latin`;
+}
+
+/** Какие из дополнительных шрифтов (кроме базовых Oswald и PT Sans)
+ *  используются в тексте выпуска — их и нужно встроить в PDF. */
+export function usedExtraFonts(issue: Issue): FontFamilyId[] {
+  const used = new Set<FontFamilyId>();
+  for (const page of Object.values(issue.pages)) {
+    for (const block of page.content.blocks) {
+      if (block.type !== "heading" && block.type !== "text") continue;
+      const id = block.format?.fontFamily;
+      if (id && FONT_OPTIONS.some((f) => f.id === id && f.googleSpec)) used.add(id);
+    }
+  }
+  return Array.from(used).sort();
+}
+
+/** Только нужные начертания: кириллица, расширенная кириллица, латиница.
+ *  Google отдаёт ещё греческий, иврит, вьетнамский и т.п. — для
+ *  боевого листка они не нужны и только утяжеляют PDF. Если разбор не
+ *  удался (формат CSS изменился) — возвращаем как есть. */
+function keepNeededSubsets(css: string): string {
+  const blocks = css.match(/\/\*\s*[\w-]+\s*\*\/\s*@font-face\s*\{[^}]*\}/g);
+  if (!blocks) return css;
+  const keep = blocks.filter((b) => /^\/\*\s*(cyrillic|cyrillic-ext|latin)\s*\*\//.test(b));
+  return keep.length > 0 ? keep.join("\n") : css;
+}
 
 // UA важен: Google Fonts отдаёт разные форматы (woff2/woff/ttf) в
 // зависимости от UA в CSS2-эндпоинте; современный Chrome UA гарантирует
@@ -92,13 +127,23 @@ async function inlineFontFaceUrls(css: string): Promise<string> {
 /** Возвращает готовый self-contained CSS (все @font-face уже как
  *  data: URL, без внешних сетевых ссылок) — безопасно вставлять в
  *  <style> и рендерить в Puppeteer без сетевого доступа на этом шаге. */
-export async function getEmbeddedFontCss(): Promise<string> {
-  if (cache) return cache;
-  if (!cachePromise) {
-    cachePromise = (async () => {
-      const css = await fetchText(FONT_CSS_URL);
+export async function getEmbeddedFontCss(extraFonts: FontFamilyId[] = []): Promise<string> {
+  const extraSpecs = extraFonts.flatMap((id) => {
+    const spec = FONT_OPTIONS.find((f) => f.id === id)?.googleSpec;
+    return spec ? [spec] : [];
+  });
+  const key = extraSpecs.join("|");
+  const cached = cache.get(key);
+  if (cached !== undefined) return cached;
+  let promise = cachePromises.get(key);
+  if (!promise) {
+    promise = (async () => {
+      const rawCss = await fetchText(fontCssUrl(extraSpecs));
+      // Базовый набор (без дополнительных шрифтов) остаётся ровно как
+      // был — фильтр подмножеств только для выпусков с доп. шрифтами.
+      const css = extraSpecs.length > 0 ? keepNeededSubsets(rawCss) : rawCss;
       const embedded = await inlineFontFaceUrls(css);
-      cache = embedded;
+      cache.set(key, embedded);
       return embedded;
     })().catch((err) => {
       // Не мешаем PDF-экспорту упасть полностью из-за сети к Google
@@ -107,11 +152,12 @@ export async function getEmbeddedFontCss(): Promise<string> {
       // ошибке отдаём пустую строку, документ рендерится системным
       // fallback (Arial Narrow/Arial, уже прописаны в tailwind.config.ts
       // как fallback для font-display/font-body).
-      cachePromise = null;
+      cachePromises.delete(key);
       // eslint-disable-next-line no-console
       console.error("[pdf] getEmbeddedFontCss failed, falling back to system fonts:", err);
       return "";
     });
+    cachePromises.set(key, promise);
   }
-  return cachePromise;
+  return promise;
 }

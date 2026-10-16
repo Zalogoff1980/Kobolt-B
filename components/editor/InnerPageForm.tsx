@@ -3,7 +3,7 @@
 import { PageSections } from "@/lib/content/sections";
 import { photoConfigFor } from "@/lib/content/templateOptions";
 import { TextInput, TextArea, Field, FormSection, FormSectionsToolbar } from "./fields";
-import { AlignPicker } from "./AlignPicker";
+import { TextToolbar } from "./TextToolbar";
 import { PhotosEditor } from "./PhotosEditor";
 import { ParagraphsEditor } from "./ParagraphsEditor";
 import { AchievementsEditor } from "./AchievementsEditor";
@@ -45,10 +45,13 @@ export function InnerPageForm({
             onChange={(e) => onChange({ ...sections, title: e.target.value })}
           />
         </Field>
-        <AlignPicker
-          testId="align-title"
-          value={sections.titleAlign}
-          onChange={(titleAlign) => onChange({ ...sections, titleAlign })}
+        <TextToolbar
+          testId="text-title"
+          defaultBold={true}
+          align={sections.titleAlign}
+          format={sections.titleFormat}
+          onAlignChange={(titleAlign) => onChange({ ...sections, titleAlign })}
+          onFormatChange={(titleFormat) => onChange({ ...sections, titleFormat })}
         />
         <Field label="Подзаголовок" zone="h2">
           <TextInput
@@ -57,10 +60,13 @@ export function InnerPageForm({
             onChange={(e) => onChange({ ...sections, subtitle: e.target.value })}
           />
         </Field>
-        <AlignPicker
-          testId="align-subtitle"
-          value={sections.subtitleAlign}
-          onChange={(subtitleAlign) => onChange({ ...sections, subtitleAlign })}
+        <TextToolbar
+          testId="text-subtitle"
+          defaultBold={true}
+          align={sections.subtitleAlign}
+          format={sections.subtitleFormat}
+          onAlignChange={(subtitleAlign) => onChange({ ...sections, subtitleAlign })}
+          onFormatChange={(subtitleFormat) => onChange({ ...sections, subtitleFormat })}
         />
       </FormSection>
 
@@ -74,10 +80,13 @@ export function InnerPageForm({
             placeholder="Короткий вводный абзац сразу после заголовка…"
           />
         </Field>
-        <AlignPicker
-          testId="align-lead"
-          value={sections.leadAlign}
-          onChange={(leadAlign) => onChange({ ...sections, leadAlign })}
+        <TextToolbar
+          testId="text-lead"
+          defaultBold={true}
+          align={sections.leadAlign}
+          format={sections.leadFormat}
+          onAlignChange={(leadAlign) => onChange({ ...sections, leadAlign })}
+          onFormatChange={(leadFormat) => onChange({ ...sections, leadFormat })}
         />
       </FormSection>
 

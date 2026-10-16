@@ -1,3 +1,6 @@
+import type { CSSProperties } from "react";
+import { FontFamilyId, fontOptionById } from "./fonts";
+
 /**
  * Модель контента КОБОЛЬТ-Б.
  *
@@ -31,19 +34,61 @@ export const TEXT_ALIGN_OPTIONS: { id: TextAlign; label: string }[] = [
   { id: "justify", label: "По ширине" },
 ];
 
-/** inline-стиль для шаблонов: ничего не меняет, пока выравнивание не
- *  выбрано (старые выпуски выглядят как раньше). */
-export function alignStyle(align?: TextAlign): { textAlign: TextAlign } | undefined {
-  return align ? { textAlign: align } : undefined;
+/** Оформление шрифта, как на панели "Шрифт" в Word. Любое поле можно не
+ *  задавать — тогда действует то, что задумано шаблоном. Как и
+ *  выравнивание, это свойство содержимого (выбор оператора): оно
+ *  переживает смену шаблона страницы. */
+export type TextFormat = {
+  fontFamily?: FontFamilyId;
+  /** Размер в пунктах (pt), как в Word. */
+  fontSize?: number;
+  /** Цвет в виде "#rrggbb". */
+  color?: string;
+  /** true — жирный, false — обычный (даже там, где шаблон делает жирным),
+   *  не задано — как в шаблоне. */
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+};
+
+/** Убирает пустые поля; если ничего не осталось — undefined, чтобы в
+ *  выпуске не копились пустые объекты. */
+export function cleanTextFormat(f: TextFormat): TextFormat | undefined {
+  const out: TextFormat = {};
+  if (f.fontFamily) out.fontFamily = f.fontFamily;
+  if (f.fontSize) out.fontSize = f.fontSize;
+  if (f.color) out.color = f.color;
+  if (f.bold !== undefined) out.bold = f.bold;
+  if (f.italic) out.italic = true;
+  if (f.underline) out.underline = true;
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+/** inline-стиль для шаблонов: ничего не меняет, пока оператор ничего не
+ *  выбрал (старые выпуски выглядят как раньше). */
+export function textStyle(align?: TextAlign, format?: TextFormat): CSSProperties | undefined {
+  const style: CSSProperties = {};
+  if (align) style.textAlign = align;
+  if (format) {
+    const font = fontOptionById(format.fontFamily);
+    if (font) style.fontFamily = font.css;
+    if (format.fontSize) style.fontSize = `${format.fontSize}pt`;
+    if (format.color) style.color = format.color;
+    if (format.bold !== undefined) style.fontWeight = format.bold ? 700 : 400;
+    if (format.italic) style.fontStyle = "italic";
+    if (format.underline) style.textDecoration = "underline";
+  }
+  return Object.keys(style).length > 0 ? style : undefined;
 }
 
 export type ContentBlock =
-  | { id: BlockId; type: "heading"; level: 1 | 2 | 3; text: string; align?: TextAlign }
+  | { id: BlockId; type: "heading"; level: 1 | 2 | 3; text: string; align?: TextAlign; format?: TextFormat }
   | {
       id: BlockId;
       type: "text";
       text: string;
       align?: TextAlign;
+      format?: TextFormat;
       /** Семантическая роль текстового блока — не порядок в массиве,
        *  а явное поле, поэтому смысл текста не зависит от того, где
        *  блок физически лежит в blocks[] (найденная проблема:
