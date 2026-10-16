@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Oswald, PT_Sans } from "next/font/google";
+import { Arimo, Oswald, PT_Sans, PT_Sans_Narrow, PT_Serif, Tinos } from "next/font/google";
 import "@/styles/globals.css";
 
 /**
@@ -30,6 +30,42 @@ const ptSans = PT_Sans({
   display: "swap",
 });
 
+/* Дополнительные шрифты для выбора в редакторе ("Шрифт", как в Word) —
+   см. lib/content/fonts.ts. preload: false — браузер скачивает их, только
+   если выбранный шрифт реально используется в тексте, а не на каждой
+   странице приложения. */
+const ptSansNarrow = PT_Sans_Narrow({
+  subsets: ["cyrillic", "cyrillic-ext", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-pt-sans-narrow",
+  display: "swap",
+  preload: false,
+});
+
+const ptSerif = PT_Serif({
+  subsets: ["cyrillic", "cyrillic-ext", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-pt-serif",
+  display: "swap",
+  preload: false,
+});
+
+const tinos = Tinos({
+  subsets: ["cyrillic", "cyrillic-ext", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-tinos",
+  display: "swap",
+  preload: false,
+});
+
+const arimo = Arimo({
+  subsets: ["cyrillic", "cyrillic-ext", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-arimo",
+  display: "swap",
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "КОБОЛЬТ-Б",
   description: "Конструктор внутреннего боевого листка танкового батальона",
@@ -53,7 +89,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${oswald.variable} ${ptSans.variable}`}>
+    <html lang="ru" className={`${oswald.variable} ${ptSans.variable} ${ptSansNarrow.variable} ${ptSerif.variable} ${tinos.variable} ${arimo.variable}`}>
       <body>{children}</body>
     </html>
   );

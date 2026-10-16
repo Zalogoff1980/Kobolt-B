@@ -1,5 +1,5 @@
 import { Issue } from "@/lib/content/issue";
-import { alignStyle } from "@/lib/content/types";
+import { textStyle } from "@/lib/content/types";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
@@ -34,7 +34,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: nu
       backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
       <div className="flex h-full flex-col">
-        <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} />
+        <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} titleFormat={title?.format} subtitleAlign={subtitle?.align} subtitleFormat={subtitle?.format} />
 
         {/* Заголовок → фото уплотнён (единая "плотность как на обложке"
             для всех внутренних шаблонов) — было 5мм. */}
@@ -59,7 +59,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: nu
             // Ширина текста — во всю ширину фото выше (QA, шаблон
             // "Большое фото и текст": "текст выполнить на всю ширину
             // фото"), а не ограничена узкой колонкой 130мм.
-            <p data-zone="lead" style={alignStyle(lead.align)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" style={textStyle(lead.align, lead.format)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
@@ -67,7 +67,7 @@ export function ThemePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: nu
           {paragraphs.length > 0 && (
             <div className={`space-y-[3mm] text-[16px] leading-[1.3] text-ink/90 ${lead ? "mt-[3mm]" : ""}`}>
               {paragraphs.map((p) => (
-                <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body">
+                <p key={p.id} data-zone="paragraph" style={textStyle(p.align, p.format)} className="font-body">
                   {p.text}
                 </p>
               ))}

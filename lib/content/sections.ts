@@ -1,4 +1,4 @@
-import { ContentBlock, TextAlign, createBlockId } from "./types";
+import { ContentBlock, TextAlign, TextFormat, createBlockId } from "./types";
 import { groupPageBlocks } from "./pageBlocks";
 
 /**
@@ -47,16 +47,19 @@ export type PageSections = {
   title: string;
   titleId?: string;
   titleAlign?: TextAlign;
+  titleFormat?: TextFormat;
   subtitle: string;
   subtitleId?: string;
   subtitleAlign?: TextAlign;
+  subtitleFormat?: TextFormat;
   /** Основной текст / лид — один вводный абзац сразу после
    *  подзаголовка, типографически выделяемый шаблоном. Отсутствует
    *  по смыслу для обложки (там всегда ""). */
   lead: string;
   leadId?: string;
   leadAlign?: TextAlign;
-  paragraphs: { id: string; text: string; align?: TextAlign }[];
+  leadFormat?: TextFormat;
+  paragraphs: { id: string; text: string; align?: TextAlign; format?: TextFormat }[];
   achievements: { id: string; text: string }[];
   /** "Наши именинники" — только у Template B страницы 2 (photo-grid-v1,
    *  найдено QA). Отдельный список от achievements: три поля на запись,
@@ -113,13 +116,16 @@ export function blocksToSections(
       title: g.title?.text ?? "",
       titleId: g.title?.id,
       titleAlign: g.title?.align,
+      titleFormat: g.title?.format,
       subtitle: g.subtitle?.text ?? "",
       subtitleId: g.subtitle?.id,
       subtitleAlign: g.subtitle?.align,
+      subtitleFormat: g.subtitle?.format,
       lead: g.lead?.text ?? "",
       leadId: g.lead?.id,
       leadAlign: g.lead?.align,
-      paragraphs: g.paragraphs.map((p) => ({ id: p.id, text: p.text, align: p.align })),
+      leadFormat: g.lead?.format,
+      paragraphs: g.paragraphs.map((p) => ({ id: p.id, text: p.text, align: p.align, format: p.format })),
       achievements: g.achievements.map((a) => ({ id: a.id, text: a.text })),
       birthdays: g.birthdays.map((b) => ({
         id: b.id,
@@ -150,9 +156,11 @@ export function blocksToSections(
   let title = "";
   let titleId: string | undefined;
   let titleAlign: TextAlign | undefined;
+  let titleFormat: TextFormat | undefined;
   let subtitle = "";
   let subtitleId: string | undefined;
   let subtitleAlign: TextAlign | undefined;
+  let subtitleFormat: TextFormat | undefined;
   const paragraphs: PageSections["paragraphs"] = [];
   const photos: PageSections["photos"] = [];
   const quotes: PageSections["quotes"] = [];
@@ -164,6 +172,7 @@ export function blocksToSections(
       title = b.text;
       titleId = b.id;
       titleAlign = b.align;
+      titleFormat = b.format;
       titleFound = true;
       continue;
     }
@@ -171,6 +180,7 @@ export function blocksToSections(
       subtitle = b.text;
       subtitleId = b.id;
       subtitleAlign = b.align;
+      subtitleFormat = b.format;
       subtitleFound = true;
       continue;
     }
@@ -186,7 +196,7 @@ export function blocksToSections(
         awardIds: b.awardIds ?? [],
       });
     if (b.type === "text" && (!b.variant || b.variant === "paragraph")) {
-      paragraphs.push({ id: b.id, text: b.text, align: b.align });
+      paragraphs.push({ id: b.id, text: b.text, align: b.align, format: b.format });
     }
     if (b.type === "quote") {
       quotes.push({ id: b.id, text: b.text, author: b.author ?? "" });
@@ -197,9 +207,11 @@ export function blocksToSections(
     title,
     titleId,
     titleAlign,
+    titleFormat,
     subtitle,
     subtitleId,
     subtitleAlign,
+    subtitleFormat,
     lead: "",
     paragraphs,
     achievements: [],
@@ -222,6 +234,7 @@ export function sectionsToBlocks(
       level: levels.titleLevel,
       text: sections.title,
       align: sections.titleAlign,
+      format: sections.titleFormat,
     });
   }
   if (sections.subtitle.trim()) {
@@ -231,6 +244,7 @@ export function sectionsToBlocks(
       level: levels.subtitleLevel,
       text: sections.subtitle,
       align: sections.subtitleAlign,
+      format: sections.subtitleFormat,
     });
   }
   for (const p of sections.photos) {
@@ -258,6 +272,7 @@ export function sectionsToBlocks(
       text: sections.lead,
       variant: "lead",
       align: sections.leadAlign,
+      format: sections.leadFormat,
     });
   }
   // ВАЖНО: пустые абзацы/достижения НЕ фильтруются здесь, в отличие от
@@ -274,7 +289,7 @@ export function sectionsToBlocks(
   // т.д.) при пустом тексте рендерят пустой <p> — не идеально, но не
   // ломает вёрстку, и остаётся видимым/редактируемым полем в форме.
   for (const p of sections.paragraphs) {
-    blocks.push({ id: p.id, type: "text", text: p.text, align: p.align });
+    blocks.push({ id: p.id, type: "text", text: p.text, align: p.align, format: p.format });
   }
   for (const a of sections.achievements) {
     blocks.push({ id: a.id, type: "text", text: a.text, variant: "achievement" });

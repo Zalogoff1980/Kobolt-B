@@ -3,7 +3,7 @@
 import { createBlockId } from "@/lib/content/types";
 import { PageSections } from "@/lib/content/sections";
 import { TextArea, SmallButton, FormSection } from "./fields";
-import { AlignPicker } from "./AlignPicker";
+import { TextToolbar } from "./TextToolbar";
 
 type Paragraph = PageSections["paragraphs"][number];
 
@@ -60,10 +60,12 @@ export function ParagraphsEditor({
             rows={3}
             placeholder="Текст…"
           />
-          <AlignPicker
-            testId="align-paragraph"
-            value={p.align}
-            onChange={(align) => onChange(paragraphs.map((x) => (x.id === p.id ? { ...x, align } : x)))}
+          <TextToolbar
+            testId="text-paragraph"
+            align={p.align}
+            format={p.format}
+            onAlignChange={(align) => onChange(paragraphs.map((x) => (x.id === p.id ? { ...x, align } : x)))}
+            onFormatChange={(format) => onChange(paragraphs.map((x) => (x.id === p.id ? { ...x, format } : x)))}
           />
           <div className="flex gap-2">
             <SmallButton data-testid="paragraph-move-up" onClick={() => move(i, -1)} disabled={i === 0}>

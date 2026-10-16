@@ -1,5 +1,5 @@
 import { Issue } from "@/lib/content/issue";
-import { alignStyle } from "@/lib/content/types";
+import { textStyle } from "@/lib/content/types";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
@@ -37,19 +37,19 @@ export function ArticlePhoto({ issue, pageNumber }: { issue: Issue; pageNumber: 
           Без своего mt- сверху: отступ от шапки уже даёт InnerPageShell. */}
       <div className="grid grid-cols-[1fr_76mm] items-start gap-[6mm]">
         <div className="space-y-[3mm]">
-          <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} showIcon={false} />
+          <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} titleFormat={title?.format} subtitleAlign={subtitle?.align} subtitleFormat={subtitle?.format} showIcon={false} />
           {/* Основной текст/лид — типографически крупнее и жирнее
               обычных абзацев, отдельное семантическое поле, а не
               "первый абзац по счёту" (найденная проблема иерархии).
               Отступ от заголовка — тот же space-y-[3mm], что и между
               остальными элементами колонки. */}
           {lead && (
-            <p data-zone="lead" style={alignStyle(lead.align)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
+            <p data-zone="lead" style={textStyle(lead.align, lead.format)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">
               {lead.text}
             </p>
           )}
           {paragraphs.map((p) => (
-            <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body text-[16px] leading-[1.3] text-ink/90">
+            <p key={p.id} data-zone="paragraph" style={textStyle(p.align, p.format)} className="font-body text-[16px] leading-[1.3] text-ink/90">
               {p.text}
             </p>
           ))}

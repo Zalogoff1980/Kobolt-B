@@ -1,5 +1,5 @@
 import { EngravingTank } from "@/components/decorative/EngravingTank";
-import { TextAlign, alignStyle } from "@/lib/content/types";
+import { TextAlign, TextFormat, textStyle } from "@/lib/content/types";
 
 /**
  * Заголовочный блок внутренней статьи: H1 + необязательный H2/H3.
@@ -11,7 +11,9 @@ export function ArticleTitle({
   title,
   subtitle,
   titleAlign,
+  titleFormat,
   subtitleAlign,
+  subtitleFormat,
   showIcon = true,
 }: {
   title?: string;
@@ -20,6 +22,8 @@ export function ArticleTitle({
    *  Word). Не задано — как раньше. */
   titleAlign?: TextAlign;
   subtitleAlign?: TextAlign;
+  titleFormat?: TextFormat;
+  subtitleFormat?: TextFormat;
   /** Декоративная гравюра-иконка справа от заголовка рассчитана на
    *  заголовок во всю ширину страницы. Когда ArticleTitle встроен в
    *  узкую текстовую колонку рядом с фото (см. compact-раскладки ниже,
@@ -43,7 +47,7 @@ export function ArticleTitle({
         // заголовков h1/h2, а не только для обложки.
         <h1
           data-zone="h1"
-          style={alignStyle(titleAlign)}
+          style={textStyle(titleAlign, titleFormat)}
           className="font-display text-[33px] font-bold uppercase leading-snug tracking-tight text-ink"
         >
           {title}
@@ -52,7 +56,7 @@ export function ArticleTitle({
       {subtitle && (
         <h2
           data-zone="h2"
-          style={alignStyle(subtitleAlign)}
+          style={textStyle(subtitleAlign, subtitleFormat)}
           className="mt-[2mm] font-display text-[23px] font-bold uppercase leading-snug tracking-wide text-olive"
         >
           {subtitle}

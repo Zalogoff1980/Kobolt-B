@@ -1,7 +1,7 @@
 import { Issue } from "@/lib/content/issue";
 import { A4Page } from "@/components/canvas/A4Page";
 import { buildTailwindCssForHtml } from "./buildTailwindCss";
-import { getEmbeddedFontCss } from "./googleFonts";
+import { getEmbeddedFontCss, usedExtraFonts } from "./googleFonts";
 import { inlineEngravingImages } from "./inlineStaticImages";
 import { PREFLIGHT_CSS } from "./preflightCss";
 
@@ -58,7 +58,7 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
 
   const [tailwindCss, fontCss] = await Promise.all([
     buildTailwindCssForHtml(pagesMarkup),
-    getEmbeddedFontCss(),
+    getEmbeddedFontCss(usedExtraFonts(issue)),
   ]);
 
   return `<!doctype html>
@@ -83,6 +83,10 @@ export async function renderIssueHtml(issue: Issue): Promise<string> {
   :root {
     --font-display: 'Oswald', 'Arial Narrow', sans-serif;
     --font-body: 'PT Sans', Arial, sans-serif;
+    --font-pt-sans-narrow: 'PT Sans Narrow', 'Arial Narrow', sans-serif;
+    --font-pt-serif: 'PT Serif', Georgia, serif;
+    --font-tinos: 'Tinos', 'Times New Roman', serif;
+    --font-arimo: 'Arimo', Arial, sans-serif;
   }
 
   ${fontCss}
