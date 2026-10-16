@@ -1,4 +1,5 @@
 import { Issue } from "@/lib/content/issue";
+import { alignStyle } from "@/lib/content/types";
 import { groupPageBlocks } from "@/lib/content/pageBlocks";
 import { InnerPageShell } from "./InnerPageShell";
 import { ArticleTitle } from "./ArticleTitle";
@@ -38,14 +39,14 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
   const textColumn = (
     <div className={photo ? "" : "max-w-[130mm]"}>
       <div className="space-y-[3mm]">
-        {photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} showIcon={false} />}
+        {photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} showIcon={false} />}
         {/* Основной текст/лид — отдельное семантическое поле, крупнее
             и жирнее обычных абзацев. */}
         {lead && (
-          <p data-zone="lead" className="font-body text-[19px] font-bold leading-[1.6] text-ink">{lead.text}</p>
+          <p data-zone="lead" style={alignStyle(lead.align)} className="font-body text-[19px] font-bold leading-[1.6] text-ink">{lead.text}</p>
         )}
         {paragraphs.map((p) => (
-          <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.3] text-ink/90">
+          <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body text-[16px] leading-[1.3] text-ink/90">
             {p.text}
           </p>
         ))}
@@ -81,7 +82,7 @@ export function PersonFeature({ issue, pageNumber }: { issue: Issue; pageNumber:
       issueDate={issue.date}
       backgroundEngravingId={issue.pages[pageNumber]!.backgroundEngravingId}
     >
-      {!photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} />}
+      {!photo && <ArticleTitle title={title?.text} subtitle={subtitle?.text} titleAlign={title?.align} subtitleAlign={subtitle?.align} />}
 
       {photo ? (
         <div className="grid grid-cols-[68mm_1fr] items-start gap-[6mm]">

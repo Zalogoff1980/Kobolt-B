@@ -1,8 +1,9 @@
 import { EngravingTank } from "@/components/decorative/EngravingTank";
+import { alignStyle, TextAlign } from "@/lib/content/types";
 
 type HeroHeadline = { lines: { text: string; accent?: boolean }[] };
 type HeroQuote = { id: string; text: string; author?: string };
-type HeroParagraph = { id: string; text: string };
+type HeroParagraph = { id: string; text: string; align?: TextAlign };
 
 /**
  * Главный визуальный блок обложки (ТЗ п.3: "главный визуальный блок").
@@ -156,7 +157,7 @@ export function HeroMedia({
           {paragraphs && paragraphs.length > 0 && (
             <div className={`space-y-[2mm] ${headline || subtitle ? "mt-[2mm]" : ""}`}>
               {paragraphs.map((p) => (
-                <p key={p.id} data-zone="paragraph" className="font-body text-[16px] leading-[1.3] text-ink/90">
+                <p key={p.id} data-zone="paragraph" style={alignStyle(p.align)} className="font-body text-[16px] leading-[1.3] text-ink/90">
                   {p.text}
                 </p>
               ))}

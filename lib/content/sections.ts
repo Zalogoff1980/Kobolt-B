@@ -1,4 +1,4 @@
-import { ContentBlock, createBlockId } from "./types";
+import { ContentBlock, TextAlign, createBlockId } from "./types";
 import { groupPageBlocks } from "./pageBlocks";
 
 /**
@@ -46,14 +46,17 @@ import { groupPageBlocks } from "./pageBlocks";
 export type PageSections = {
   title: string;
   titleId?: string;
+  titleAlign?: TextAlign;
   subtitle: string;
   subtitleId?: string;
+  subtitleAlign?: TextAlign;
   /** Основной текст / лид — один вводный абзац сразу после
    *  подзаголовка, типографически выделяемый шаблоном. Отсутствует
    *  по смыслу для обложки (там всегда ""). */
   lead: string;
   leadId?: string;
-  paragraphs: { id: string; text: string }[];
+  leadAlign?: TextAlign;
+  paragraphs: { id: string; text: string; align?: TextAlign }[];
   achievements: { id: string; text: string }[];
   /** "Наши именинники" — только у Template B страницы 2 (photo-grid-v1,
    *  найдено QA). Отдельный список от achievements: три поля на запись,
@@ -109,11 +112,14 @@ export function blocksToSections(
     return {
       title: g.title?.text ?? "",
       titleId: g.title?.id,
+      titleAlign: g.title?.align,
       subtitle: g.subtitle?.text ?? "",
       subtitleId: g.subtitle?.id,
+      subtitleAlign: g.subtitle?.align,
       lead: g.lead?.text ?? "",
       leadId: g.lead?.id,
-      paragraphs: g.paragraphs.map((p) => ({ id: p.id, text: p.text })),
+      leadAlign: g.lead?.align,
+      paragraphs: g.paragraphs.map((p) => ({ id: p.id, text: p.text, align: p.align })),
       achievements: g.achievements.map((a) => ({ id: a.id, text: a.text })),
       birthdays: g.birthdays.map((b) => ({
         id: b.id,
@@ -143,8 +149,10 @@ export function blocksToSections(
   // решает, где и как её показать (см. HeroMedia/CoverV2).
   let title = "";
   let titleId: string | undefined;
+  let titleAlign: TextAlign | undefined;
   let subtitle = "";
   let subtitleId: string | undefined;
+  let subtitleAlign: TextAlign | undefined;
   const paragraphs: PageSections["paragraphs"] = [];
   const photos: PageSections["photos"] = [];
   const quotes: PageSections["quotes"] = [];
@@ -155,12 +163,14 @@ export function blocksToSections(
     if (b.type === "heading" && b.level === 2 && !titleFound) {
       title = b.text;
       titleId = b.id;
+      titleAlign = b.align;
       titleFound = true;
       continue;
     }
     if (b.type === "heading" && b.level === 3 && !subtitleFound) {
       subtitle = b.text;
       subtitleId = b.id;
+      subtitleAlign = b.align;
       subtitleFound = true;
       continue;
     }
@@ -176,7 +186,7 @@ export function blocksToSections(
         awardIds: b.awardIds ?? [],
       });
     if (b.type === "text" && (!b.variant || b.variant === "paragraph")) {
-      paragraphs.push({ id: b.id, text: b.text });
+      paragraphs.push({ id: b.id, text: b.text, align: b.align });
     }
     if (b.type === "quote") {
       quotes.push({ id: b.id, text: b.text, author: b.author ?? "" });
@@ -186,8 +196,10 @@ export function blocksToSections(
   return {
     title,
     titleId,
+    titleAlign,
     subtitle,
     subtitleId,
+    subtitleAlign,
     lead: "",
     paragraphs,
     achievements: [],
@@ -209,6 +221,7 @@ export function sectionsToBlocks(
       type: "heading",
       level: levels.titleLevel,
       text: sections.title,
+      align: sections.titleAlign,
     });
   }
   if (sections.subtitle.trim()) {
@@ -217,6 +230,7 @@ export function sectionsToBlocks(
       type: "heading",
       level: levels.subtitleLevel,
       text: sections.subtitle,
+      align: sections.subtitleAlign,
     });
   }
   for (const p of sections.photos) {
@@ -243,6 +257,7 @@ export function sectionsToBlocks(
       type: "text",
       text: sections.lead,
       variant: "lead",
+      align: sections.leadAlign,
     });
   }
   // ВАЖНО: пустые абзацы/достижения НЕ фильтруются здесь, в отличие от
@@ -259,7 +274,7 @@ export function sectionsToBlocks(
   // т.д.) при пустом тексте рендерят пустой <p> — не идеально, но не
   // ломает вёрстку, и остаётся видимым/редактируемым полем в форме.
   for (const p of sections.paragraphs) {
-    blocks.push({ id: p.id, type: "text", text: p.text });
+    blocks.push({ id: p.id, type: "text", text: p.text, align: p.align });
   }
   for (const a of sections.achievements) {
     blocks.push({ id: a.id, type: "text", text: a.text, variant: "achievement" });
